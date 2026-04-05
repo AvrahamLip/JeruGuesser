@@ -171,6 +171,20 @@
     transition: all 0.2s;
   }
   .back-btn:hover { background:rgba(255,255,255,0.15); }
+  .skip-btn {
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(16, 185, 129, 0.4);
+    border-radius: 8px;
+    color: var(--green);
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+    font-weight: bold;
+    cursor: pointer;
+    margin-right: 0.5rem;
+    font-family: inherit;
+    transition: all 0.2s;
+  }
+  .skip-btn:hover { background: rgba(16, 185, 129, 0.25); }
   .stage-indicator {
     display: flex;
     gap: 0.5rem;
@@ -481,6 +495,7 @@
   <div class="game-header">
     <div class="header-left">
       <button class="back-btn" id="s0Back">← בית</button>
+      <button class="skip-btn" onclick="startStage1()">עבור למשחק האמיתי →</button>
       <div class="stage-indicator">
         <div class="stage-dot active"></div>
         <div class="stage-dot"></div>
@@ -881,7 +896,10 @@ function geoAnswerGeo(stageNum, clickedName, clickedLayer, q, theMap) {
 
 function s0Next() {
   state.round++;
-  if(state.round >= ROUNDS) { startStage1(); return; }
+  // Infinite questions
+  if(state.round >= state.s0Questions.length) {
+    state.s0Questions.push(...pick(NEIGHBORHOODS, ROUNDS));
+  }
   loadS0Round();
 }
 
@@ -892,8 +910,13 @@ function s1Next() {
 }
 
 function updateSUI(stageNum) {
-  document.getElementById('s'+stageNum+'Round').textContent = `שאלה ${state.round+1}/${ROUNDS}`;
-  document.getElementById('s'+stageNum+'Progress').style.width = `${(state.round/ROUNDS)*100}%`;
+  if(stageNum === 0) {
+    document.getElementById('s0Round').textContent = `תרגול – שאלה ${state.round+1}`;
+    document.getElementById('s0Progress').style.display = 'none'; // hide progress bar
+  } else {
+    document.getElementById('s'+stageNum+'Round').textContent = `שאלה ${state.round+1}/${ROUNDS}`;
+    document.getElementById('s'+stageNum+'Progress').style.width = `${(state.round/ROUNDS)*100}%`;
+  }
 }
 
 
@@ -1031,7 +1054,13 @@ function showFeedback(isCorrect, detail, pts, onNext, distText) {
   document.getElementById('fbIcon').textContent=isCorrect?'🎉':'😬';
   document.getElementById('fbTitle').textContent=isCorrect?'נכון!':'לא נכון';
   document.getElementById('fbTitle').className='feedback-title '+(isCorrect?'correct':'wrong');
-  document.getElementById('fbDetail').textContent=detail;
+  
+  if (isCorrect) {
+    document.getElementById('fbDetail').innerHTML = detail;
+  } else {
+    document.getElementById('fbDetail').innerHTML = `<span style="color:var(--muted);font-size:0.9rem">התשובה הנכונה:<br></span><b style="font-size:1.2rem;color:var(--text)">${detail}</b>`;
+  }
+  
   document.getElementById('fbPoints').textContent=`+${pts} נקודות`;
   const dEl=document.getElementById('fbDistance');
   if(distText){dEl.style.display='block';dEl.textContent=distText;}
@@ -1049,14 +1078,14 @@ function showFeedback(isCorrect, detail, pts, onNext, distText) {
 // ============================================================
 function showResults() {
   showScreen('results');
-  const total=state.scores[0]+state.scores[1]+state.scores[2]+state.scores[3];
-  document.getElementById('finalScore').textContent=total;
-  document.getElementById('s0Total').textContent=state.scores[0];
+  const totalPlay=state.scores[1]+state.scores[2]+state.scores[3];
+  document.getElementById('finalScore').textContent=totalPlay;
+  document.getElementById('s0Total').textContent=`${state.scores[0]} נק' תרגול`;
   document.getElementById('s1Total').textContent=state.scores[1];
   document.getElementById('s2Total').textContent=state.scores[2];
   document.getElementById('s3Total').textContent=state.scores[3];
-  const maxScore=(ROUNDS*200)+(ROUNDS*200)+(ROUNDS*200)+(ROUNDS*500);
-  const pct=total/maxScore;
+  const maxScore=(ROUNDS*200)+(ROUNDS*200)+(ROUNDS*500);
+  const pct=totalPlay/maxScore;
   const trophy=pct>0.8?'🏆':pct>0.5?'🥈':'🥉';
   document.getElementById('resultsTrophy').textContent=trophy;
 }
