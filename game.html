@@ -225,6 +225,21 @@
   }
   .stage-title-text { font-size:1.4rem; font-weight:700; margin-bottom:0.3rem; }
   .stage-instruction { font-size:0.9rem; color:var(--muted); }
+  
+  .target-block {
+    margin-top: 1rem;
+    background: rgba(245,197,24,0.1);
+    border: 1px solid rgba(245,197,24,0.3);
+    padding: 0.8rem;
+    border-radius: 12px;
+    display: inline-block;
+  }
+  .target-name {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--gold);
+    text-shadow: 0 0 10px rgba(245,197,24,0.3);
+  }
 
   /* ===== MAP STAGES ===== */
   .game-body {
@@ -513,7 +528,10 @@
   <div class="stage-banner">
     <div class="stage-number" style="color:var(--green)">שלב 0 מתוך 3 — תרגול</div>
     <div class="stage-title-text">🌱 איתור שכונה — מפה עם שמות</div>
-    <div class="stage-instruction" id="s0Instruction">לחצ/י על השכונה המסומנת במפה</div>
+    <div class="target-block">
+      <div style="font-size:0.9rem;color:var(--muted)">מצא/י את השכונה:</div>
+      <div class="target-name" id="s0TargetName">-</div>
+    </div>
   </div>
   <div class="game-body">
     <div class="map-area">
@@ -544,7 +562,10 @@
   <div class="stage-banner">
     <div class="stage-number">שלב 1 מתוך 3</div>
     <div class="stage-title-text">🗺️ איתור שכונה — מפה ללא שמות</div>
-    <div class="stage-instruction" id="s1Instruction">לחצ/י על השכונה הנכונה — ללא עזרת שמות!</div>
+    <div class="target-block">
+      <div style="font-size:0.9rem;color:var(--muted)">מצא/י את השכונה:</div>
+      <div class="target-name" id="s1TargetName">-</div>
+    </div>
   </div>
   <div class="game-body">
     <div class="map-area">
@@ -818,7 +839,7 @@ function startStage0() {
 
 function loadS0Round() {
   const q = state.s0Questions[state.round];
-  document.getElementById('s0Instruction').textContent = `מצא/י את השכונה: "${q.name}" — מפה עם שמות`;
+  document.getElementById('s0TargetName').textContent = q.name;
   drawGeoStage(0, 'map0', q, true); // true = show tooltips
 }
 
@@ -840,7 +861,7 @@ function startStage1() {
 
 function loadS1Round() {
   const q = state.s1Questions[state.round];
-  document.getElementById('s1Instruction').textContent = `מצא/י את השכונה: "${q.name}" — לחצ/י עליה ללא שמות`;
+  document.getElementById('s1TargetName').textContent = q.name;
   drawGeoStage(1, 'map1', q, false); // false = hide tooltips
 }
 
@@ -886,12 +907,32 @@ function geoAnswerGeo(stageNum, clickedName, clickedLayer, q, theMap) {
     else clickedLayer.bindTooltip(q.name, {permanent: true, direction: 'center', className: 'neigh-tooltip'}).openTooltip();
   }
 
-  const pts = isCorrect ? 200 : 0;
+  let distText = '';
+  let pts = 0;
+
+  if (stageNum === 0) {
+    pts = isCorrect ? 200 : 0;
+  } else {
+    if (isCorrect) {
+      pts = 200;
+    } else {
+      let cLayer = null;
+      geoLayer.eachLayer(l => { if(l.feature && l.feature.properties.SCHN_NAME === q.name) cLayer = l; });
+      if (cLayer) {
+        const c1 = clickedLayer.getBounds().getCenter();
+        const c2 = cLayer.getBounds().getCenter();
+        const dist = haversine(c1.lat, c1.lng, c2.lat, c2.lng);
+        pts = Math.max(0, Math.round(200 - (dist * 50)));
+        distText = `מרחק פגיעה: ${dist < 1 ? Math.round(dist*1000)+' מטר' : dist.toFixed(1)+' ק"מ'}`;
+      }
+    }
+  }
+
   state.scores[stageNum] += pts;
   document.getElementById('s'+stageNum+'Score').textContent = state.scores[stageNum];
   
   const nextFn = () => { stageNum === 0 ? s0Next() : s1Next(); };
-  showFeedback(isCorrect, q.name, pts, nextFn);
+  showFeedback(isCorrect, q.name, pts, nextFn, distText);
 }
 
 function s0Next() {
