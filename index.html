@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>רחובות ירושלים — שכונות עירוניות וסטטיסטיות</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #1c2330;
+      --border: #30363d;
+      --accent: #f0883e;
+      --accent2: #58a6ff;
+      --green: #3fb950;
+      --red: #f85149;
+      --purple: #bc8cff;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --east: #ff7b72;
+      --west: #79c0ff;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Heebo', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      direction: rtl;
+    }
+
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, #0d1117 0%, #161b22 50%, #1a2332 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 2rem 2rem 1.5rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(12px);
+    }
+
+    .header-top {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .logo {
+      width: 44px; height: 44px;
+      background: linear-gradient(135deg, var(--accent), #e85d04);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem;
+      box-shadow: 0 4px 16px rgba(240,136,62,0.35);
+    }
+
+    h1 {
+      font-size: 1.55rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, var(--text), var(--muted));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    /* Stats bar */
+    .stats-bar {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.2rem;
+    }
+
+    .stat-pill {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.4rem 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.82rem;
+    }
+
+    .stat-pill .num {
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    .stat-pill .num.orange { color: var(--accent); }
+    .stat-pill .num.blue { color: var(--accent2); }
+    .stat-pill .num.green { color: var(--green); }
+    .stat-pill .num.purple { color: var(--purple); }
+
+    /* Controls */
+    .controls {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .search-wrap {
+      position: relative;
+      flex: 1;
+      min-width: 220px;
+      max-width: 380px;
+    }
+
+    .search-wrap input {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: 'Heebo', sans-serif;
+      font-size: 0.9rem;
+      padding: 0.55rem 0.9rem 0.55rem 2.2rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .search-wrap input:focus { border-color: var(--accent2); }
+
+    .search-icon {
+      position: absolute;
+      left: 0.7rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-size: 0.9rem;
+      pointer-events: none;
+    }
+
+    select {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: 'Heebo', sans-serif;
+      font-size: 0.85rem;
+      padding: 0.55rem 0.8rem;
+      outline: none;
+      cursor: pointer;
+      transition: border-color 0.2s;
+      max-width: 230px;
+    }
+
+    select:focus { border-color: var(--accent2); }
+    select option { background: var(--surface2); }
+
+    .filter-btn {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: 'Heebo', sans-serif;
+      font-size: 0.82rem;
+      padding: 0.55rem 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .filter-btn:hover { border-color: var(--accent2); color: var(--accent2); }
+    .filter-btn.active-east { background: rgba(255,123,114,0.15); border-color: var(--east); color: var(--east); }
+    .filter-btn.active-west { background: rgba(121,192,255,0.15); border-color: var(--west); color: var(--west); }
+    .filter-btn.active-all { background: rgba(240,136,62,0.15); border-color: var(--accent); color: var(--accent); }
+
+    .result-count {
+      color: var(--muted);
+      font-size: 0.82rem;
+      margin-right: auto;
+      white-space: nowrap;
+    }
+
+    /* Main content */
+    .main {
+      padding: 1.5rem 2rem;
+    }
+
+    /* Table */
+    .table-wrap {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      background: var(--surface);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+
+    thead th {
+      background: var(--surface2);
+      padding: 0.85rem 1rem;
+      text-align: right;
+      font-weight: 600;
+      font-size: 0.8rem;
+      color: var(--muted);
+      letter-spacing: 0.02em;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+      transition: color 0.15s;
+    }
+
+    thead th:hover { color: var(--text); }
+
+    thead th .sort-arrow {
+      display: inline-block;
+      margin-right: 4px;
+      opacity: 0.4;
+      transition: opacity 0.15s;
+    }
+
+    thead th.sorted .sort-arrow { opacity: 1; color: var(--accent2); }
+
+    tbody tr {
+      border-bottom: 1px solid rgba(48,54,61,0.6);
+      transition: background 0.12s;
+    }
+
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: rgba(56,68,89,0.3); }
+
+    tbody td {
+      padding: 0.7rem 1rem;
+      vertical-align: middle;
+    }
+
+    .street-name {
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .muni-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      background: rgba(88,166,255,0.12);
+      border: 1px solid rgba(88,166,255,0.25);
+      border-radius: 6px;
+      padding: 0.2rem 0.55rem;
+      font-size: 0.78rem;
+      color: var(--accent2);
+      font-weight: 500;
+    }
+
+    .stat-badge {
+      display: inline-flex;
+      align-items: center;
+      background: rgba(188,140,255,0.12);
+      border: 1px solid rgba(188,140,255,0.22);
+      border-radius: 6px;
+      padding: 0.2rem 0.55rem;
+      font-size: 0.75rem;
+      color: var(--purple);
+      max-width: 220px;
+    }
+
+    .stat-badge.empty {
+      background: rgba(139,148,158,0.08);
+      border-color: rgba(139,148,158,0.15);
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    .ew-badge {
+      display: inline-block;
+      border-radius: 5px;
+      padding: 0.2rem 0.55rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+    }
+
+    .ew-east { background: rgba(255,123,114,0.15); color: var(--east); border: 1px solid rgba(255,123,114,0.3); }
+    .ew-west { background: rgba(121,192,255,0.15); color: var(--west); border: 1px solid rgba(121,192,255,0.3); }
+
+    .coord {
+      font-family: 'Courier New', monospace;
+      font-size: 0.75rem;
+      color: var(--green);
+      white-space: nowrap;
+    }
+
+    /* Pagination */
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .page-btn {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      color: var(--text);
+      font-family: 'Heebo', sans-serif;
+      font-size: 0.85rem;
+      padding: 0.45rem 0.85rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .page-btn:hover:not(:disabled) { border-color: var(--accent2); color: var(--accent2); }
+    .page-btn.active { background: var(--accent2); border-color: var(--accent2); color: #0d1117; font-weight: 700; }
+    .page-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+    .page-info { color: var(--muted); font-size: 0.82rem; }
+
+    /* Download btn */
+    .dl-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: linear-gradient(135deg, var(--accent), #e85d04);
+      border: none;
+      border-radius: 8px;
+      color: #0d1117;
+      font-family: 'Heebo', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 0.55rem 1.1rem;
+      cursor: pointer;
+      text-decoration: none;
+      transition: opacity 0.2s, transform 0.1s;
+      box-shadow: 0 2px 12px rgba(240,136,62,0.3);
+    }
+
+    .dl-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+
+    /* Empty state */
+    .empty {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--muted);
+    }
+
+    .empty .icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+
+    @media (max-width: 768px) {
+      .header { padding: 1rem; }
+      .main { padding: 1rem; }
+      h1 { font-size: 1.1rem; }
+      .stats-bar { gap: 0.5rem; }
+      .stat-pill { font-size: 0.75rem; }
+      table { font-size: 0.8rem; }
+      thead th, tbody td { padding: 0.55rem 0.6rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div class="logo">🗺️</div>
+    <div>
+      <h1>רחובות ירושלים — שכונות עירוניות וסטטיסטיות</h1>
+      <div class="subtitle">מקורות: עיריית ירושלים (ArcGIS) • הלמ"ס שכונות סטטיסטיות 2022</div>
+    </div>
+    <a class="dl-btn" href="jerusalem_streets_complete.csv" download>
+      ⬇ הורד CSV
+    </a>
+  </div>
+
+  <div class="stats-bar" id="statsBar">
+    <div class="stat-pill"><span class="num orange" id="totalCount">–</span><span>רחובות</span></div>
+    <div class="stat-pill"><span class="num blue" id="muniCount">115</span><span>שכונות עירוניות</span></div>
+    <div class="stat-pill"><span class="num purple" id="statCount">157</span><span>שכונות סטטיסטיות</span></div>
+    <div class="stat-pill"><span class="num" style="color:var(--east)" id="eastCount">–</span><span>רחובות מזרח</span></div>
+    <div class="stat-pill"><span class="num" style="color:var(--west)" id="westCount">–</span><span>רחובות מערב</span></div>
+  </div>
+
+  <div class="controls">
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="searchInput" placeholder="חפש רחוב..." autocomplete="off" />
+    </div>
+
+    <select id="muniFilter">
+      <option value="">כל השכונות העירוניות</option>
+    </select>
+
+    <select id="statFilter">
+      <option value="">כל השכונות הסטטיסטיות</option>
+    </select>
+
+    <button class="filter-btn active-all" id="btnAll" onclick="setEwFilter('')">הכל</button>
+    <button class="filter-btn" id="btnEast" onclick="setEwFilter('מזרח')">מזרח</button>
+    <button class="filter-btn" id="btnWest" onclick="setEwFilter('מערב')">מערב</button>
+
+    <span class="result-count" id="resultCount"></span>
+  </div>
+</div>
+
+<div class="main">
+  <div class="table-wrap">
+    <table id="mainTable">
+      <thead>
+        <tr>
+          <th onclick="sortBy('שם רחוב')" id="th-street">#&nbsp;&nbsp;שם רחוב <span class="sort-arrow">↕</span></th>
+          <th onclick="sortBy('שכונה עירונית')" id="th-muni">שכונה עירונית <span class="sort-arrow">↕</span></th>
+          <th onclick="sortBy('שכונה סטטיסטית')" id="th-stat">שכונה סטטיסטית <span class="sort-arrow">↕</span></th>
+          <th onclick="sortBy('מזרח/מערב')" id="th-ew">מ/מ <span class="sort-arrow">↕</span></th>
+          <th onclick="sortBy('קו רוחב')" id="th-lat">קו רוחב <span class="sort-arrow">↕</span></th>
+          <th onclick="sortBy('קו אורך')" id="th-lon">קו אורך <span class="sort-arrow">↕</span></th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+
+  <div class="pagination" id="pagination"></div>
+</div>
+
+<script src="table_data.js"></script>
+<script>
+  let filtered = [];
+  let currentPage = 1;
+  const PAGE_SIZE = 100;
+  let sortCol = 'שכונה עירונית';
+  let sortAsc = true;
+  let ewFilter = '';
+
+  // Populate selects
+  function initSelects() {
+    const muni = [...new Set(TABLE_DATA.map(r => r['שכונה עירונית']))].sort();
+    const muniSel = document.getElementById('muniFilter');
+    muni.forEach(n => {
+      const o = document.createElement('option');
+      o.value = n; o.textContent = n;
+      muniSel.appendChild(o);
+    });
+
+    const stats = [...new Set(TABLE_DATA.map(r => r['שכונה סטטיסטית']).filter(v => v && v.trim()))].sort();
+    const statSel = document.getElementById('statFilter');
+    stats.forEach(n => {
+      const o = document.createElement('option');
+      o.value = n; o.textContent = n;
+      statSel.appendChild(o);
+    });
+  }
+
+  function applyFilters() {
+    const q = document.getElementById('searchInput').value.trim().toLowerCase();
+    const muni = document.getElementById('muniFilter').value;
+    const stat = document.getElementById('statFilter').value;
+
+    filtered = TABLE_DATA.filter(r => {
+      if (q && !r['שם רחוב'].toLowerCase().includes(q) &&
+               !r['שכונה עירונית'].toLowerCase().includes(q) &&
+               !r['שכונה סטטיסטית'].toLowerCase().includes(q)) return false;
+      if (muni && r['שכונה עירונית'] !== muni) return false;
+      if (stat && r['שכונה סטטיסטית'] !== stat) return false;
+      if (ewFilter && r['מזרח/מערב'] !== ewFilter) return false;
+      return true;
+    });
+
+    // Sort
+    filtered.sort((a, b) => {
+      const av = (a[sortCol] ?? '').toString();
+      const bv = (b[sortCol] ?? '').toString();
+      if (!isNaN(av) && !isNaN(bv)) {
+        return sortAsc ? parseFloat(av) - parseFloat(bv) : parseFloat(bv) - parseFloat(av);
+      }
+      return sortAsc ? av.localeCompare(bv, 'he') : bv.localeCompare(av, 'he');
+    });
+
+    currentPage = 1;
+    updateStats();
+    render();
+    renderPagination();
+  }
+
+  function updateStats() {
+    document.getElementById('totalCount').textContent = TABLE_DATA.length.toLocaleString();
+    const eastCnt = TABLE_DATA.filter(r => r['מזרח/מערב'] === 'מזרח').length;
+    const westCnt = TABLE_DATA.filter(r => r['מזרח/מערב'] === 'מערב').length;
+    document.getElementById('eastCount').textContent = eastCnt.toLocaleString();
+    document.getElementById('westCount').textContent = westCnt.toLocaleString();
+    document.getElementById('resultCount').textContent =
+      filtered.length < TABLE_DATA.length
+        ? `מציג ${filtered.length.toLocaleString()} תוצאות`
+        : `סה"כ ${filtered.length.toLocaleString()} רשומות`;
+  }
+
+  function render() {
+    const tbody = document.getElementById('tableBody');
+    const start = (currentPage - 1) * PAGE_SIZE;
+    const slice = filtered.slice(start, start + PAGE_SIZE);
+
+    if (slice.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="6">
+        <div class="empty">
+          <div class="icon">🔍</div>
+          <div>לא נמצאו תוצאות</div>
+        </div>
+      </td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = slice.map((r, i) => {
+      const ew = r['מזרח/מערב'];
+      const ewClass = ew === 'מזרח' ? 'ew-east' : ew === 'מערב' ? 'ew-west' : '';
+      const statName = r['שכונה סטטיסטית'] || '';
+      const statBadge = statName
+        ? `<span class="stat-badge" title="${statName}">${statName.length > 28 ? statName.slice(0, 26) + '…' : statName}</span>`
+        : `<span class="stat-badge empty">—</span>`;
+
+      const rowNum = start + i + 1;
+      const lat = parseFloat(r['קו רוחב']).toFixed(5);
+      const lon = parseFloat(r['קו אורך']).toFixed(5);
+      const googleUrl = `https://www.google.com/maps?q=${lat},${lon}`;
+
+      return `<tr>
+        <td><span style="color:var(--muted);font-size:0.72rem">${rowNum}</span>&nbsp;&nbsp;<span class="street-name">${r['שם רחוב']}</span></td>
+        <td><span class="muni-badge">${r['שכונה עירונית']}</span></td>
+        <td>${statBadge}</td>
+        <td><span class="ew-badge ${ewClass}">${ew || '—'}</span></td>
+        <td><a href="${googleUrl}" target="_blank" class="coord">${lat}</a></td>
+        <td><span class="coord">${lon}</span></td>
+      </tr>`;
+    }).join('');
+  }
+
+  function renderPagination() {
+    const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+    const pg = document.getElementById('pagination');
+
+    if (totalPages <= 1) { pg.innerHTML = ''; return; }
+
+    let html = `<button class="page-btn" onclick="gotoPage(${currentPage-1})" ${currentPage===1?'disabled':''}>‹ הקודם</button>`;
+
+    // Window of pages
+    const delta = 2;
+    let pages = new Set([1, totalPages]);
+    for (let i = Math.max(2, currentPage - delta); i <= Math.min(totalPages - 1, currentPage + delta); i++) pages.add(i);
+    pages = [...pages].sort((a,b) => a-b);
+
+    let prev = 0;
+    pages.forEach(p => {
+      if (p - prev > 1) html += `<span class="page-info">…</span>`;
+      html += `<button class="page-btn ${p===currentPage?'active':''}" onclick="gotoPage(${p})">${p}</button>`;
+      prev = p;
+    });
+
+    html += `<button class="page-btn" onclick="gotoPage(${currentPage+1})" ${currentPage===totalPages?'disabled':''}>הבא ›</button>`;
+    html += `<span class="page-info">עמוד ${currentPage} מתוך ${totalPages}</span>`;
+    pg.innerHTML = html;
+  }
+
+  function gotoPage(p) {
+    const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+    if (p < 1 || p > totalPages) return;
+    currentPage = p;
+    render();
+    renderPagination();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function sortBy(col) {
+    if (sortCol === col) { sortAsc = !sortAsc; }
+    else { sortCol = col; sortAsc = true; }
+
+    // Update header arrows
+    document.querySelectorAll('thead th').forEach(th => th.classList.remove('sorted'));
+    const map = {
+      'שם רחוב': 'th-street',
+      'שכונה עירונית': 'th-muni',
+      'שכונה סטטיסטית': 'th-stat',
+      'מזרח/מערב': 'th-ew',
+      'קו רוחב': 'th-lat',
+      'קו אורך': 'th-lon'
+    };
+    const th = document.getElementById(map[col]);
+    if (th) {
+      th.classList.add('sorted');
+      th.querySelector('.sort-arrow').textContent = sortAsc ? '↑' : '↓';
+    }
+
+    applyFilters();
+  }
+
+  function setEwFilter(val) {
+    ewFilter = val;
+    document.getElementById('btnAll').className = 'filter-btn' + (val===''?' active-all':'');
+    document.getElementById('btnEast').className = 'filter-btn' + (val==='מזרח'?' active-east':'');
+    document.getElementById('btnWest').className = 'filter-btn' + (val==='מערב'?' active-west':'');
+    applyFilters();
+  }
+
+  // Init
+  initSelects();
+  filtered = [...TABLE_DATA];
+  applyFilters();
+
+  document.getElementById('searchInput').addEventListener('input', applyFilters);
+  document.getElementById('muniFilter').addEventListener('change', applyFilters);
+  document.getElementById('statFilter').addEventListener('change', applyFilters);
+</script>
+
+</body>
+</html>

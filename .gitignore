@@ -1,0 +1,4 @@
+data_pipeline/*.xlsx
+data_pipeline/*.csv
+data_pipeline/*.geojson
+.DS_Store

@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ירושלים - משחק גיאוגרפי</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="table_data.js"></script>
+<style>
+  :root {
+    --gold: #f5c518;
+    --gold2: #e8a900;
+    --dark: #0a0e1a;
+    --dark2: #111827;
+    --dark3: #1e293b;
+    --card: #1a2235;
+    --card2: #243044;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --green: #10b981;
+    --red: #ef4444;
+    --blue: #3b82f6;
+    --purple: #8b5cf6;
+    --radius: 14px;
+    --shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: 'Heebo', sans-serif;
+    background: var(--dark);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  /* ===== LIGHT THEME ===== */
+  body.light-theme {
+    --dark: #f0f4f8;
+    --dark2: #ffffff;
+    --dark3: #e2e8f0;
+    --card: #ffffff;
+    --card2: #f8fafc;
+    --text: #1e293b;
+    --muted: #64748b;
+    --gold: #d97706;
+    --gold2: #b45309;
+    --green: #059669;
+    --red: #dc2626;
+    --blue: #2563eb;
+    --purple: #7c3aed;
+    --shadow: 0 8px 32px rgba(0,0,0,0.06);
+  }
+  body.light-theme #home {
+    background: radial-gradient(ellipse at 50% 0%, #cbd5e1 0%, var(--dark) 70%);
+  }
+  body.light-theme #home::before {
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+  .theme-toggle {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: var(--card);
+    border: 1px solid rgba(128,128,128,0.2);
+    color: var(--text);
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    z-index: 100;
+    transition: all 0.2s;
+  }
+  .theme-toggle:hover { transform: scale(1.1); }
+
+
+  /* ===== SCREENS ===== */
+  .screen { display:none; min-height:100vh; }
+  .screen.active { display:flex; flex-direction:column; }
+
+  /* ===== HOME SCREEN ===== */
+  #home {
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(ellipse at 50% 0%, #1a2f6e 0%, var(--dark) 70%);
+    position: relative;
+    overflow: hidden;
+  }
+  #home::before {
+    content:'';
+    position:absolute; inset:0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+  .home-content { text-align:center; z-index:1; padding:2rem; max-width:700px; }
+  .home-logo {
+    font-size: 5rem;
+    margin-bottom: 1rem;
+    filter: drop-shadow(0 0 30px rgba(245,197,24,0.5));
+    animation: float 3s ease-in-out infinite;
+  }
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+  .home-title {
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--gold), #fff, var(--gold2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.5rem;
+    line-height: 1.1;
+  }
+  .home-sub { font-size:1.1rem; color:var(--muted); margin-bottom:2.5rem; }
+  .mode-cards { display:flex; gap:1.2rem; flex-wrap:wrap; justify-content:center; margin-bottom:2.5rem; }
+  .mode-card {
+    background: var(--card);
+    border: 2px solid transparent;
+    border-radius: var(--radius);
+    padding: 1.4rem 1.6rem;
+    cursor: pointer;
+    transition: all 0.25s;
+    text-align: center;
+    width: 180px;
+    box-shadow: var(--shadow);
+  }
+  .mode-card:hover { border-color: var(--gold); transform:translateY(-4px); box-shadow:0 16px 40px rgba(245,197,24,0.2); }
+  .mode-card .icon { font-size:2.2rem; margin-bottom:0.5rem; }
+  .mode-card h3 { font-size:1rem; font-weight:700; margin-bottom:0.3rem; }
+  .mode-card p { font-size:0.78rem; color:var(--muted); }
+  .btn-start {
+    background: linear-gradient(135deg, var(--gold), var(--gold2));
+    color: #111;
+    border: none;
+    border-radius: 50px;
+    padding: 1rem 3rem;
+    font-size: 1.2rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Heebo', sans-serif;
+    transition: all 0.2s;
+    box-shadow: 0 4px 20px rgba(245,197,24,0.3);
+  }
+  .btn-start:hover { transform:scale(1.05); box-shadow:0 8px 30px rgba(245,197,24,0.5); }
+
+  /* ===== GAME HEADER ===== */
+  .game-header {
+    background: var(--dark2);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding: 0.8rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+  }
+  .header-left { display:flex; align-items:center; gap:1rem; }
+  .back-btn {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: var(--text);
+    border-radius: 8px;
+    padding: 0.4rem 0.9rem;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+  }
+  .back-btn:hover { background:rgba(255,255,255,0.15); }
+  .stage-indicator {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+  .stage-dot {
+    width: 32px; height: 6px;
+    border-radius: 3px;
+    background: rgba(255,255,255,0.15);
+    transition: all 0.3s;
+  }
+  .stage-dot.active { background: var(--gold); }
+  .stage-dot.done { background: var(--green); }
+  .score-display {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: rgba(245,197,24,0.1);
+    border: 1px solid rgba(245,197,24,0.3);
+    border-radius: 10px;
+    padding: 0.4rem 1rem;
+  }
+  .score-label { font-size:0.8rem; color:var(--muted); }
+  .score-value { font-size:1.3rem; font-weight:900; color:var(--gold); }
+  .progress-bar-wrap { width:100%; height:4px; background:rgba(255,255,255,0.08); }
+  .progress-bar { height:4px; background:linear-gradient(90deg,var(--gold),var(--green)); transition:width 0.5s; }
+
+  /* ===== STAGE TITLE ===== */
+  .stage-banner {
+    background: linear-gradient(135deg, var(--dark3), var(--card));
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    padding: 1.2rem 1.5rem;
+    text-align: center;
+  }
+  .stage-number {
+    font-size:0.75rem; color:var(--gold); font-weight:700;
+    text-transform:uppercase; letter-spacing:2px; margin-bottom:0.3rem;
+  }
+  .stage-title-text { font-size:1.4rem; font-weight:700; margin-bottom:0.3rem; }
+  .stage-instruction { font-size:0.9rem; color:var(--muted); }
+
+  /* ===== MAP STAGES ===== */
+  .game-body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+  }
+  .map-area {
+    flex: 1;
+    position: relative;
+    min-height: 500px;
+  }
+  .map-container {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Leaflet tooltip for neighborhood names */
+  .neigh-tooltip {
+    background: rgba(10,14,26,0.92);
+    border: 1px solid #f5c518;
+    color: #f5c518;
+    font-family: 'Heebo', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    border-radius: 6px;
+    padding: 3px 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    white-space: nowrap;
+  }
+  .neigh-tooltip::before { display:none; }
+
+  /* ===== STAGE 2 - MATCH STREET TO NEIGH ===== */
+  #stage2 { min-height: 100dvh; }
+  .stage2-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    gap: 1.5rem;
+    min-height: 0;
+  }
+  .street-card {
+    background: var(--card);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: var(--radius);
+    padding: 1.5rem 2.5rem;
+    text-align: center;
+    box-shadow: var(--shadow);
+    max-width: 500px;
+    width: 100%;
+  }
+  .street-card .street-label { font-size:0.8rem; color:var(--muted); margin-bottom:0.3rem; text-transform:uppercase; letter-spacing:1px; }
+  .street-card .street-name { font-size:1.8rem; font-weight:900; color:var(--gold); }
+  .options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+    max-width: 600px;
+    width: 100%;
+  }
+  .option-btn {
+    background: var(--card);
+    border: 2px solid rgba(255,255,255,0.1);
+    border-radius: var(--radius);
+    padding: 1rem;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 1rem;
+    color: var(--text);
+    transition: all 0.2s;
+    font-weight: 600;
+  }
+  .option-btn:hover:not(:disabled) { background:var(--card2); border-color:var(--blue); transform:scale(1.02); }
+  .option-btn.correct { background:rgba(16,185,129,0.25); border-color:var(--green); color:#6ee7b7; }
+  .option-btn.wrong { background:rgba(239,68,68,0.2); border-color:var(--red); color:#fca5a5; }
+  .option-btn:disabled { cursor:default; }
+
+  /* ===== STAGE 3 - LOCATE ON MAP ===== */
+  #stage3 .game-body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+  }
+  .locate-prompt {
+    background: var(--dark3);
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .locate-street { font-size:1.5rem; font-weight:900; color:var(--gold); }
+  .locate-neigh { font-size:0.9rem; color:var(--muted); }
+  .locate-hint { font-size:0.85rem; color:var(--blue); background:rgba(59,130,246,0.1); padding:0.4rem 0.9rem; border-radius:8px; }
+  #stage3 .map-area { flex:1; min-height:0; }
+  .guess-marker-ripple {
+    width:20px; height:20px;
+    border-radius:50%;
+    background:rgba(245,197,24,0.8);
+    border:3px solid #fff;
+    box-shadow:0 0 0 0 rgba(245,197,24,0.5);
+    animation: ripple 1.5s infinite;
+  }
+  @keyframes ripple {
+    0%{box-shadow:0 0 0 0 rgba(245,197,24,0.5)}
+    70%{box-shadow:0 0 0 14px rgba(245,197,24,0)}
+    100%{box-shadow:0 0 0 0 rgba(245,197,24,0)}
+  }
+  .confirm-guess-btn {
+    position:absolute; bottom:1.5rem; left:50%; transform:translateX(-50%);
+    background:linear-gradient(135deg,var(--gold),var(--gold2));
+    color:#111; border:none; border-radius:50px;
+    padding:0.85rem 2.5rem; font-size:1rem; font-weight:700;
+    cursor:pointer; font-family:inherit; z-index:1000;
+    box-shadow:0 4px 20px rgba(0,0,0,0.4);
+    transition:all 0.2s;
+    display:none;
+  }
+  .confirm-guess-btn:hover { transform:translateX(-50%) scale(1.05); }
+
+  /* ===== FEEDBACK OVERLAY ===== */
+  .feedback-overlay {
+    position:fixed; inset:0; z-index:2000;
+    background:rgba(0,0,0,0.7);
+    backdrop-filter:blur(6px);
+    display:flex; align-items:center; justify-content:center;
+    opacity:0; pointer-events:none;
+    transition:opacity 0.3s;
+  }
+  .feedback-overlay.show { opacity:1; pointer-events:all; }
+  .feedback-card {
+    background:var(--card);
+    border-radius:20px;
+    padding:2rem;
+    max-width:420px; width:90%;
+    text-align:center;
+    box-shadow:0 20px 60px rgba(0,0,0,0.5);
+    transform:scale(0.8);
+    transition:transform 0.3s;
+  }
+  .feedback-overlay.show .feedback-card { transform:scale(1); }
+  .feedback-icon { font-size:3.5rem; margin-bottom:0.5rem; }
+  .feedback-title { font-size:1.6rem; font-weight:900; margin-bottom:0.3rem; }
+  .feedback-title.correct { color:var(--green); }
+  .feedback-title.wrong { color:var(--red); }
+  .feedback-detail { font-size:1rem; color:var(--muted); margin-bottom:0.4rem; }
+  .feedback-points {
+    font-size:1.2rem; font-weight:700;
+    color:var(--gold); margin-bottom:1.2rem;
+  }
+  .distance-badge {
+    background:rgba(59,130,246,0.15);
+    border:1px solid rgba(59,130,246,0.3);
+    border-radius:8px;
+    padding:0.5rem 1rem;
+    font-size:0.9rem;
+    color:#93c5fd;
+    margin-bottom:1rem;
+    display:none;
+  }
+  .btn-next {
+    background:linear-gradient(135deg,var(--blue),var(--purple));
+    color:#fff; border:none; border-radius:50px;
+    padding:0.85rem 2.5rem; font-size:1rem; font-weight:700;
+    cursor:pointer; font-family:inherit;
+    transition:all 0.2s;
+  }
+  .btn-next:hover { transform:scale(1.05); }
+
+  /* ===== RESULTS ===== */
+  #results {
+    align-items:center; justify-content:center;
+    background:radial-gradient(ellipse at 50% 0%, #1a2f6e, var(--dark));
+  }
+  .results-card {
+    background:var(--card);
+    border-radius:20px;
+    padding:2.5rem;
+    max-width:550px; width:90%;
+    text-align:center;
+    box-shadow:var(--shadow);
+  }
+  .results-trophy { font-size:4rem; margin-bottom:0.5rem; animation:float 3s ease-in-out infinite; }
+  .results-title { font-size:2rem; font-weight:900; color:var(--gold); margin-bottom:0.2rem; }
+  .results-score { font-size:3.5rem; font-weight:900; margin:0.5rem 0; }
+  .results-score span { font-size:1.2rem; color:var(--muted); }
+  .results-breakdown {
+    display:grid; grid-template-columns:1fr 1fr 1fr 1fr;
+    gap:0.8rem; margin:1.5rem 0;
+  }
+  .breakdown-item {
+    background:var(--dark2);
+    border-radius:10px;
+    padding:0.8rem;
+  }
+  .breakdown-val { font-size:1.5rem; font-weight:700; }
+  .breakdown-lbl { font-size:0.75rem; color:var(--muted); margin-top:0.2rem; }
+  .btn-play-again {
+    background:linear-gradient(135deg,var(--gold),var(--gold2));
+    color:#111; border:none; border-radius:50px;
+    padding:1rem 3rem; font-size:1.1rem; font-weight:700;
+    cursor:pointer; font-family:inherit;
+    transition:all 0.2s; margin-top:0.5rem;
+  }
+  .btn-play-again:hover { transform:scale(1.05); }
+
+  /* ===== ROUND indicator ===== */
+  .round-info { font-size:0.85rem; color:var(--muted); font-weight:600; }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width:6px; }
+  ::-webkit-scrollbar-track { background:var(--dark); }
+  ::-webkit-scrollbar-thumb { background:var(--dark3); border-radius:3px; }
+  
+  /* Light Mode Overrides */
+  body.light-mode { --bg:#f8fafc; --dark:#e2e8f0; --dark2:#cbd5e1; --dark3:#94a3b8; --text:#1e293b; --card:#ffffff; --card2:#f1f5f9; --muted:#64748b; --shadow:0 4px 6px -1px rgba(0,0,0,0.1); }
+  .theme-toggle { position:absolute; top:1rem; right:1rem; background:var(--card); border:none; padding:0.5rem; border-radius:50%; cursor:pointer; font-size:1.2rem; z-index:100; }
+</style>
+</head>
+<body>
+
+<!-- ===== HOME SCREEN ===== -->
+<div id="home" class="screen active">
+  <button class="theme-toggle" id="themeToggle" title="החלף מצב תצוגה">💡</button>
+  <div class="home-content">
+    <div class="home-logo">🕌</div>
+    <h1 class="home-title">ירושלמן</h1>
+    <p class="home-sub">משחק גיאוגרפי על שכונות ורחובות ירושלים</p>
+    <div class="mode-cards">
+      <div class="mode-card">
+        <div class="icon">🌱</div>
+        <h3>שלב 0</h3>
+        <p>שכונות עם שמות — תרגול</p>
+      </div>
+      <div class="mode-card">
+        <div class="icon">🗺️</div>
+        <h3>שלב 1</h3>
+        <p>שכונות ללא שמות — אתגר</p>
+      </div>
+      <div class="mode-card">
+        <div class="icon">🔗</div>
+        <h3>שלב 2</h3>
+        <p>שיוך רחוב לשכונה</p>
+      </div>
+      <div class="mode-card">
+        <div class="icon">📍</div>
+        <h3>שלב 3</h3>
+        <p>איתור רחוב על המפה</p>
+      </div>
+    </div>
+    <button class="btn-start" id="startBtn">▶ התחל משחק</button>
+  </div>
+</div>
+
+<!-- ===== STAGE 0 - FIND NEIGHBORHOOD (WITH NAMES) ===== -->
+<div id="stage0" class="screen">
+  <div class="game-header">
+    <div class="header-left">
+      <button class="back-btn" id="s0Back">← בית</button>
+      <div class="stage-indicator">
+        <div class="stage-dot active"></div>
+        <div class="stage-dot"></div>
+        <div class="stage-dot"></div>
+        <div class="stage-dot"></div>
+      </div>
+      <span class="round-info" id="s0Round">שאלה 1/5</span>
+    </div>
+    <div class="score-display">
+      <span class="score-label">ניקוד</span>
+      <span class="score-value" id="s0Score">0</span>
+    </div>
+  </div>
+  <div class="progress-bar-wrap"><div class="progress-bar" id="s0Progress" style="width:0%"></div></div>
+  <div class="stage-banner">
+    <div class="stage-number" style="color:var(--green)">שלב 0 מתוך 3 — תרגול</div>
+    <div class="stage-title-text">🌱 איתור שכונה — מפה עם שמות</div>
+    <div class="stage-instruction" id="s0Instruction">לחצ/י על השכונה המסומנת במפה</div>
+  </div>
+  <div class="game-body">
+    <div class="map-area">
+      <div id="map0" class="map-container"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== STAGE 1 - FIND NEIGHBORHOOD (NO NAMES) ===== -->
+<div id="stage1" class="screen">
+  <div class="game-header">
+    <div class="header-left">
+      <button class="back-btn" id="s1Back">← בית</button>
+      <div class="stage-indicator">
+        <div class="stage-dot done"></div>
+        <div class="stage-dot active"></div>
+        <div class="stage-dot"></div>
+        <div class="stage-dot"></div>
+      </div>
+      <span class="round-info" id="s1Round">שאלה 1/5</span>
+    </div>
+    <div class="score-display">
+      <span class="score-label">ניקוד</span>
+      <span class="score-value" id="s1Score">0</span>
+    </div>
+  </div>
+  <div class="progress-bar-wrap"><div class="progress-bar" id="s1Progress" style="width:0%"></div></div>
+  <div class="stage-banner">
+    <div class="stage-number">שלב 1 מתוך 3</div>
+    <div class="stage-title-text">🗺️ איתור שכונה — מפה ללא שמות</div>
+    <div class="stage-instruction" id="s1Instruction">לחצ/י על השכונה הנכונה — ללא עזרת שמות!</div>
+  </div>
+  <div class="game-body">
+    <div class="map-area">
+      <div id="map1" class="map-container"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== STAGE 2 - MATCH STREET TO NEIGHBORHOOD ===== -->
+<div id="stage2" class="screen">
+  <div class="game-header">
+    <div class="header-left">
+      <button class="back-btn" id="s2Back">← בית</button>
+      <div class="stage-indicator">
+        <div class="stage-dot done"></div>
+        <div class="stage-dot done"></div>
+        <div class="stage-dot active"></div>
+        <div class="stage-dot"></div>
+      </div>
+      <span class="round-info" id="s2Round">שאלה 1/5</span>
+    </div>
+    <div class="score-display">
+      <span class="score-label">ניקוד</span>
+      <span class="score-value" id="s2Score">0</span>
+    </div>
+  </div>
+  <div class="progress-bar-wrap"><div class="progress-bar" id="s2Progress" style="width:0%"></div></div>
+  <div class="stage-banner">
+    <div class="stage-number">שלב 2 מתוך 3</div>
+    <div class="stage-title-text">🔗 שיוך רחוב לשכונה</div>
+    <div class="stage-instruction">בחר/י את השכונה הנכונה לרחוב המוצג</div>
+  </div>
+  <div class="stage2-body">
+    <div class="street-card">
+      <div class="street-label">שם הרחוב</div>
+      <div class="street-name" id="s2StreetName">-</div>
+    </div>
+    <div class="options-grid" id="s2Options"></div>
+  </div>
+</div>
+
+<!-- ===== STAGE 3 - LOCATE STREET ON MAP ===== -->
+<div id="stage3" class="screen">
+  <div class="game-header">
+    <div class="header-left">
+      <button class="back-btn" id="s3Back">← בית</button>
+      <div class="stage-indicator">
+        <div class="stage-dot done"></div>
+        <div class="stage-dot done"></div>
+        <div class="stage-dot done"></div>
+        <div class="stage-dot active"></div>
+      </div>
+      <span class="round-info" id="s3Round">שאלה 1/5</span>
+    </div>
+    <div class="score-display">
+      <span class="score-label">ניקוד</span>
+      <span class="score-value" id="s3Score">0</span>
+    </div>
+  </div>
+  <div class="progress-bar-wrap"><div class="progress-bar" id="s3Progress" style="width:0%"></div></div>
+  <div class="locate-prompt">
+    <div>
+      <div class="street-label" style="font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">רחוב:</div>
+      <div class="locate-street" id="s3StreetName">-</div>
+      <div class="locate-neigh" id="s3NeighName">-</div>
+    </div>
+    <div class="locate-hint" id="s3Hint">👆 לחצ/י על מיקום הרחוב במפה</div>
+  </div>
+  <div class="game-body">
+    <div class="map-area" style="position:relative">
+      <div id="map3" class="map-container"></div>
+      <button class="confirm-guess-btn" id="confirmGuess">✓ אשר ניחוש</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== RESULTS ===== -->
+<div id="results" class="screen">
+  <div class="results-card">
+    <div class="results-trophy" id="resultsTrophy">🏆</div>
+    <div class="results-title">סיימת!</div>
+    <div class="results-score"><span id="finalScore">0</span> <span>נקודות</span></div>
+    <div class="results-breakdown">
+      <div class="breakdown-item">
+        <div class="breakdown-val" style="color:var(--green)" id="s0Total">0</div>
+        <div class="breakdown-lbl">שלב 0</div>
+      </div>
+      <div class="breakdown-item">
+        <div class="breakdown-val" style="color:var(--blue)" id="s1Total">0</div>
+        <div class="breakdown-lbl">שלב 1</div>
+      </div>
+      <div class="breakdown-item">
+        <div class="breakdown-val" style="color:var(--purple)" id="s2Total">0</div>
+        <div class="breakdown-lbl">שלב 2</div>
+      </div>
+      <div class="breakdown-item">
+        <div class="breakdown-val" style="color:var(--gold)" id="s3Total">0</div>
+        <div class="breakdown-lbl">שלב 3</div>
+      </div>
+    </div>
+    <button class="btn-play-again" id="playAgain">🔄 שחק שוב</button>
+  </div>
+</div>
+
+<!-- ===== FEEDBACK OVERLAY ===== -->
+<div class="feedback-overlay" id="feedbackOverlay">
+  <div class="feedback-card">
+    <div class="feedback-icon" id="fbIcon">✅</div>
+    <div class="feedback-title" id="fbTitle">נכון!</div>
+    <div class="feedback-detail" id="fbDetail"></div>
+    <div class="distance-badge" id="fbDistance"></div>
+    <div class="feedback-points" id="fbPoints">+100 נקודות</div>
+    <button class="btn-next" id="fbNext">הבא →</button>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// DATA PREPARATION
+// ============================================================
+const ALL_DATA = TABLE_DATA.filter(r =>
+  r['שם רחוב'] && r['שכונה עירונית'] && r['קו רוחב'] && r['קו אורך']
+);
+
+// Build neighborhood list with centroid
+const neighMap = {};
+ALL_DATA.forEach(r => {
+  const n = r['שכונה עירונית'];
+  if (!neighMap[n]) neighMap[n] = { name:n, lats:[], lngs:[] };
+  neighMap[n].lats.push(r['קו רוחב']);
+  neighMap[n].lngs.push(r['קו אורך']);
+});
+const NEIGHBORHOODS = Object.values(neighMap)
+  .filter(n => n.lats.length >= 5)
+  .map(n => ({
+    name: n.name,
+    lat: n.lats.reduce((a,b)=>a+b,0)/n.lats.length,
+    lng: n.lngs.reduce((a,b)=>a+b,0)/n.lngs.length
+  }));
+
+// Filter streets usable in stage 3 (have coords)
+const VALID_STREETS = ALL_DATA.filter(r => {
+  const n = NEIGHBORHOODS.find(x=>x.name===r['שכונה עירונית']);
+  return !!n;
+});
+
+function shuffle(arr) {
+  const a=[...arr]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;
+}
+function pick(arr, n) { return shuffle(arr).slice(0,n); }
+function haversine(lat1,lon1,lat2,lon2) {
+  const R=6371, dLat=(lat2-lat1)*Math.PI/180, dLon=(lon2-lon1)*Math.PI/180;
+  const a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
+
+// ============================================================
+// GAME STATE
+// ============================================================
+const ROUNDS = 5;
+let state = {
+  stage: 0,
+  round: 0,
+  scores: [0,0,0,0],
+  // stage-specific
+  s0Questions: [],
+  s1Questions: [],
+  s2Questions: [],
+  s3Questions: [],
+};
+
+// Maps
+let map0=null, map1=null, map3=null;
+let guessMarker=null, correctMarker=null, line=null;
+
+function getTileUrl() {
+  const isLight = document.body.classList.contains('light-theme');
+  return isLight
+    ? 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+    : 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+}
+
+// ============================================================
+// SCREEN MANAGEMENT
+// ============================================================
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ============================================================
+// INIT GAME
+// ============================================================
+function initGame() {
+  state.scores = [0,0,0,0];
+  state.round = 0;
+  state.stage = 0;
+  // pick questions
+  state.s0Questions = pick(NEIGHBORHOODS, ROUNDS);
+  state.s1Questions = pick(NEIGHBORHOODS, ROUNDS);
+  const streetSample = pick(VALID_STREETS, ROUNDS);
+  state.s2Questions = streetSample;
+  state.s3Questions = pick(VALID_STREETS, ROUNDS);
+  startStage0();
+}
+
+// ============================================================
+// STAGES 0 & 1 - FIND NEIGHBORHOOD (INTERACTIVE POLYGON MAP)
+// ============================================================
+let geoLayer = null;       // full geojson layer
+let geoAnswered = false;   // prevent double click
+
+let currentMap = null;     // pointer to the active leaflete map
+
+function drawGeoStage(stageNum, mapId, q, showNames) {
+  if(geoLayer){ geoLayer.remove(); geoLayer=null; }
+  geoAnswered = false;
+  
+  if(!window._geoJSON) return;
+  const theMap = stageNum === 0 ? map0 : map1;
+
+  geoLayer = L.geoJSON(window._geoJSON, {
+    style: feature => sGeoStyle(false),
+    onEachFeature: (feature, layer) => {
+      const name = feature.properties.SCHN_NAME;
+      if(showNames) {
+        layer.bindTooltip(name, {
+          permanent: false,
+          direction: 'center',
+          className: 'neigh-tooltip'
+        });
+      }
+      layer.on('click', () => {
+        if(geoAnswered) return;
+        geoAnswerGeo(stageNum, name, layer, q, theMap);
+      });
+      layer.on('mouseover', function() {
+        if(geoAnswered) return;
+        if(name !== q.name) {
+          this.setStyle({ fillOpacity:0.3, fillColor:'#60a5fa' });
+        }
+      });
+      layer.on('mouseout', function() {
+        if(geoAnswered) return;
+        if(name !== q.name) {
+          this.setStyle(sGeoStyle(false));
+        }
+      });
+    }
+  }).addTo(theMap);
+
+  theMap.setView([31.78, 35.22], 12);
+  updateSUI(stageNum);
+}
+
+function startStage0() {
+  state.stage=0; state.round=0;
+  showScreen('stage0');
+  updateSUI(0);
+
+  if(!map0) {
+    setTimeout(()=>{
+      map0 = L.map('map0', {zoomControl:true}).setView([31.78,35.22],12);
+      L.tileLayer(getTileUrl(), {attribution:'© CartoDB',maxZoom:19}).addTo(map0);
+      ensureGeoJSON(()=>loadS0Round());
+    },100);
+  } else {
+    setTimeout(()=>{ map0.invalidateSize(); loadS0Round(); },100);
+  }
+}
+
+function loadS0Round() {
+  const q = state.s0Questions[state.round];
+  document.getElementById('s0Instruction').textContent = `מצא/י את השכונה: "${q.name}" — מפה עם שמות`;
+  drawGeoStage(0, 'map0', q, true); // true = show tooltips
+}
+
+function startStage1() {
+  state.stage=1; state.round=0;
+  showScreen('stage1');
+  updateSUI(1);
+
+  if(!map1) {
+    setTimeout(()=>{
+      map1 = L.map('map1', {zoomControl:true}).setView([31.78,35.22],12);
+      L.tileLayer(getTileUrl(), {attribution:'© CartoDB',maxZoom:19}).addTo(map1);
+      ensureGeoJSON(()=>loadS1Round());
+    },100);
+  } else {
+    setTimeout(()=>{ map1.invalidateSize(); loadS1Round(); },100);
+  }
+}
+
+function loadS1Round() {
+  const q = state.s1Questions[state.round];
+  document.getElementById('s1Instruction').textContent = `מצא/י את השכונה: "${q.name}" — לחצ/י עליה ללא שמות`;
+  drawGeoStage(1, 'map1', q, false); // false = hide tooltips
+}
+
+function ensureGeoJSON(cb) {
+  if(window._geoJSON) return cb();
+  fetch('jerusalem_neighborhoods.geojson')
+    .then(r=>r.json())
+    .then(gj=>{ window._geoJSON = gj; cb(); });
+}
+
+function sGeoStyle(isTarget) {
+  return { fillColor: isTarget ? '#f5c518' : '#3b82f6', fillOpacity: isTarget ? 0.35 : 0.12, color: isTarget ? '#f5c518' : '#60a5fa', weight: isTarget ? 2.5 : 1 };
+}
+function sGeoPulseStyle() {
+  return { fillColor:'#f5c518', fillOpacity:0.55, color:'#fde68a', weight:3 };
+}
+
+function geoAnswerGeo(stageNum, clickedName, clickedLayer, q, theMap) {
+  geoAnswered = true;
+  const isCorrect = (clickedName === q.name);
+
+  // Style the clicked polygon
+  clickedLayer.setStyle({
+    fillColor: isCorrect ? '#10b981' : '#ef4444', fillOpacity: 0.6,
+    color: isCorrect ? '#6ee7b7' : '#fca5a5', weight: 3,
+  });
+
+  if(!isCorrect) {
+    geoLayer.eachLayer(lyr => {
+      if(lyr.feature && lyr.feature.properties.SCHN_NAME === q.name) {
+        lyr.setStyle(sGeoPulseStyle());
+        if(stageNum===0) lyr.openTooltip(); // if it's stage 0 we can pop the tooltip
+        else {
+            // in stage1 force attach a tooltip just to show the correct one
+             lyr.bindTooltip(q.name, {permanent: true, direction: 'center', className: 'neigh-tooltip'}).openTooltip();
+        }
+        theMap.fitBounds(lyr.getBounds(), {padding:[30,30]});
+      }
+    });
+  } else {
+    theMap.fitBounds(clickedLayer.getBounds(), {padding:[30,30]});
+    if(stageNum===0) clickedLayer.openTooltip();
+    else clickedLayer.bindTooltip(q.name, {permanent: true, direction: 'center', className: 'neigh-tooltip'}).openTooltip();
+  }
+
+  const pts = isCorrect ? 200 : 0;
+  state.scores[stageNum] += pts;
+  document.getElementById('s'+stageNum+'Score').textContent = state.scores[stageNum];
+  
+  const nextFn = () => { stageNum === 0 ? s0Next() : s1Next(); };
+  showFeedback(isCorrect, q.name, pts, nextFn);
+}
+
+function s0Next() {
+  state.round++;
+  if(state.round >= ROUNDS) { startStage1(); return; }
+  loadS0Round();
+}
+
+function s1Next() {
+  state.round++;
+  if(state.round >= ROUNDS) { startStage2(); return; }
+  loadS1Round();
+}
+
+function updateSUI(stageNum) {
+  document.getElementById('s'+stageNum+'Round').textContent = `שאלה ${state.round+1}/${ROUNDS}`;
+  document.getElementById('s'+stageNum+'Progress').style.width = `${(state.round/ROUNDS)*100}%`;
+}
+
+
+// ============================================================
+// STAGE 2 - MATCH STREET TO NEIGHBORHOOD
+// ============================================================
+function startStage2() {
+  state.stage=2; state.round=0;
+  showScreen('stage2');
+  loadS2Round();
+}
+
+function loadS2Round() {
+  const q = state.s2Questions[state.round];
+  document.getElementById('s2StreetName').textContent = q['שם רחוב'];
+  document.getElementById('s2Round').textContent = `שאלה ${state.round+1}/${ROUNDS}`;
+  document.getElementById('s2Progress').style.width = `${(state.round/ROUNDS)*100}%`;
+  document.getElementById('s2Score').textContent = state.scores[2];
+
+  const correct = q['שכונה עירונית'];
+  const others = shuffle(NEIGHBORHOODS.filter(n=>n.name!==correct)).slice(0,3).map(n=>n.name);
+  const options = shuffle([correct,...others]);
+
+  const grid = document.getElementById('s2Options');
+  grid.innerHTML='';
+  options.forEach(o=>{
+    const btn=document.createElement('button');
+    btn.className='option-btn';
+    btn.textContent=o;
+    btn.onclick=()=>s2Guess(o, correct, btn, grid);
+    grid.appendChild(btn);
+  });
+}
+
+function s2Guess(chosen, correct, btn, grid) {
+  grid.querySelectorAll('.option-btn').forEach(b=>b.disabled=true);
+  const isCorrect=chosen===correct;
+  btn.classList.add(isCorrect?'correct':'wrong');
+  if(!isCorrect) {
+    grid.querySelectorAll('.option-btn').forEach(b=>{
+      if(b.textContent===correct) b.classList.add('correct');
+    });
+  }
+  const pts = isCorrect?200:0;
+  state.scores[2]+=pts;
+  document.getElementById('s2Score').textContent=state.scores[2];
+  showFeedback(isCorrect, correct, pts, ()=>s2Next());
+}
+
+function s2Next() {
+  state.round++;
+  if(state.round>=ROUNDS){startStage3();return;}
+  loadS2Round();
+}
+
+// ============================================================
+// STAGE 3 - LOCATE STREET ON MAP
+// ============================================================
+function startStage3() {
+  state.stage=3; state.round=0;
+  showScreen('stage3');
+  // Always destroy & recreate map3 so it renders in the now-visible container
+  if(map3){ map3.remove(); map3=null; }
+  if(guessMarker){ guessMarker=null; }
+  if(correctMarker){ correctMarker=null; }
+  if(line){ line=null; }
+  setTimeout(()=>{
+    map3=L.map('map3').setView([31.78,35.22],12);
+    L.tileLayer(getTileUrl(),
+      {attribution:'© CartoDB',maxZoom:19}).addTo(map3);
+    map3.on('click',onMap3Click);
+    loadS3Round();
+  },150);
+}
+
+function loadS3Round() {
+  if(guessMarker){guessMarker.remove();guessMarker=null;}
+  if(correctMarker){correctMarker.remove();correctMarker=null;}
+  if(line){line.remove();line=null;}
+  document.getElementById('confirmGuess').style.display='none';
+  document.getElementById('s3Hint').textContent='👆 לחצ/י על מיקום הרחוב במפה';
+
+  const q=state.s3Questions[state.round];
+  document.getElementById('s3StreetName').textContent=q['שם רחוב'];
+  document.getElementById('s3NeighName').textContent=`שכונה: ${q['שכונה עירונית']}`;
+  document.getElementById('s3Round').textContent=`שאלה ${state.round+1}/${ROUNDS}`;
+  document.getElementById('s3Progress').style.width=`${(state.round/ROUNDS)*100}%`;
+  document.getElementById('s3Score').textContent=state.scores[3];
+  map3.setView([31.78,35.22],12);
+}
+
+function onMap3Click(e) {
+  if(guessMarker) guessMarker.remove();
+  const gIcon=L.divIcon({className:'',html:'<div class="guess-marker-ripple"></div>',iconSize:[20,20],iconAnchor:[10,10]});
+  guessMarker=L.marker(e.latlng,{icon:gIcon}).addTo(map3);
+  document.getElementById('confirmGuess').style.display='block';
+  document.getElementById('s3Hint').textContent='✅ לחצ/י "אשר ניחוש" או שנה מיקום';
+  document.getElementById('confirmGuess').onclick=()=>s3Confirm(e.latlng);
+}
+
+function s3Confirm(guessLatLng) {
+  map3.off('click',onMap3Click);
+  const q=state.s3Questions[state.round];
+  const cLat=q['קו רוחב'], cLng=q['קו אורך'];
+  const dist=haversine(guessLatLng.lat,guessLatLng.lng,cLat,cLng);
+  const pts=Math.max(0,Math.round(500-dist*80));
+  state.scores[3]+=pts;
+  document.getElementById('s3Score').textContent=state.scores[3];
+  document.getElementById('confirmGuess').style.display='none';
+
+  // show correct
+  const cIcon=L.divIcon({className:'',html:'<div style="width:22px;height:22px;background:#10b981;border:3px solid #fff;border-radius:50%;box-shadow:0 0 10px #10b981"></div>',iconSize:[22,22],iconAnchor:[11,11]});
+  correctMarker=L.marker([cLat,cLng],{icon:cIcon}).addTo(map3).bindPopup(`📍 ${q['שם רחוב']}`).openPopup();
+  line=L.polyline([guessLatLng,[cLat,cLng]],{color:'#f5c518',weight:2,dashArray:'6,4'}).addTo(map3);
+  map3.fitBounds([[guessLatLng.lat,guessLatLng.lng],[cLat,cLng]],{padding:[40,40]});
+
+  const distText=dist<1?`${Math.round(dist*1000)} מטר`:` ${dist.toFixed(1)} ק"מ`;
+  showFeedback(pts>200, q['שם רחוב'], pts, ()=>s3Next(), `מרחק מהמיקום הנכון: ${distText}`);
+  // re-enable click after
+  setTimeout(()=>map3.on('click',onMap3Click),100);
+}
+
+function s3Next() {
+  state.round++;
+  map3.off('click',onMap3Click);
+  setTimeout(()=>map3.on('click',onMap3Click),100);
+  if(state.round>=ROUNDS){showResults();return;}
+  loadS3Round();
+}
+
+// ============================================================
+// FEEDBACK
+// ============================================================
+function showFeedback(isCorrect, detail, pts, onNext, distText) {
+  document.getElementById('fbIcon').textContent=isCorrect?'🎉':'😬';
+  document.getElementById('fbTitle').textContent=isCorrect?'נכון!':'לא נכון';
+  document.getElementById('fbTitle').className='feedback-title '+(isCorrect?'correct':'wrong');
+  document.getElementById('fbDetail').textContent=detail;
+  document.getElementById('fbPoints').textContent=`+${pts} נקודות`;
+  const dEl=document.getElementById('fbDistance');
+  if(distText){dEl.style.display='block';dEl.textContent=distText;}
+  else{dEl.style.display='none';}
+  const overlay=document.getElementById('feedbackOverlay');
+  overlay.classList.add('show');
+  document.getElementById('fbNext').onclick=()=>{
+    overlay.classList.remove('show');
+    onNext();
+  };
+}
+
+// ============================================================
+// RESULTS
+// ============================================================
+function showResults() {
+  showScreen('results');
+  const total=state.scores[0]+state.scores[1]+state.scores[2]+state.scores[3];
+  document.getElementById('finalScore').textContent=total;
+  document.getElementById('s0Total').textContent=state.scores[0];
+  document.getElementById('s1Total').textContent=state.scores[1];
+  document.getElementById('s2Total').textContent=state.scores[2];
+  document.getElementById('s3Total').textContent=state.scores[3];
+  const maxScore=(ROUNDS*200)+(ROUNDS*200)+(ROUNDS*200)+(ROUNDS*500);
+  const pct=total/maxScore;
+  const trophy=pct>0.8?'🏆':pct>0.5?'🥈':'🥉';
+  document.getElementById('resultsTrophy').textContent=trophy;
+}
+
+// ============================================================
+// EVENT LISTENERS
+// ============================================================
+document.getElementById('startBtn').onclick=initGame;
+document.getElementById('playAgain').onclick=initGame;
+document.getElementById('s0Back').onclick=()=>showScreen('home');
+document.getElementById('s1Back').onclick=()=>showScreen('home');
+document.getElementById('s2Back').onclick=()=>showScreen('home');
+document.getElementById('s3Back').onclick=()=>showScreen('home');
+
+document.getElementById('themeToggle').onclick = () => {
+  document.body.classList.toggle('light-theme');
+  const isLight = document.body.classList.contains('light-theme');
+  document.getElementById('themeToggle').textContent = isLight ? '🌙' : '💡';
+  // If maps are initialized, it's safer to just reload the page if they want a clean tile swap mid-game,
+  // but since we only swap the url on `initGame` it's okay for the home screen.
+};
+</script>
+</body>
+</html>
