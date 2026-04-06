@@ -8,7 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="table_data.js?v=2.1.1"></script>
+<script src="table_data.js?v=2.1.2"></script>
 <style>
   :root {
     --gold: #ffc107;
@@ -589,7 +589,7 @@
   <div class="home-content">
     <div class="home-logo">🕌</div>
     <h1 class="home-title" style="margin-bottom:0.2rem">JeruGuessr</h1>
-    <div style="font-size:0.75rem; color:var(--gold); margin-bottom:1.5rem; font-weight:700; letter-spacing:1px; opacity:0.8;">VERSION 2.1.1</div>
+    <div style="font-size:0.75rem; color:var(--gold); margin-bottom:1.5rem; font-weight:700; letter-spacing:1px; opacity:0.8;">VERSION 2.1.2</div>
     <p class="home-sub">משחק גיאוגרפי על שכונות ורחובות ירושלים</p>
 
     <div id="homeButtons" style="display:flex; flex-direction:column; gap:1rem; align-items:center;">
@@ -601,7 +601,7 @@
     
     <div style="margin-top:2rem;font-size:0.9rem;color:var(--muted)">
       נוצר ע"י <a href="https://github.com/AvrahamLip" target="_blank" style="color:var(--gold);text-decoration:none;font-weight:600">AvrahamLip</a>
-      <div style="margin-top:0.5rem; font-size:0.7rem; opacity:0.5;">גירסה 2.1.1</div>
+      <div style="margin-top:0.5rem; font-size:0.75rem; color:var(--gold); font-weight:bold;">v2.1.2</div>
     </div>
   </div>
 </div>
@@ -818,7 +818,7 @@ let dataLoaded = false;
 async function initGameData() {
   try {
     console.log("Fetching GeoJSON...");
-    const res = await fetch('jerusalem_neighborhoods.geojson?v=2.1.1');
+    const res = await fetch('jerusalem_neighborhoods.geojson?v=2.1.2');
     if (!res.ok) throw new Error('Failed to load neighborhoods');
     window._geoJSON = await res.json();
     dataLoaded = true;
@@ -1154,13 +1154,13 @@ function geoAnswerGeo(stageNum, clickedName, clickedLayer, q, theMap) {
         lyr.setStyle(sGeoPulseStyle());
         lyr.unbindTooltip();
         lyr.bindTooltip(`📍 ${q.name}`, {permanent: true, direction: 'center', className: 'neigh-tooltip highlight'}).openTooltip();
-        theMap.fitBounds(lyr.getBounds(), {paddingBottomRight: [0, 250], paddingTopLeft: [20, 20]});
+        theMap.fitBounds(lyr.getBounds(), {paddingBottomRight: [0, 250], paddingTopLeft: [20, 20], maxZoom: 15});
       }
     });
   } else {
     clickedLayer.unbindTooltip();
     clickedLayer.bindTooltip(`✅ ${q.name}`, {permanent: true, direction: 'center', className: 'neigh-tooltip correct-hit'}).openTooltip();
-    theMap.fitBounds(clickedLayer.getBounds(), {paddingBottomRight: [0, 250], paddingTopLeft: [20, 20]});
+    theMap.fitBounds(clickedLayer.getBounds(), {paddingBottomRight: [0, 250], paddingTopLeft: [20, 20], maxZoom: 15});
   }
 
   let distText = '';
@@ -1380,7 +1380,7 @@ function s3Confirm(guessLatLng) {
   const cIcon=L.divIcon({className:'',html:'<div style="width:22px;height:22px;background:#10b981;border:3px solid #fff;border-radius:50%;box-shadow:0 0 10px #10b981"></div>',iconSize:[22,22],iconAnchor:[11,11]});
   correctMarker=L.marker([cLat,cLng],{icon:cIcon}).addTo(map3).bindPopup(`📍 ${q['שם רחוב']}`).openPopup();
   line=L.polyline([guessLatLng,[cLat,cLng]],{color:'#f5c518',weight:2,dashArray:'6,4'}).addTo(map3);
-  map3.fitBounds([[guessLatLng.lat,guessLatLng.lng],[cLat,cLng]],{padding:[40,40]});
+  map3.fitBounds([[guessLatLng.lat,guessLatLng.lng],[cLat,cLng]],{padding:[40,40], maxZoom: 15});
 
   const distText=dist<1?`${Math.round(dist*1000)} מטר`:` ${dist.toFixed(1)} ק"מ`;
   
