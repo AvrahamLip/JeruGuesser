@@ -273,6 +273,14 @@
     white-space: nowrap;
   }
   .neigh-tooltip::before { display:none; }
+  .neigh-tooltip.highlight {
+    background: #f5c518; color: #111; font-size: 1.2rem; font-weight: 900;
+    border: 2px solid #fff; box-shadow: 0 0 15px rgba(245,197,24,0.6);
+  }
+  .neigh-tooltip.correct-hit {
+    background: #10b981; color: #fff; font-size: 1.2rem; font-weight: 900;
+    border: 2px solid #fff; box-shadow: 0 0 15px rgba(16,185,129,0.6);
+  }
 
   /* ===== STAGE 2 - MATCH STREET TO NEIGH ===== */
   #stage2 { min-height: 100dvh; }
@@ -927,18 +935,15 @@ function geoAnswerGeo(stageNum, clickedName, clickedLayer, q, theMap) {
     geoLayer.eachLayer(lyr => {
       if(lyr.feature && lyr.feature.properties.SCHN_NAME === q.name) {
         lyr.setStyle(sGeoPulseStyle());
-        if(stageNum===0) lyr.openTooltip(); // if it's stage 0 we can pop the tooltip
-        else {
-            // in stage1 force attach a tooltip just to show the correct one
-             lyr.bindTooltip(q.name, {permanent: true, direction: 'center', className: 'neigh-tooltip'}).openTooltip();
-        }
-        theMap.fitBounds(lyr.getBounds(), {padding:[30,30]});
+        lyr.unbindTooltip();
+        lyr.bindTooltip(`📍 ${q.name}`, {permanent: true, direction: 'center', className: 'neigh-tooltip highlight'}).openTooltip();
+        theMap.fitBounds(lyr.getBounds(), {paddingBottomRight: [0, 250], paddingTopLeft: [20, 20]});
       }
     });
   } else {
-    theMap.fitBounds(clickedLayer.getBounds(), {padding:[30,30]});
-    if(stageNum===0) clickedLayer.openTooltip();
-    else clickedLayer.bindTooltip(q.name, {permanent: true, direction: 'center', className: 'neigh-tooltip'}).openTooltip();
+    clickedLayer.unbindTooltip();
+    clickedLayer.bindTooltip(`✅ ${q.name}`, {permanent: true, direction: 'center', className: 'neigh-tooltip correct-hit'}).openTooltip();
+    theMap.fitBounds(clickedLayer.getBounds(), {paddingBottomRight: [0, 250], paddingTopLeft: [20, 20]});
   }
 
   let distText = '';
