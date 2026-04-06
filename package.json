@@ -2,10 +2,9 @@
   "name": "jeruguessr",
   "version": "2.2.3",
   "description": "JeruGuessr - A Jerusalem-themed GeoGuessr game.",
-  "main": "index.html",
   "scripts": {
     "dev": "npx wrangler pages dev .",
-    "deploy": "npx wrangler pages deploy . --project-name jeruguessr",
+    "deploy": "npx wrangler pages deploy . --project-name jeruguessr --branch main",
     "start": "npx serve ."
   },
   "keywords": [
