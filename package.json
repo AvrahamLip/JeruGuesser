@@ -1,0 +1,20 @@
+{
+  "name": "jeruguessr",
+  "version": "2.2.2",
+  "description": "JeruGuessr - A Jerusalem-themed GeoGuessr game.",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx wrangler pages dev .",
+    "deploy": "npx wrangler pages deploy . --project-name jeruguessr",
+    "start": "npx serve ."
+  },
+  "keywords": [
+    "jerusalem",
+    "geoguessr",
+    "game",
+    "leaflet",
+    "cloudflare"
+  ],
+  "author": "Avraham Lipman",
+  "license": "MIT"
+}

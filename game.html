@@ -609,6 +609,10 @@
         <i data-lucide="trophy" style="width:20px; height:20px; margin-left:8px;"></i>
         <span>טבלת אלופים</span>
       </button>
+      <button id="installAppBtn" class="btn-start" style="display:none; width:320px; background:linear-gradient(135deg, #f59e0b, #d97706); color:black; margin-top:0.5rem">
+        <i data-lucide="plus-circle" style="width:24px; height:24px;"></i>
+        <span>התקן אפליקציה</span>
+      </button>
     </div>
     
     <div style="margin-top:3rem;font-size:0.95rem;color:var(--text); opacity:0.9; line-height:1.6;">
@@ -832,7 +836,10 @@
   </div>
 </div>
 
-<script>
+const CONFIG = {
+  API_BASE_URL: 'https://151.145.89.228.sslip.io'
+};
+
 // ============================================================
 // DATA PREPARATION
 // ============================================================
@@ -1533,7 +1540,7 @@ document.getElementById('saveScoreBtn').onclick = async () => {
     params.append('playerName', name);
     params.append('score', state.score);
 
-    const res = await fetch('https://151.145.89.228.sslip.io/webhook/add/score', {
+    const res = await fetch(`${CONFIG.API_BASE_URL}/webhook/add/score`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: params
@@ -1566,7 +1573,7 @@ async function showLeaderboard() {
   tbody.innerHTML = '';
   
   try {
-    const res = await fetch(`https://151.145.89.228.sslip.io/webhook/gameScore?gamename=${gName}`);
+    const res = await fetch(`${CONFIG.API_BASE_URL}/webhook/gameScore?gamename=${gName}`);
     let data;
     if(res.ok) {
        data = await res.json();
@@ -1634,9 +1641,36 @@ if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('sw.js').catch(err => {
       console.log('SW registration failed: ', err);
-    });
   });
 }
+
+// Installation Logic
+let deferredPrompt;
+const installBtn = document.getElementById('installAppBtn');
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  if (installBtn) {
+    installBtn.style.display = 'flex';
+    if (window.lucide) lucide.createIcons();
+  }
+});
+
+if (installBtn) {
+  installBtn.addEventListener('click', async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    console.log(`User response to prompt: ${outcome}`);
+    deferredPrompt = null;
+    installBtn.style.display = 'none';
+  });
+}
+
+window.addEventListener('appinstalled', () => {
+  console.log('App installed');
+  if (installBtn) installBtn.style.display = 'none';
+});
 </script>
 </body>
 </html>

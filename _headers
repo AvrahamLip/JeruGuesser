@@ -1,0 +1,15 @@
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: same-origin
+  Permissions-Policy: geolocation=(self), microphone=(), camera=()
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+
+/jerusalem_neighborhoods.geojson
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+
+/table_data.js
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+
+/jerusalem_bg.png
+  Cache-Control: public, max-age=604800, immutable
