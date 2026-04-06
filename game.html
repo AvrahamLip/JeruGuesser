@@ -5,18 +5,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>JeruGuessr</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700;800&family=Heebo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="table_data.js?v=2.1.2"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="table_data.js?v=2.2.0"></script>
 <style>
   :root {
-    --gold: #ffc107;
-    --gold-glow: rgba(255, 193, 7, 0.4);
-    --dark: #0a0c14;
-    --dark-muted: #161b2a;
-    --card-bg: rgba(26, 32, 53, 0.8);
-    --glass-bg: rgba(255, 255, 255, 0.05);
+    --gold: #f59e0b;
+    --gold-glow: rgba(245, 158, 11, 0.4);
+    --gold-deep: #b45309;
+    --dark: #0f172a;
+    --dark-muted: #1e293b;
+    --card-bg: rgba(15, 23, 42, 0.7);
+    --glass-bg: rgba(255, 255, 255, 0.03);
     --glass-border: rgba(255, 255, 255, 0.1);
     --text: #f8fafc;
     --muted: #94a3b8;
@@ -24,14 +26,14 @@
     --red: #ef4444;
     --blue: #3b82f6;
     --purple: #8b5cf6;
-    --radius: 16px;
+    --radius: 20px;
     --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
-    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
   * { margin:0; padding:0; box-sizing:border-box; }
   body {
-    font-family: 'Heebo', sans-serif;
+    font-family: 'Assistant', 'Heebo', sans-serif;
     background: var(--dark);
     color: var(--text);
     min-height: 100vh;
@@ -41,10 +43,11 @@
     -webkit-font-smoothing: antialiased;
   }
   .glass {
-    background: var(--glass-bg);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-lg);
   }
 
   /* ===== LIGHT THEME ===== */
@@ -97,76 +100,70 @@
   #home {
     align-items: center;
     justify-content: center;
-    background: var(--dark);
+    background: url('jerusalem_bg.png') center/cover no-repeat fixed;
     position: relative;
     overflow: hidden;
   }
   #home::before {
     content: '';
     position: absolute;
-    width: 140%;
-    height: 140%;
-    top: -20%;
-    left: -20%;
-    background: 
-      radial-gradient(circle at 30% 30%, rgba(255, 193, 7, 0.08), transparent 40%),
-      radial-gradient(circle at 70% 60%, rgba(59, 130, 246, 0.08), transparent 40%);
-    filter: blur(80px);
-    animation: meshFlow 12s ease-in-out infinite alternate;
+    inset: 0;
+    background: radial-gradient(circle at 50% 50%, rgba(15, 23, 42, 0.4), var(--dark) 100%);
+    z-index: 0;
   }
-  @keyframes meshFlow {
-    0% { transform: translate(0, 0) scale(1); }
-    100% { transform: translate(5%, 5%) scale(1.1); }
+  .home-content { 
+    text-align:center; 
+    z-index:2; 
+    padding:3rem; 
+    max-width:800px; 
+    background: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(12px);
+    border-radius: 40px;
+    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 40px 100px rgba(0,0,0,0.6);
+    animation: fadeSlideUp 1s ease-out;
   }
-  .home-content { text-align:center; z-index:1; padding:2rem; max-width:700px; position: relative; }
+  @keyframes fadeSlideUp {
+    0% { opacity:0; transform:translateY(30px); filter:blur(10px); }
+    100% { opacity:1; transform:translateY(0); filter:blur(0); }
+  }
   .home-logo {
-    font-size: 6rem;
-    margin-bottom: 1.5rem;
-    filter: drop-shadow(0 0 40px var(--gold-glow));
-    animation: float 4s ease-in-out infinite;
+    display: inline-flex;
+    padding: 1.5rem;
+    background: rgba(245, 158, 11, 0.15);
+    border-radius: 50%;
+    margin-bottom: 2rem;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    color: var(--gold);
+    box-shadow: 0 0 50px rgba(245, 158, 11, 0.2);
   }
-  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
   .home-title {
-    font-size: clamp(2rem, 6vw, 3.5rem);
-    font-weight: 900;
-    background: linear-gradient(135deg, var(--gold), #fff, var(--gold2));
+    font-size: clamp(2.5rem, 8vw, 4.5rem);
+    font-weight: 800;
+    background: linear-gradient(to bottom, #fff, var(--gold));
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    margin-bottom: 0.5rem;
-    line-height: 1.1;
+    margin-bottom: 0.2rem;
+    letter-spacing: -2px;
   }
-  .home-sub { font-size:1.1rem; color:var(--muted); margin-bottom:2.5rem; }
-  .mode-cards { display:flex; gap:1.2rem; flex-wrap:wrap; justify-content:center; margin-bottom:2.5rem; }
-  .mode-card {
-    background: var(--card);
-    border: 2px solid transparent;
-    border-radius: var(--radius);
-    padding: 1.4rem 1.6rem;
-    cursor: pointer;
-    transition: all 0.25s;
-    text-align: center;
-    width: 180px;
-    box-shadow: var(--shadow);
-  }
-  .mode-card:hover { border-color: var(--gold); transform:translateY(-4px); box-shadow:0 16px 40px rgba(245,197,24,0.2); }
-  .mode-card .icon { font-size:2.2rem; margin-bottom:0.5rem; }
-  .mode-card h3 { font-size:1rem; font-weight:700; margin-bottom:0.3rem; }
-  .mode-card p { font-size:0.78rem; color:var(--muted); }
+  .home-sub { font-size:1.2rem; color:var(--text); margin-bottom:3rem; opacity:0.9; }
   .btn-start {
-    background: linear-gradient(135deg, var(--gold), #fbbf24);
-    color: #111;
+    background: linear-gradient(135deg, var(--gold), var(--gold-deep));
+    color: #000;
     border: none;
-    border-radius: 50px;
-    padding: 1.1rem 3.5rem;
-    font-size: 1.1rem;
+    border-radius: 16px;
+    padding: 1.2rem 3rem;
+    font-size: 1.15rem;
     font-weight: 800;
     cursor: pointer;
-    font-family: 'Heebo', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
     transition: var(--transition);
-    box-shadow: 0 10px 25px -5px var(--gold-glow);
-    position: relative;
-    overflow: hidden;
+    box-shadow: 0 15px 30px -10px var(--gold-glow);
+    width: 320px;
   }
   .btn-start:hover { 
     transform: translateY(-3px) scale(1.02); 
@@ -587,32 +584,53 @@
 <div id="home" class="screen active">
   <button class="theme-toggle" id="themeToggle" title="החלף מצב תצוגה">💡</button>
   <div class="home-content">
-    <div class="home-logo">🕌</div>
+    <div class="home-logo"><i data-lucide="map-pinned" style="width:100px; height:100px;"></i></div>
     <h1 class="home-title" style="margin-bottom:0.2rem">JeruGuessr</h1>
-    <div style="font-size:0.75rem; color:var(--gold); margin-bottom:1.5rem; font-weight:700; letter-spacing:1px; opacity:0.8;">VERSION 2.1.2</div>
-    <p class="home-sub">משחק גיאוגרפי על שכונות ורחובות ירושלים</p>
+    <div style="font-size:0.9rem; color:var(--gold); margin-bottom:2rem; font-weight:700; letter-spacing:2px; text-transform:uppercase;">VERSION 2.2.0</div>
+    <p class="home-sub">מסע בין רחובות ושכונות ירושלים</p>
 
-    <div id="homeButtons" style="display:flex; flex-direction:column; gap:1rem; align-items:center;">
-      <button class="btn-start" id="startJeruBtn" style="background:linear-gradient(135deg, var(--gold), #f97316); width:280px; opacity:0.5;" disabled>🗺️ התחל JeruGuessr</button>
-      <button class="btn-start" id="startTriviaBtn" style="background:linear-gradient(135deg, var(--blue), var(--purple)); color:white; width:280px; opacity:0.5;" disabled>🧩 טריוויה ירושלים</button>
-      <button class="btn-start" id="startPracticeBtn" style="background:linear-gradient(135deg, #10b981, #059669); color:white; width:280px; opacity:0.5;" disabled>🎓 תרגול חופשי</button>
-      <button class="btn-leaderboard" id="leaderboardBtn" style="width:280px; opacity:0.5;" disabled>🏆 טבלת אלופים</button>
+    <div id="homeButtons" style="display:flex; flex-direction:column; gap:1.2rem; align-items:center;">
+      <button class="btn-start" id="startJeruBtn" style="opacity:0.5" disabled>
+        <i data-lucide="compass" style="width:24px; height:24px;"></i>
+        <span>התחל JeruGuessr</span>
+      </button>
+      <button class="btn-start" id="startTriviaBtn" style="background:linear-gradient(135deg, #6366f1, #4f46e5); color:white; opacity:0.5;" disabled>
+        <i data-lucide="help-circle" style="width:24px; height:24px;"></i>
+        <span>טריוויה ירושלים</span>
+      </button>
+      <button class="btn-start" id="startPracticeBtn" style="background:linear-gradient(135deg, #10b981, #059669); color:white; opacity:0.5;" disabled>
+        <i data-lucide="graduation-cap" style="width:24px; height:24px;"></i>
+        <span>תרגול חופשי</span>
+      </button>
+      <button class="btn-leaderboard" id="leaderboardBtn" style="width:320px; border-radius:16px; height:56px; opacity:0.5;" disabled>
+        <i data-lucide="trophy" style="width:20px; height:20px; margin-left:8px;"></i>
+        <span>טבלת אלופים</span>
+      </button>
     </div>
     
-    <div style="margin-top:2rem;font-size:0.9rem;color:var(--muted)">
-      נוצר ע"י <a href="https://github.com/AvrahamLip" target="_blank" style="color:var(--gold);text-decoration:none;font-weight:600">AvrahamLip</a>
-      <div style="margin-top:0.5rem; font-size:0.75rem; color:var(--gold); font-weight:bold;">v2.1.2</div>
+    <div style="margin-top:3rem;font-size:0.95rem;color:var(--text); opacity:0.7;">
+      נוצר ע"י <a href="https://github.com/AvrahamLip" target="_blank" style="color:var(--gold);text-decoration:none;font-weight:700; border-bottom:1px solid var(--gold)">AvrahamLip</a>
+      <div style="margin-top:0.8rem; font-size:0.8rem; font-weight:bold; letter-spacing:1px; color:var(--gold)">v2.2.0</div>
     </div>
   </div>
 </div>
 
 <!-- ===== GLOBAL TOP NAV (Visible during game) ===== -->
-<div id="globalNav" style="display:none; position:fixed; top:0; left:0; right:0; z-index:2005; background:rgba(15,23,42,0.9); backdrop-filter:blur(15px); -webkit-backdrop-filter:blur(15px); height:60px; align-items:center; justify-content:space-between; padding:0 1.5rem; border-bottom:1px solid rgba(255,255,255,0.15); box-shadow:0 4px 20px rgba(0,0,0,0.4);">
-  <div style="font-weight:900; color:var(--gold); cursor:pointer; font-size:1.2rem; display:flex; align-items:center; gap:0.5rem;" onclick="showScreen('home')"><span>🕌</span> JeruGuessr</div>
-  <div style="display:flex; gap:1rem; align-items:center;">
-    <button onclick="showLeaderboard()" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:var(--text); padding:0.4rem 0.8rem; border-radius:8px; cursor:pointer; font-family:inherit; font-size:0.85rem; font-weight:600;">🏆 טבלה</button>
-    <button onclick="startPractice()" style="background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.3); color:var(--green); padding:0.4rem 0.8rem; border-radius:8px; cursor:pointer; font-family:inherit; font-size:0.85rem; font-weight:600;">🎓 תרגול</button>
-    <button onclick="showScreen('home')" style="background:transparent; border:none; color:var(--muted); cursor:pointer; font-family:inherit; font-size:1.2rem; padding:0.2rem;">🏠</button>
+<div id="globalNav" style="display:none; position:fixed; top:0; left:0; right:0; z-index:2100; background:rgba(15,23,42,0.9); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); height:60px; align-items:center; justify-content:space-between; padding:0 1.5rem; border-bottom:1px solid rgba(255,255,255,0.1); box-shadow:0 4px 30px rgba(0,0,0,0.5);">
+  <div style="font-weight:900; color:var(--gold); cursor:pointer; font-size:1.3rem; display:flex; align-items:center; gap:0.6rem;" onclick="showScreen('home')">
+    <i data-lucide="landmark" style="width:24px; height:24px;"></i>
+    <span>JeruGuessr</span>
+  </div>
+  <div style="display:flex; gap:1.2rem; align-items:center;">
+    <button onclick="showLeaderboard()" style="background:rgba(255,193,7,0.1); border:1px solid rgba(255,193,7,0.3); color:var(--gold); padding:0.5rem 1rem; border-radius:12px; cursor:pointer; font-family:inherit; font-size:0.9rem; font-weight:700; display:flex; align-items:center; gap:0.4rem;">
+      <i data-lucide="trophy" style="width:16px; height:16px;"></i> טבלה
+    </button>
+    <button onclick="startPractice()" style="background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.3); color:var(--green); padding:0.5rem 1rem; border-radius:12px; cursor:pointer; font-family:inherit; font-size:0.9rem; font-weight:700; display:flex; align-items:center; gap:0.4rem;">
+      <i data-lucide="graduation-cap" style="width:16px; height:16px;"></i> תרגול
+    </button>
+    <button onclick="showScreen('home')" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:var(--text); width:40px; height:40px; display:flex; align-items:center; justify-content:center; border-radius:12px; cursor:pointer; font-size:1.2rem;">
+      <i data-lucide="home" style="width:20px; height:20px;"></i>
+    </button>
   </div>
 </div>
 
@@ -818,7 +836,7 @@ let dataLoaded = false;
 async function initGameData() {
   try {
     console.log("Fetching GeoJSON...");
-    const res = await fetch('jerusalem_neighborhoods.geojson?v=2.1.2');
+    const res = await fetch('jerusalem_neighborhoods.geojson?v=2.2.0');
     if (!res.ok) throw new Error('Failed to load neighborhoods');
     window._geoJSON = await res.json();
     dataLoaded = true;
@@ -831,6 +849,9 @@ async function initGameData() {
     });
     const practiceBtn = document.getElementById('startPracticeBtn');
     if(practiceBtn) { practiceBtn.disabled = false; practiceBtn.style.opacity = '1'; }
+    
+    // Initial Lucide Icons create
+    if(window.lucide) { lucide.createIcons(); }
     
   } catch (err) {
     console.error("Initialization error:", err);
@@ -925,6 +946,8 @@ function showScreen(id) {
   const gNav = document.getElementById('globalNav');
   if(gNav) gNav.style.display = (id === 'home' || id === 'results') ? 'none' : 'flex';
   window.scrollTo(0,0);
+  // Re-initialize Lucide Icons
+  if(window.lucide) { lucide.createIcons(); }
 }
 
 // ============================================================
