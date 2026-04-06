@@ -450,14 +450,14 @@
 
   /* ===== FEEDBACK OVERLAY ===== */
   .feedback-overlay {
-    position:fixed; inset:0; z-index:2000;
-    background:rgba(0,0,0,0.1); /* Very light overlay so map is visible */
+    position:fixed; inset:0; z-index:2010;
+    background:rgba(10,12,20,0.4);
     display:flex; align-items:flex-end; justify-content:center;
-    padding-bottom: 2rem; /* Sit above the bottom edge */
-    opacity:0; pointer-events:none;
-    transition:opacity 0.3s;
+    padding-bottom: 2rem;
+    opacity:0; pointer-events:none; visibility:hidden;
+    transition:all 0.3s;
   }
-  .feedback-overlay.show { opacity:1; pointer-events:all; }
+  .feedback-overlay.show { opacity:1; pointer-events:all; visibility:visible; }
   .feedback-card {
     background: rgba(26, 32, 53, 0.85);
     backdrop-filter: blur(20px);
@@ -621,7 +621,6 @@
   <div class="game-header">
     <div class="header-left">
       <button class="back-btn" id="s0Back">← בית</button>
-      <button class="skip-btn" onclick="startStage1()">עבור למשחק האמיתי →</button>
       <button class="skip-btn" onclick="startJeru()">עבור למשחק האמיתי →</button>
       <span class="round-info" id="s0Round">שאלה 1/5</span>
       <div id="s0Hearts" class="heart-container" style="display:none"></div>
