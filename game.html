@@ -464,6 +464,20 @@
   /* Light Mode Overrides */
   body.light-mode { --bg:#f8fafc; --dark:#e2e8f0; --dark2:#cbd5e1; --dark3:#94a3b8; --text:#1e293b; --card:#ffffff; --card2:#f1f5f9; --muted:#64748b; --shadow:0 4px 6px -1px rgba(0,0,0,0.1); }
   .theme-toggle { position:absolute; top:1rem; right:1rem; background:var(--card); border:none; padding:0.5rem; border-radius:50%; cursor:pointer; font-size:1.2rem; z-index:100; }
+  
+  /* Mobile UI */
+  @media (max-width: 768px) {
+    .mode-cards, .options-grid { grid-template-columns: 1fr; }
+    .results-breakdown { grid-template-columns: 1fr 1fr; }
+    .home-title { font-size: 2.5rem; }
+    .stage-title-text { font-size: 1.2rem; }
+    .game-header { flex-wrap: wrap; justify-content: center; padding: 1rem; }
+    .header-left { flex-direction: column; align-items: center; gap: 0.5rem; }
+    .target-name { font-size: 1.5rem; }
+    .stage-banner { padding: 0.8rem; }
+    .btn-next, .btn-play-again { width: 100%; padding: 1rem; }
+    .feedback-card { padding: 1.5rem; }
+  }
 </style>
 </head>
 <body>
@@ -536,6 +550,7 @@
   <div class="game-body">
     <div class="map-area">
       <div id="map0" class="map-container"></div>
+      <button class="confirm-guess-btn" id="s0Confirm" style="display:none; bottom:30px; position:absolute; z-index:1000; left:50%; transform:translateX(-50%);">✓ אשר בחירה</button>
     </div>
   </div>
 </div>
@@ -570,6 +585,7 @@
   <div class="game-body">
     <div class="map-area">
       <div id="map1" class="map-container"></div>
+      <button class="confirm-guess-btn" id="s1Confirm" style="display:none; bottom:30px; position:absolute; z-index:1000; left:50%; transform:translateX(-50%);">✓ אשר בחירה</button>
     </div>
   </div>
 </div>
@@ -777,12 +793,17 @@ function initGame() {
 // ============================================================
 let geoLayer = null;       // full geojson layer
 let geoAnswered = false;   // prevent double click
+let selectedGeoLayer = null;
+let selectedGeoName = null;
 
 let currentMap = null;     // pointer to the active leaflete map
 
 function drawGeoStage(stageNum, mapId, q, showNames) {
   if(geoLayer){ geoLayer.remove(); geoLayer=null; }
   geoAnswered = false;
+  selectedGeoLayer = null;
+  selectedGeoName = null;
+  document.getElementById('s'+stageNum+'Confirm').style.display = 'none';
   
   if(!window._geoJSON) return;
   const theMap = stageNum === 0 ? map0 : map1;
@@ -800,7 +821,19 @@ function drawGeoStage(stageNum, mapId, q, showNames) {
       }
       layer.on('click', () => {
         if(geoAnswered) return;
-        geoAnswerGeo(stageNum, name, layer, q, theMap);
+        if(selectedGeoLayer && selectedGeoLayer !== layer) {
+          selectedGeoLayer.setStyle(sGeoStyle(false));
+        }
+        selectedGeoLayer = layer;
+        selectedGeoName = name;
+        layer.setStyle({ fillColor: '#6ee7b7', fillOpacity: 0.5, color: '#10b981', weight: 2 });
+        
+        const btn = document.getElementById('s'+stageNum+'Confirm');
+        btn.style.display = 'block';
+        btn.onclick = () => {
+          btn.style.display = 'none';
+          geoAnswerGeo(stageNum, selectedGeoName, selectedGeoLayer, q, theMap);
+        };
       });
       layer.on('mouseover', function() {
         if(geoAnswered) return;
