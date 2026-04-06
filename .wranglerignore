@@ -1,0 +1,12 @@
+data_pipeline/
+node_modules/
+.git/
+.github/
+package.json
+package-lock.json
+wrangler.toml
+README.md
+.gitignore
+.pagesignore
+*.py
+*.xlsx
