@@ -593,10 +593,10 @@
     <p class="home-sub">משחק גיאוגרפי על שכונות ורחובות ירושלים</p>
 
     <div id="homeButtons" style="display:flex; flex-direction:column; gap:1rem; align-items:center;">
-      <button class="btn-start" id="startJeruBtn" style="background:linear-gradient(135deg, var(--gold), #f97316); width:280px;">🗺️ התחל JeruGuessr</button>
-      <button class="btn-start" id="startTriviaBtn" style="background:linear-gradient(135deg, var(--blue), var(--purple)); color:white; width:280px;">🧩 טריוויה ירושלים</button>
-      <button class="btn-start" id="startPracticeBtn" style="background:linear-gradient(135deg, #10b981, #059669); color:white; width:280px;">🎓 תרגול חופשי</button>
-      <button class="btn-leaderboard" id="leaderboardBtn" style="width:280px;">🏆 טבלת אלופים</button>
+      <button class="btn-start" id="startJeruBtn" style="background:linear-gradient(135deg, var(--gold), #f97316); width:280px; opacity:0.5;" disabled>🗺️ התחל JeruGuessr</button>
+      <button class="btn-start" id="startTriviaBtn" style="background:linear-gradient(135deg, var(--blue), var(--purple)); color:white; width:280px; opacity:0.5;" disabled>🧩 טריוויה ירושלים</button>
+      <button class="btn-start" id="startPracticeBtn" style="background:linear-gradient(135deg, #10b981, #059669); color:white; width:280px; opacity:0.5;" disabled>🎓 תרגול חופשי</button>
+      <button class="btn-leaderboard" id="leaderboardBtn" style="width:280px; opacity:0.5;" disabled>🏆 טבלת אלופים</button>
     </div>
     
     <div style="margin-top:2rem;font-size:0.9rem;color:var(--muted)">
@@ -813,6 +813,35 @@
 // ============================================================
 // DATA PREPARATION
 // ============================================================
+window._geoJSON = null;
+let dataLoaded = false;
+
+async function initGameData() {
+  try {
+    console.log("Fetching GeoJSON...");
+    const res = await fetch('jerusalem_neighborhoods.geojson?v=2.1.0');
+    if (!res.ok) throw new Error('Failed to load neighborhoods');
+    window._geoJSON = await res.json();
+    dataLoaded = true;
+    console.log("GeoJSON loaded successfully");
+    
+    // Enable buttons
+    document.querySelectorAll('.btn-start, .btn-leaderboard').forEach(b => {
+      b.disabled = false;
+      b.style.opacity = '1';
+    });
+    const practiceBtn = document.getElementById('startPracticeBtn');
+    if(practiceBtn) { practiceBtn.disabled = false; practiceBtn.style.opacity = '1'; }
+    
+  } catch (err) {
+    console.error("Initialization error:", err);
+    alert("שגיאה בטעינת נתוני המשחק. אנא נסה לרענן את העמוד.");
+  }
+}
+
+// Start loading immediately
+initGameData();
+
 const ALL_DATA = TABLE_DATA.filter(r =>
   r['שם רחוב'] && r['שכונה עירונית'] && r['קו רוחב'] && r['קו אורך']
 );
