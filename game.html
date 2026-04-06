@@ -598,6 +598,59 @@
     .feedback-card { padding: 1.5rem; border-radius: 20px; }
     .confirm-guess-btn { bottom: 20px; padding: 0.8rem 2rem; font-size: 1rem; width: 80%; }
   }
+
+  /* ===== FOOTER ===== */
+  .footer {
+    margin-top: 3.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.8;
+    width: 100%;
+  }
+  .footer a {
+    color: var(--gold);
+    text-decoration: none;
+    font-weight: 700;
+    transition: var(--transition);
+  }
+  .footer a:hover {
+    color: #fff;
+    text-shadow: 0 0 10px var(--gold-glow);
+  }
+  .footer-links {
+    margin-top: 0.5rem;
+    direction: ltr;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .footer-links a {
+    color: var(--text);
+    opacity: 0.7;
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .footer-links a:hover {
+    opacity: 1;
+  }
+  .separator {
+    opacity: 0.3;
+  }
+  .version-tag {
+    margin-top: 1.2rem;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: var(--gold);
+    text-transform: uppercase;
+    opacity: 0.8;
+  }
 </style>
 </head>
 <body>
@@ -633,13 +686,15 @@
       </button>
     </div>
     
-    <div style="margin-top:3rem;font-size:0.95rem;color:var(--text); opacity:0.9; line-height:1.6;">
-      נוצר ע"י <a href="mailto:lip.avi@gmail.com" style="color:var(--gold);text-decoration:none;font-weight:700; border-bottom:1px solid var(--gold)">אברהם ליפשיץ</a>
-      <div style="margin-top:0.4rem; direction:ltr;">
-        <a href="tel:0508853348" style="color:var(--text); text-decoration:none; opacity:0.8;">050-8853348</a> | <a href="mailto:lip.avi@gmail.com" style="color:var(--text); text-decoration:none; opacity:0.8;">lip.avi@gmail.com</a>
+    <footer class="footer">
+      <p>נוצר ע"י <a href="mailto:lip.avi@gmail.com">אברהם ליפשיץ</a></p>
+      <div class="footer-links">
+        <a href="tel:0508853348"><i data-lucide="phone" style="width:16px; height:16px;"></i> 050-8853348</a>
+        <span class="separator">|</span>
+        <a href="mailto:lip.avi@gmail.com"><i data-lucide="mail" style="width:16px; height:16px;"></i> lip.avi@gmail.com</a>
       </div>
-      <div style="margin-top:1rem; font-size:0.8rem; font-weight:bold; letter-spacing:1px; color:var(--gold)">v2.2.3</div>
-    </div>
+      <div class="version-tag">v2.2.3</div>
+    </footer>
   </div>
 </div>
 
