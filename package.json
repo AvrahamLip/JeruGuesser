@@ -1,6 +1,6 @@
 {
   "name": "jeruguessr",
-  "version": "2.2.2",
+  "version": "2.2.3",
   "description": "JeruGuessr - A Jerusalem-themed GeoGuessr game.",
   "main": "index.html",
   "scripts": {
@@ -15,6 +15,6 @@
     "leaflet",
     "cloudflare"
   ],
-  "author": "Avraham Lipman",
+  "author": "Avraham Lipshitz",
   "license": "MIT"
 }
