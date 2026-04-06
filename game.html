@@ -436,16 +436,17 @@
     100%{box-shadow:0 0 0 0 rgba(245,197,24,0)}
   }
   .confirm-guess-btn {
-    position:absolute; bottom:1.5rem; left:50%; transform:translateX(-50%);
+    position:absolute; bottom:2rem; left:50%; transform:translateX(-50%);
     background:linear-gradient(135deg,var(--gold),var(--gold2));
     color:#111; border:none; border-radius:50px;
-    padding:0.85rem 2.5rem; font-size:1rem; font-weight:700;
-    cursor:pointer; font-family:inherit; z-index:1000;
-    box-shadow:0 4px 20px rgba(0,0,0,0.4);
-    transition:all 0.2s;
+    padding:1rem 3rem; font-size:1.1rem; font-weight:800;
+    cursor:pointer; font-family:inherit; z-index:1001;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 20px var(--gold-glow);
+    transition:all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     display:none;
+    text-transform: uppercase; letter-spacing: 1px;
   }
-  .confirm-guess-btn:hover { transform:translateX(-50%) scale(1.05); }
+  .confirm-guess-btn:hover { transform:translateX(-50%) translateY(-5px) scale(1.05); box-shadow: 0 15px 40px rgba(0,0,0,0.6), 0 0 30px var(--gold-glow); }
 
   /* ===== FEEDBACK OVERLAY ===== */
   .feedback-overlay {
@@ -593,13 +594,23 @@
     <div id="homeButtons" style="display:flex; flex-direction:column; gap:1rem; align-items:center;">
       <button class="btn-start" id="startJeruBtn" style="background:linear-gradient(135deg, var(--gold), #f97316); width:280px;">🗺️ התחל JeruGuessr</button>
       <button class="btn-start" id="startTriviaBtn" style="background:linear-gradient(135deg, var(--blue), var(--purple)); color:white; width:280px;">🧩 טריוויה ירושלים</button>
+      <button class="btn-start" id="startPracticeBtn" style="background:linear-gradient(135deg, #10b981, #059669); color:white; width:280px;">🎓 תרגול חופשי</button>
       <button class="btn-leaderboard" id="leaderboardBtn" style="width:280px;">🏆 טבלת אלופים</button>
-      <button id="startPracticeBtn" style="margin-top:0.5rem; background:transparent; border:none; color:var(--muted); text-decoration: underline; cursor:pointer; font-family:inherit; font-size:0.9rem;">תרגול חופשי (מפה עם שמות)</button>
     </div>
     
     <div style="margin-top:2rem;font-size:0.9rem;color:var(--muted)">
       נוצר ע"י <a href="https://github.com/AvrahamLip" target="_blank" style="color:var(--gold);text-decoration:none;font-weight:600">AvrahamLip</a>
     </div>
+  </div>
+</div>
+
+<!-- ===== GLOBAL TOP NAV (Visible during game) ===== -->
+<div id="globalNav" style="display:none; position:fixed; top:0; left:0; right:0; z-index:2005; background:rgba(15,23,42,0.9); backdrop-filter:blur(15px); -webkit-backdrop-filter:blur(15px); height:60px; align-items:center; justify-content:space-between; padding:0 1.5rem; border-bottom:1px solid rgba(255,255,255,0.15); box-shadow:0 4px 20px rgba(0,0,0,0.4);">
+  <div style="font-weight:900; color:var(--gold); cursor:pointer; font-size:1.2rem; display:flex; align-items:center; gap:0.5rem;" onclick="showScreen('home')"><span>🕌</span> JeruGuessr</div>
+  <div style="display:flex; gap:1rem; align-items:center;">
+    <button onclick="showLeaderboard()" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:var(--text); padding:0.4rem 0.8rem; border-radius:8px; cursor:pointer; font-family:inherit; font-size:0.85rem; font-weight:600;">🏆 טבלה</button>
+    <button onclick="startPractice()" style="background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.3); color:var(--green); padding:0.4rem 0.8rem; border-radius:8px; cursor:pointer; font-family:inherit; font-size:0.85rem; font-weight:600;">🎓 תרגול</button>
+    <button onclick="showScreen('home')" style="background:transparent; border:none; color:var(--muted); cursor:pointer; font-family:inherit; font-size:1.2rem; padding:0.2rem;">🏠</button>
   </div>
 </div>
 
@@ -881,6 +892,9 @@ function getTileUrl() {
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
+  const gNav = document.getElementById('globalNav');
+  if(gNav) gNav.style.display = (id === 'home' || id === 'results') ? 'none' : 'flex';
+  window.scrollTo(0,0);
 }
 
 // ============================================================
@@ -964,19 +978,31 @@ let selectedGeoName = null;
 let currentMap = null;     // pointer to the active leaflete map
 
 function drawGeoStage(stageNum, mapId, q, showNames) {
-  if(geoLayer){ geoLayer.remove(); geoLayer=null; }
+  const theMap = stageNum === 0 ? map0 : map1;
+  if (!theMap) { console.error("Map not initialized for stage", stageNum); return; }
+
+  // Cleanup existing layers
+  if (geoLayer) {
+    console.log("Removing existing geoLayer...");
+    map0 && map0.removeLayer(geoLayer);
+    map1 && map1.removeLayer(geoLayer);
+    geoLayer = null;
+  }
+  
   geoAnswered = false;
   selectedGeoLayer = null;
   selectedGeoName = null;
-  document.getElementById('s'+stageNum+'Confirm').style.display = 'none';
+  const confirmBtn = document.getElementById('s'+stageNum+'Confirm');
+  if(confirmBtn) confirmBtn.style.display = 'none';
   
-  if(!window._geoJSON) return;
-  const theMap = stageNum === 0 ? map0 : map1;
+  if(!window._geoJSON) { console.error("GeoJSON not loaded"); return; }
 
+  console.log("Drawing GeoJSON for stage", stageNum, "showNames:", showNames);
   geoLayer = L.geoJSON(window._geoJSON, {
     style: feature => sGeoStyle(false),
     onEachFeature: (feature, layer) => {
-      const name = feature.properties.SCHN_NAME;
+      const name = feature.properties.SCHN_NAME || feature.properties.name || "Unknown";
+      
       if(showNames) {
         layer.bindTooltip(name, {
           permanent: false,
@@ -984,33 +1010,38 @@ function drawGeoStage(stageNum, mapId, q, showNames) {
           className: 'neigh-tooltip'
         });
       }
-      layer.on('click', () => {
+      
+      layer.on('click', (e) => {
+        console.log("Neighborhood clicked:", name);
+        L.DomEvent.stopPropagation(e); // Prevent map click if applicable
+        
         if(geoAnswered) return;
         if(selectedGeoLayer && selectedGeoLayer !== layer) {
           selectedGeoLayer.setStyle(sGeoStyle(false));
         }
         selectedGeoLayer = layer;
         selectedGeoName = name;
-        layer.setStyle({ fillColor: '#6ee7b7', fillOpacity: 0.5, color: '#10b981', weight: 2 });
+        layer.setStyle({ fillColor: '#6ee7b7', fillOpacity: 0.5, color: '#10b981', weight: 3 });
+        layer.bringToFront();
         
         const btn = document.getElementById('s'+stageNum+'Confirm');
-        btn.style.display = 'block';
-        btn.onclick = () => {
-          btn.style.display = 'none';
-          geoAnswerGeo(stageNum, selectedGeoName, selectedGeoLayer, q, theMap);
-        };
+        if(btn) {
+          btn.style.display = 'block';
+          btn.onclick = () => {
+            btn.style.display = 'none';
+            geoAnswerGeo(stageNum, selectedGeoName, selectedGeoLayer, q, theMap);
+          };
+        }
       });
+      
       layer.on('mouseover', function() {
-        if(geoAnswered) return;
-        if(name !== q.name) {
-          this.setStyle({ fillOpacity:0.3, fillColor:'#60a5fa' });
-        }
+        if(geoAnswered || selectedGeoLayer === this) return;
+        this.setStyle({ fillOpacity:0.4, fillColor:'#60a5fa', weight: 2 });
       });
+      
       layer.on('mouseout', function() {
-        if(geoAnswered) return;
-        if(name !== q.name) {
-          this.setStyle(sGeoStyle(false));
-        }
+        if(geoAnswered || selectedGeoLayer === this) return;
+        this.setStyle(sGeoStyle(false));
       });
     }
   }).addTo(theMap);
