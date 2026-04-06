@@ -5,11 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>JeruGuessr</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0f172a">
+<link rel="apple-touch-icon" href="icon-192.png">
 <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700;800&family=Heebo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/lucide@latest"></script>
-<script src="table_data.js?v=2.2.0"></script>
+<script src="table_data.js?v=2.2.2"></script>
 <style>
   :root {
     --gold: #f59e0b;
@@ -41,6 +44,7 @@
     transition: var(--transition);
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
+    touch-action: manipulation;
   }
   .glass {
     background: var(--card-bg);
@@ -586,7 +590,6 @@
   <div class="home-content">
     <div class="home-logo"><i data-lucide="map-pinned" style="width:100px; height:100px;"></i></div>
     <h1 class="home-title" style="margin-bottom:0.2rem">JeruGuessr</h1>
-    <div style="font-size:0.9rem; color:var(--gold); margin-bottom:2rem; font-weight:700; letter-spacing:2px; text-transform:uppercase;">VERSION 2.2.0</div>
     <p class="home-sub">מסע בין רחובות ושכונות ירושלים</p>
 
     <div id="homeButtons" style="display:flex; flex-direction:column; gap:1.2rem; align-items:center;">
@@ -608,9 +611,12 @@
       </button>
     </div>
     
-    <div style="margin-top:3rem;font-size:0.95rem;color:var(--text); opacity:0.7;">
-      נוצר ע"י <a href="https://github.com/AvrahamLip" target="_blank" style="color:var(--gold);text-decoration:none;font-weight:700; border-bottom:1px solid var(--gold)">AvrahamLip</a>
-      <div style="margin-top:0.8rem; font-size:0.8rem; font-weight:bold; letter-spacing:1px; color:var(--gold)">v2.2.0</div>
+    <div style="margin-top:3rem;font-size:0.95rem;color:var(--text); opacity:0.9; line-height:1.6;">
+      נוצר ע"י <a href="mailto:lip.avi@gmail.com" style="color:var(--gold);text-decoration:none;font-weight:700; border-bottom:1px solid var(--gold)">אבי ליפמן</a>
+      <div style="margin-top:0.4rem; direction:ltr;">
+        <a href="tel:0508853348" style="color:var(--text); text-decoration:none; opacity:0.8;">050-8853348</a> | <a href="mailto:lip.avi@gmail.com" style="color:var(--text); text-decoration:none; opacity:0.8;">lip.avi@gmail.com</a>
+      </div>
+      <div style="margin-top:1rem; font-size:0.8rem; font-weight:bold; letter-spacing:1px; color:var(--gold)">v2.2.2</div>
     </div>
   </div>
 </div>
@@ -836,7 +842,7 @@ let dataLoaded = false;
 async function initGameData() {
   try {
     console.log("Fetching GeoJSON...");
-    const res = await fetch('jerusalem_neighborhoods.geojson?v=2.2.0');
+    const res = await fetch('jerusalem_neighborhoods.geojson?v=2.2.2');
     if (!res.ok) throw new Error('Failed to load neighborhoods');
     window._geoJSON = await res.json();
     dataLoaded = true;
@@ -1110,7 +1116,7 @@ function startStage0() {
 
   if(!map0) {
     setTimeout(()=>{
-      map0 = L.map('map0', {zoomControl:true}).setView([31.78,35.22],12);
+      map0 = L.map('map0', {zoomControl:true, doubleClickZoom:false}).setView([31.78,35.22],12);
       L.tileLayer(getTileUrl(), {attribution:'© CartoDB',maxZoom:19}).addTo(map0);
       ensureGeoJSON(()=>loadS0Round());
     },100);
@@ -1132,7 +1138,7 @@ function startStage1() {
 
   if(!map1) {
     setTimeout(()=>{
-      map1 = L.map('map1', {zoomControl:true}).setView([31.78,35.22],12);
+      map1 = L.map('map1', {zoomControl:true, doubleClickZoom:false}).setView([31.78,35.22],12);
       L.tileLayer(getTileUrl(), {attribution:'© CartoDB',maxZoom:19}).addTo(map1);
       ensureGeoJSON(()=>loadS1Round());
     },100);
@@ -1341,7 +1347,7 @@ function startStage3() {
   if(correctMarker){ correctMarker=null; }
   if(line){ line=null; }
   setTimeout(()=>{
-    map3=L.map('map3').setView([31.78,35.22],12);
+    map3=L.map('map3', {doubleClickZoom:false}).setView([31.78,35.22],12);
     L.tileLayer(getTileUrl(),
       {attribution:'© CartoDB',maxZoom:19}).addTo(map3);
     map3.on('click',onMap3Click);
@@ -1620,6 +1626,16 @@ async function showLeaderboard() {
   } catch(e) {
     document.getElementById('lbLoading').textContent = 'שגיאה בגישה לשרת. בדוק חיבור רשת.';
   }
+}
+// ============================================================
+// PWA SERVICE WORKER
+// ============================================================
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(err => {
+      console.log('SW registration failed: ', err);
+    });
+  });
 }
 </script>
 </body>
