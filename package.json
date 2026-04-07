@@ -5,7 +5,8 @@
   "scripts": {
     "build": "node -e \"console.log('JeruGuessr: static site (no build output dir change)'); process.exit(0)\"",
     "dev": "npx wrangler pages dev .",
-    "deploy": "npx wrangler pages deploy . --project-name jeruguessr-game --branch main --commit-dirty=true",
+    "deploy": "npm run build",
+    "deploy:wrangler": "npx wrangler pages deploy . --project-name jeruguessr-game --branch main --commit-dirty=true",
     "start": "npx serve ."
   },
   "keywords": [
