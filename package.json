@@ -5,7 +5,7 @@
   "scripts": {
     "build": "node -e \"console.log('JeruGuessr: static site (no build output dir change)'); process.exit(0)\"",
     "dev": "npx wrangler pages dev .",
-    "deploy": "npm run build && node -e \"console.log('Production deploy: push to Git; Cloudflare Pages builds from the repo (no API token in CI).')\"",
+    "deploy": "npx wrangler pages deploy . --project-name jeruguessr --branch main --no-config",
     "start": "npx serve .",
     "test": "node tests/jg-utils.test.cjs && node scripts/verify-sw-assets.cjs",
     "test:mobile": "playwright test",
