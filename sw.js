@@ -1,8 +1,8 @@
-const CACHE_NAME = 'jeruguessr-v2.2.3';
+const CACHE_NAME = 'jeruguessr-v2.2.4';
 const assets = [
   'game.html',
-  'table_data.js?v=2.2.3',
-  'jerusalem_neighborhoods.geojson?v=2.2.3',
+  'table_data.js?v=2.2.4',
+  'jerusalem_neighborhoods.geojson?v=2.2.4',
   'jerusalem_bg.png',
   'icon-192.png',
   'icon-512.png',

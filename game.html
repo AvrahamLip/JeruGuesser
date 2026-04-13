@@ -7,13 +7,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0f172a">
-<meta name="app-version" content="2.2.3">
+<meta name="app-version" content="2.2.4">
 <link rel="apple-touch-icon" href="icon-192.png">
 <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700;800&family=Heebo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/lucide@latest"></script>
-<script src="table_data.js?v=2.2.3"></script>
+<script src="table_data.js?v=2.2.4"></script>
 <style>
   :root {
     --gold: #f59e0b;
@@ -576,15 +576,111 @@
   }
   @media (max-width: 768px) {
     .feedback-overlay.feedback-at-top {
-      padding: calc(88px + env(safe-area-inset-top, 0px)) 0.5rem 0.75rem;
+      padding: calc(72px + env(safe-area-inset-top, 0px)) 0.5rem max(0.75rem, env(safe-area-inset-bottom, 0px));
     }
     .feedback-overlay.feedback-at-top .feedback-card {
       padding: 1rem 1.1rem;
-      max-height: min(48vh, 380px);
+      max-height: min(58dvh, 440px);
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
     }
     .feedback-overlay.feedback-at-top .feedback-icon { font-size: 2.5rem; margin-bottom: 0.4rem; }
     .feedback-overlay.feedback-at-top .feedback-title { font-size: 1.35rem; }
     .feedback-overlay.feedback-at-top .feedback-points { font-size: 1.1rem; margin-bottom: 0.85rem; }
+  }
+  @media (max-width: 560px) {
+    .feedback-overlay.feedback-at-top .feedback-card {
+      max-height: min(72dvh, 520px);
+      padding: 0.75rem 0.85rem;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .feedback-overlay.feedback-at-top .feedback-icon {
+      font-size: 1.6rem;
+      margin-bottom: 0.15rem;
+      line-height: 1;
+    }
+    .feedback-overlay.feedback-at-top .feedback-title {
+      font-size: 1.05rem;
+      margin-bottom: 0.35rem;
+      line-height: 1.2;
+    }
+    .feedback-overlay.feedback-at-top .feedback-detail {
+      font-size: 0.95rem;
+      margin-bottom: 0.35rem;
+      flex: 0 1 auto;
+    }
+    .feedback-overlay.feedback-at-top .feedback-detail .fb-answer-label {
+      font-size: 0.78rem;
+      margin-bottom: 0.2rem;
+    }
+    .feedback-overlay.feedback-at-top .feedback-detail .fb-answer-value {
+      font-size: 1.05rem;
+      line-height: 1.3;
+    }
+    .feedback-overlay.feedback-at-top .fb-readability-btn {
+      margin: 0.25rem 0 0.45rem;
+      padding: 0.4rem 0.55rem;
+      font-size: 0.78rem;
+    }
+    .feedback-overlay.feedback-at-top .distance-badge {
+      font-size: 0.78rem;
+      padding: 0.35rem 0.65rem;
+      margin-bottom: 0.45rem;
+    }
+    .feedback-overlay.feedback-at-top .feedback-points {
+      font-size: 0.82rem;
+      font-weight: 800;
+      padding: 0.2rem 0.65rem;
+      margin-bottom: 0.45rem;
+      max-width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .feedback-overlay.feedback-at-top .btn-next {
+      margin-top: auto;
+      flex-shrink: 0;
+      padding: 0.65rem 1.25rem;
+      font-size: 0.92rem;
+      width: 100%;
+    }
+    /* Stage 2 etc.: card rises from bottom — keep answer + points visible without huge chrome */
+    .feedback-overlay:not(.feedback-at-top) .feedback-card {
+      max-height: min(58dvh, 420px);
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 1rem 1rem;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+    .feedback-overlay:not(.feedback-at-top) .feedback-icon {
+      font-size: 2rem;
+      margin-bottom: 0.3rem;
+    }
+    .feedback-overlay:not(.feedback-at-top) .feedback-title {
+      font-size: 1.15rem;
+      margin-bottom: 0.35rem;
+    }
+    .feedback-overlay:not(.feedback-at-top) .feedback-detail {
+      margin-bottom: 0.35rem;
+      flex: 0 1 auto;
+    }
+    .feedback-overlay:not(.feedback-at-top) .feedback-detail .fb-answer-value {
+      font-size: 1.05rem;
+    }
+    .feedback-overlay:not(.feedback-at-top) .feedback-points {
+      font-size: 0.85rem;
+      padding: 0.2rem 0.75rem;
+      margin-bottom: 0.5rem;
+    }
+    .feedback-overlay:not(.feedback-at-top) .btn-next {
+      margin-top: auto;
+      flex-shrink: 0;
+      width: 100%;
+    }
   }
   .feedback-overlay.show { opacity:1; pointer-events:all; visibility:visible; }
   .feedback-card {
@@ -625,6 +721,69 @@
     color:#93c5fd;
     margin-bottom:1rem;
     display:none;
+  }
+  .feedback-detail .fb-answer-label {
+    display: block;
+    font-size: 0.9rem;
+    color: #94a3b8;
+    margin-bottom: 0.35rem;
+  }
+  .feedback-detail .fb-answer-value {
+    display: block;
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #f8fafc;
+    line-height: 1.35;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+  }
+  .fb-readability-btn {
+    display: none;
+    width: 100%;
+    max-width: 100%;
+    margin: 0.35rem 0 0.85rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.88rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    border-radius: 12px;
+    border: 1px solid rgba(148, 163, 184, 0.45);
+    background: rgba(255, 255, 255, 0.07);
+    color: #e2e8f0;
+    line-height: 1.35;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .fb-readability-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(226, 232, 240, 0.55);
+  }
+  .fb-readability-btn.is-visible { display: block; }
+  /* While feedback is open, hide the global score strip so the bar stays one row (mobile). */
+  body.feedback-open .global-nav #globalNavScore {
+    display: none !important;
+  }
+  body.light-theme .feedback-overlay {
+    background: rgba(15, 23, 42, 0.32);
+  }
+  body.light-theme .feedback-card {
+    background: rgba(255, 255, 255, 0.97);
+    border-color: rgba(15, 23, 42, 0.1);
+    box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.18);
+  }
+  body.light-theme .feedback-detail { color: #475569; }
+  body.light-theme .feedback-detail .fb-answer-label { color: #64748b; text-shadow: none; }
+  body.light-theme .feedback-detail .fb-answer-value {
+    color: #0f172a;
+    text-shadow: none;
+  }
+  body.light-theme .feedback-points {
+    color: var(--gold);
+    background: rgba(217, 119, 6, 0.12);
+  }
+  body.light-theme .distance-badge {
+    color: #1d4ed8;
+    background: rgba(59, 130, 246, 0.1);
+    border-color: rgba(37, 99, 235, 0.25);
   }
   .btn-next {
     background:linear-gradient(135deg,var(--blue),var(--purple));
@@ -1045,6 +1204,7 @@
     <div class="feedback-icon" id="fbIcon">✅</div>
     <div class="feedback-title" id="fbTitle">נכון!</div>
     <div class="feedback-detail" id="fbDetail"></div>
+    <button type="button" class="fb-readability-btn" id="fbReadabilityBtn" aria-label="מעבר למצב בהיר לקריאת התשובה">מעבר למצב בהיר לקריאת התשובה</button>
     <div class="distance-badge" id="fbDistance"></div>
     <div class="feedback-points" id="fbPoints">+100 נקודות</div>
     <button class="btn-next" id="fbNext">הבא →</button>
@@ -1066,7 +1226,7 @@ let dataLoaded = false;
 async function initGameData() {
   try {
     console.log("Fetching GeoJSON...");
-    const res = await fetch('jerusalem_neighborhoods.geojson?v=2.2.3');
+    const res = await fetch('jerusalem_neighborhoods.geojson?v=2.2.4');
     if (!res.ok) throw new Error('Failed to load neighborhoods');
     window._geoJSON = await res.json();
     dataLoaded = true;
@@ -1174,9 +1334,9 @@ function updateGlobalNavScore() {
   if (state.mode === 'jeru') {
     const earned = state.score - state.scoreAtLevelStart;
     if (tiny) {
-      el.textContent = `רמה ${state.level}: ${earned}/${state.targetScore} נק׳ · סה״כ ${state.score} · ${state.questionsInLevel} שכונות`;
+      el.textContent = `רמה ${state.level}: ${earned}/${state.targetScore} · ${state.score} נק׳`;
     } else if (compact) {
-      el.textContent = `ניקוד ${state.score} · רמה ${state.level}: ${earned}/${state.targetScore} · ${state.questionsInLevel} שכונות`;
+      el.textContent = `רמה ${state.level}: ${earned}/${state.targetScore} · סה״כ ${state.score} נק׳`;
     } else {
       el.textContent = `ניקוד ${state.score} · ברמה ${state.level}: ${earned}/${state.targetScore} · ${state.questionsInLevel} שכונות`;
     }
@@ -1197,9 +1357,24 @@ let guessMarker=null, correctMarker=null, line=null;
 
 function getTileUrl() {
   const isLight = document.body.classList.contains('light-theme');
+  // Carto CDN: no API key; terms are attribution-only for typical web maps.
+  // No-labels + no @2x keeps tiles small (no neighborhood name hints on zoom).
   return isLight
-    ? 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-    : 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+    ? 'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png'
+    : 'https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png';
+}
+
+const MAP_TILE_ATTRIBUTION =
+  '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>';
+
+function baseMapTileLayerOptions() {
+  return {
+    attribution: MAP_TILE_ATTRIBUTION,
+    maxZoom: 19,
+    subdomains: 'abcd',
+    detectRetina: false,
+    keepBuffer: 1
+  };
 }
 
 // ============================================================
@@ -1380,7 +1555,7 @@ function startStage0() {
         dragging: true,
         tap: false
       }).setView([31.78,35.22],12);
-      L.tileLayer(getTileUrl(), {attribution:'© CartoDB',maxZoom:19}).addTo(map0);
+      L.tileLayer(getTileUrl(), baseMapTileLayerOptions()).addTo(map0);
       ensureGeoJSON(()=>loadS0Round());
     },100);
   } else {
@@ -1409,7 +1584,7 @@ function startStage1() {
         dragging: true,
         tap: false
       }).setView([31.78,35.22],12);
-      L.tileLayer(getTileUrl(), {attribution:'© CartoDB',maxZoom:19}).addTo(map1);
+      L.tileLayer(getTileUrl(), baseMapTileLayerOptions()).addTo(map1);
       ensureGeoJSON(()=>loadS1Round());
     },100);
   } else {
@@ -1638,8 +1813,7 @@ function startStage3() {
       dragging: true,
       tap: false
     }).setView([31.78,35.22],12);
-    L.tileLayer(getTileUrl(),
-      {attribution:'© CartoDB',maxZoom:19}).addTo(map3);
+    L.tileLayer(getTileUrl(), baseMapTileLayerOptions()).addTo(map3);
     map3.on('click',onMap3Click);
     loadS3Round();
   },150);
@@ -1726,6 +1900,14 @@ function s3Next() {
 // ============================================================
 // FEEDBACK
 // ============================================================
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
 function showFeedback(isCorrect, detail, pts, onNext, distText) {
   document.getElementById('fbIcon').textContent=isCorrect?'🎉':'😬';
   document.getElementById('fbTitle').textContent=isCorrect?'נכון!':'לא נכון';
@@ -1734,7 +1916,26 @@ function showFeedback(isCorrect, detail, pts, onNext, distText) {
   if (isCorrect) {
     document.getElementById('fbDetail').innerHTML = detail;
   } else {
-    document.getElementById('fbDetail').innerHTML = `<span style="color:var(--muted);font-size:0.9rem">התשובה הנכונה:<br></span><b style="font-size:1.2rem;color:var(--text)">${detail}</b>`;
+    document.getElementById('fbDetail').innerHTML =
+      `<span class="fb-answer-label">התשובה הנכונה:</span><span class="fb-answer-value">${escapeHtml(detail)}</span>`;
+  }
+
+  const readBtn = document.getElementById('fbReadabilityBtn');
+  const night = !document.body.classList.contains('light-theme');
+  if (!isCorrect && night) {
+    readBtn.classList.add('is-visible');
+    readBtn.onclick = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      document.body.classList.add('light-theme');
+      const tt = document.getElementById('themeToggle');
+      if (tt) tt.textContent = '🌙';
+      readBtn.classList.remove('is-visible');
+      readBtn.onclick = null;
+    };
+  } else {
+    readBtn.classList.remove('is-visible');
+    readBtn.onclick = null;
   }
   
   document.getElementById('fbPoints').textContent=`+${pts} נקודות`;
@@ -1744,11 +1945,22 @@ function showFeedback(isCorrect, detail, pts, onNext, distText) {
   const overlay=document.getElementById('feedbackOverlay');
   const mapFeedbackStages = [0, 1, 3];
   overlay.classList.toggle('feedback-at-top', mapFeedbackStages.includes(state.stage));
+  document.body.classList.add('feedback-open');
   overlay.classList.add('show');
+  const fbCard = overlay.querySelector('.feedback-card');
+  if (fbCard) fbCard.scrollTop = 0;
   document.getElementById('fbNext').onclick=()=>{
     overlay.classList.remove('show', 'feedback-at-top');
+    document.body.classList.remove('feedback-open');
+    updateGlobalNavScore();
     onNext();
   };
+  requestAnimationFrame(() => {
+    const detailEl = document.getElementById('fbDetail');
+    if (detailEl && window.innerWidth <= 560) {
+      detailEl.scrollIntoView({ block: 'nearest', behavior: 'auto' });
+    }
+  });
 }
 
 // ============================================================
@@ -1963,6 +2175,6 @@ window.addEventListener('appinstalled', () => {
   if (installBtn) installBtn.style.display = 'none';
 });
 </script>
-<div id="appVersionBar" class="app-version-bar" title="גרסת build">JeruGuessr v2.2.3</div>
+<div id="appVersionBar" class="app-version-bar" title="גרסת build">JeruGuessr v2.2.4</div>
 </body>
 </html>
