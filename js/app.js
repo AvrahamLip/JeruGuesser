@@ -235,7 +235,7 @@ async function startJeru() {
     beginJeruSession();
   } catch (err) {
     console.error(err);
-    alert('שגיאה בטעינת נתוני המפה. נסו לרענן או לנסות שוב.');
+    alert('שגיאה בטעינת נתוני המפה. נסו לרענן את הדף או לנסות שוב.');
   } finally {
     if (btn) btn.disabled = false;
     if (label) label.textContent = prevText || 'התחל JeruGuesser';
@@ -272,7 +272,7 @@ async function startPractice() {
     beginPracticeSession();
   } catch (err) {
     console.error(err);
-    alert('שגיאה בטעינת נתוני המפה. נסו לרענן או לנסות שוב.');
+    alert('שגיאה בטעינת נתוני המפה. נסו לרענן את הדף או לנסות שוב.');
   } finally {
     if (btn) btn.disabled = false;
     if (label) label.textContent = prevText || 'תרגול חופשי';
@@ -512,7 +512,7 @@ function geoAnswerGeo(stageNum, clickedName, clickedLayer, q, theMap) {
       const c2 = correctGeoLayer.getBounds().getCenter();
       const dist = haversine(c1.lat, c1.lng, c2.lat, c2.lng);
       pts = window.JGGameUtils.neighborhoodMissPoints(dist, state.level);
-      distText = `מרחק פגיעה: ${dist < 1 ? Math.round(dist*1000)+' מטר' : dist.toFixed(1)+' ק"מ'}`;
+      distText = `מרחק פגיעה: ${dist < 1 ? Math.round(dist*1000)+' מטר' : dist.toFixed(1)+' ק\u05F4מ'}`;
     }
   }
 
@@ -825,7 +825,7 @@ function s3Confirm(guessLatLng) {
     maxZoom: 15
   });
 
-  const distText=dist<1?`${Math.round(dist*1000)} מטר`:` ${dist.toFixed(1)} ק"מ`;
+  const distText=dist<1?`${Math.round(dist*1000)} מטר`:`${dist.toFixed(1)} ק\u05F4מ`;
   
   const nextFn = () => {
     if(state.lives <= 0) { showResults(); return; }
@@ -972,7 +972,7 @@ function showResults() {
   showScreen('results');
   setResultBreakdownLabels('שלב 0', 'שלב 1', 'שלב 2', 'שלב 3');
   document.getElementById('finalScore').textContent = state.score;
-  document.getElementById('s0Total').textContent=`${state.scores[0]} נק' תרגול`;
+  document.getElementById('s0Total').textContent=`${state.scores[0]} נק\u05F3 תרגול`;
   document.getElementById('s1Total').textContent=state.scores[1];
   document.getElementById('s2Total').textContent=state.scores[2];
   document.getElementById('s3Total').textContent=state.scores[3];
@@ -1171,7 +1171,7 @@ async function showLeaderboard() {
     });
     
   } catch(e) {
-    document.getElementById('lbLoading').textContent = 'שגיאה בגישה לשרת. בדוק חיבור רשת.';
+    document.getElementById('lbLoading').textContent = 'שגיאה בגישה לשרת. בדוק/י את חיבור הרשת.';
   }
 }
 // ============================================================
