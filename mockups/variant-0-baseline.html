@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>מוקאפ 0 — בסיס (כרום מוערם)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@600;700;800&family=Heebo:wght@700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="_shared-mock.css" />
+  <style>
+    .global {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.45rem 0.65rem;
+      padding-top: calc(0.35rem + var(--safe-top));
+      background: rgba(15, 23, 42, 0.95);
+      border-bottom: 1px solid var(--glass-border);
+      font-size: 0.72rem;
+      gap: 0.4rem;
+      flex-shrink: 0;
+    }
+    .global-btns { display: flex; gap: 0.35rem; flex-wrap: wrap; justify-content: flex-end; }
+    .global-btns span {
+      padding: 0.35rem 0.5rem;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 193, 7, 0.35);
+      color: var(--gold);
+      font-weight: 700;
+    }
+    .gh {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.45rem 0.65rem;
+      background: rgba(10, 12, 20, 0.88);
+      border-bottom: 1px solid var(--glass-border);
+      flex-shrink: 0;
+      gap: 0.5rem;
+    }
+    .gh-left { display: flex; flex-wrap: wrap; align-items: center; gap: 0.45rem; font-size: 0.72rem; }
+    .gh-back {
+      padding: 0.35rem 0.55rem;
+      border-radius: 10px;
+      border: 1px solid var(--glass-border);
+      color: var(--text);
+    }
+    .score-box {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.35rem 0.65rem;
+      border-radius: 12px;
+      border: 1px solid rgba(245, 158, 11, 0.25);
+      background: rgba(245, 158, 11, 0.08);
+    }
+    .score-box strong { color: var(--gold); font-size: 1.05rem; }
+    .prog-wrap { height: 4px; background: rgba(255,255,255,0.06); flex-shrink: 0; }
+    .prog { height: 100%; width: 30%; background: linear-gradient(90deg, var(--gold), var(--green)); }
+    .banner {
+      text-align: center;
+      padding: 0.55rem 0.65rem;
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      flex-shrink: 0;
+    }
+    .banner small { color: var(--gold); font-size: 0.65rem; letter-spacing: 0.08em; display: block; margin-bottom: 0.25rem; }
+    .banner h2 { font-size: 0.95rem; margin-bottom: 0.35rem; }
+    .target {
+      margin-top: 0.35rem;
+      padding: 0.45rem 0.65rem;
+      border-radius: 12px;
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      background: rgba(245, 158, 11, 0.1);
+      display: inline-block;
+    }
+    .target em { color: var(--muted); font-size: 0.75rem; font-style: normal; display: block; }
+    .target b { color: var(--gold); font-size: 1.2rem; }
+  </style>
+</head>
+<body>
+  <a class="mock-label" href="index.html">← גלריית מוקאפים</a>
+  <div class="phone">
+    <div class="phone-notch"></div>
+    <div class="global">
+      <span style="font-weight:800;color:var(--gold)">JG</span>
+      <div class="global-btns"><span>טבלה</span><span>תרגול</span><span>בית</span></div>
+      <span style="color:var(--muted);font-size:0.68rem">רמה 2: 45/200 · 1,240 נק׳</span>
+    </div>
+    <div class="gh">
+      <div class="gh-left">
+        <span class="gh-back">← בית</span>
+        <span class="pill">רמה 2 – שאלה 3/10</span>
+        <span class="hearts" aria-hidden="true">♥♥♥</span>
+      </div>
+      <div class="score-box"><span style="color:var(--muted);font-size:0.65rem">ניקוד</span><strong>1,240</strong></div>
+    </div>
+    <div class="prog-wrap"><div class="prog"></div></div>
+    <div class="banner">
+      <small>רמה 2 · חלק 1 מתוך 3: איתור שכונה (ללא שמות)</small>
+      <h2>איתור שכונה — מפה ללא שמות</h2>
+      <div class="target"><em>מצא/י את השכונה:</em><b>המושבה הגרמנית</b></div>
+    </div>
+    <div class="map-fake"><span class="map-pin-deco"></span><button type="button" class="btn-fake">✓ אשר בחירה</button></div>
+  </div>
+</body>
+</html>

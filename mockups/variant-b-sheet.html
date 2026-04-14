@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>מוקאפ B — מגש הקשר</title>
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="_shared-mock.css" />
+  <style>
+    .mini-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.5rem 0.75rem;
+      padding-top: calc(0.45rem + var(--safe-top));
+      background: rgba(10, 12, 20, 0.85);
+      border-bottom: 1px solid var(--glass-border);
+      flex-shrink: 0;
+    }
+    .mini-top .icon-btn {
+      width: 40px; height: 40px;
+      border-radius: 12px;
+      border: 1px solid var(--glass-border);
+      background: rgba(255,255,255,0.05);
+      display: grid; place-items: center;
+    }
+    .sheet {
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      z-index: 4;
+      background: linear-gradient(180deg, rgba(30, 41, 59, 0.97), #0f172a 55%);
+      border-radius: 22px 22px 0 0;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-bottom: none;
+      box-shadow: 0 -20px 60px rgba(0,0,0,0.5);
+      padding: 0.5rem 1rem 1rem;
+      max-height: 46%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .grab {
+      width: 44px; height: 5px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 99px;
+      margin-bottom: 0.5rem;
+    }
+    .sheet h3 { font-size: 0.95rem; margin-bottom: 0.25rem; text-align: center; }
+    .sheet p { font-size: 0.72rem; color: var(--muted); text-align: center; line-height: 1.45; margin-bottom: 0.65rem; }
+    .sheet-target {
+      width: 100%;
+      text-align: center;
+      padding: 0.65rem;
+      border-radius: 14px;
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+    }
+    .sheet-target small { color: var(--muted); font-size: 0.72rem; }
+    .sheet-target strong { display: block; font-size: 1.35rem; color: var(--gold); margin-top: 0.2rem; }
+    .map-wrap { flex: 1; min-height: 0; position: relative; }
+    .map-wrap .map-fake { position: absolute; inset: 0; }
+    .peek {
+      position: absolute;
+      top: 10px; left: 10px; right: 10px;
+      z-index: 2;
+      display: flex;
+      justify-content: center;
+    }
+    .peek-inner {
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid var(--glass-border);
+      border-radius: 999px;
+      padding: 0.35rem 0.85rem;
+      font-size: 0.72rem;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+    .peek-inner b { color: var(--gold); }
+  </style>
+</head>
+<body>
+  <a class="mock-label" href="index.html">← גלריית מוקאפים · B</a>
+  <div class="phone" style="position:relative">
+    <div class="phone-notch"></div>
+    <div class="mini-top">
+      <span class="icon-btn">←</span>
+      <span class="pill">שאלה 3/10</span>
+      <span style="font-weight:900;color:var(--gold);font-size:1.05rem">1,240</span>
+    </div>
+    <div class="map-wrap">
+      <div class="map-fake">
+        <div class="peek">
+          <div class="peek-inner">מצב מכווץ: <b>המושבה…</b> <span style="color:var(--muted)">⌄ הקשר</span></div>
+        </div>
+        <span class="map-pin-deco"></span>
+      </div>
+    </div>
+    <div class="sheet">
+      <div class="grab"></div>
+      <h3>חלק 1 מתוך 3 · איתור שכונה</h3>
+      <p>מפה ללא שמות · ניקוד ברמה: <strong style="color:var(--text)">45/200</strong> · סה״כ <strong style="color:var(--gold)">1,240</strong></p>
+      <div class="sheet-target">
+        <small>מצא/י את השכונה</small>
+        <strong>המושבה הגרמנית</strong>
+      </div>
+    </div>
+    <button type="button" class="btn-fake" style="bottom:calc(46% + 8px); z-index:5">✓ אשר בחירה</button>
+  </div>
+</body>
+</html>

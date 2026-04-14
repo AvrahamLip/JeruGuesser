@@ -76,86 +76,101 @@
   <div id="globalNavScore" class="global-nav-score" aria-live="polite"></div>
 </div>
 
-<!-- ===== STAGE 0 - FIND NEIGHBORHOOD (WITH NAMES) ===== -->
+<!-- ===== STAGE 0 - FIND NEIGHBORHOOD (WITH NAMES) — unified rail (A) ===== -->
 <div id="stage0" class="screen">
-  <div class="game-header">
-    <div class="header-left">
-      <button class="back-btn" id="s0Back">← בית</button>
-      <button type="button" class="skip-btn" onclick="startJeru()" aria-label="עבור למשחק JeruGuessr המלא">משחק מלא →</button>
-      <span class="round-info" id="s0Round">שאלה 1/5</span>
-      <div id="s0Hearts" class="heart-container" style="display:none"></div>
+  <div class="rail-wrap">
+    <div class="rail-row">
+      <div class="rail-start">
+        <button type="button" class="rail-home" id="s0Back" aria-label="מסך הבית"><i data-lucide="home" aria-hidden="true"></i></button>
+        <button type="button" class="rail-skip" onclick="startJeru()" aria-label="עבור למשחק JeruGuessr המלא">משחק מלא</button>
+        <div class="rail-context">
+          <span class="rail-kicker" id="s0ContextKicker">תרגול · מפה עם שמות שכונות</span>
+          <span class="rail-main" id="s0ContextMain">שאלה 1</span>
+        </div>
+      </div>
+      <div class="rail-end">
+        <div id="s0Hearts" class="heart-container rail-lives" style="display:none" aria-hidden="true"></div>
+        <div class="rail-score-block">
+          <span class="rail-score-lbl">ניקוד</span>
+          <span class="rail-score-val" id="s0Score">0</span>
+        </div>
+      </div>
     </div>
-    <div class="score-display">
-      <span class="score-label">ניקוד</span>
-      <span class="score-value" id="s0Score">0</span>
-    </div>
-  </div>
-  <div class="progress-bar-wrap"><div class="progress-bar" id="s0Progress" style="width:0%"></div></div>
-  <div class="stage-banner">
-    <div class="stage-number" id="s0StageBadge" style="color:var(--green)">תרגול · מפה עם שמות שכונות</div>
-    <div class="stage-title-text stage-title-with-icon"><i data-lucide="sprout" class="stage-title-icon" aria-hidden="true"></i><span>איתור שכונה — מפה עם שמות</span></div>
-    <div class="target-block">
-      <div style="font-size:0.9rem;color:var(--muted)">מצא/י את השכונה:</div>
-      <div class="target-name" id="s0TargetName">-</div>
+    <div class="rail-track-wrap" id="s0ProgressWrap" style="display:none" aria-hidden="true">
+      <div class="rail-track-fill" id="s0Progress" style="width:0%"></div>
     </div>
   </div>
   <div class="game-body">
     <div class="map-area">
+      <div class="map-target-chip" id="s0TargetChip">
+        <span class="map-target-chip-lbl">מטרה</span>
+        <span class="map-target-chip-name" id="s0TargetName">-</span>
+      </div>
       <div id="map0" class="map-container"></div>
-      <button class="confirm-guess-btn" id="s0Confirm">✓ אשר בחירה</button>
+      <button type="button" class="confirm-guess-btn" id="s0Confirm">אשר בחירה</button>
     </div>
   </div>
 </div>
 
-<!-- ===== STAGE 1 - FIND NEIGHBORHOOD (NO NAMES) ===== -->
+<!-- ===== STAGE 1 - FIND NEIGHBORHOOD (NO NAMES) — unified rail (A) ===== -->
 <div id="stage1" class="screen">
-  <div class="game-header">
-    <div class="header-left">
-      <button class="back-btn" id="s1Back">← בית</button>
-      <span class="round-info" id="s1Round">שאלה 1/5</span>
-      <div id="s1Hearts" class="heart-container"></div>
+  <div class="rail-wrap">
+    <div class="rail-row">
+      <div class="rail-start">
+        <button type="button" class="rail-home" id="s1Back" aria-label="מסך הבית"><i data-lucide="home" aria-hidden="true"></i></button>
+        <div class="rail-context">
+          <span class="rail-kicker" id="s1ContextKicker">איתור שכונה · ללא שמות</span>
+          <span class="rail-main" id="s1ContextMain">שאלה 1</span>
+        </div>
+      </div>
+      <div class="rail-end">
+        <div id="s1Hearts" class="heart-container rail-lives" style="display:none" aria-hidden="true"></div>
+        <div class="rail-score-block">
+          <span class="rail-score-lbl">ניקוד</span>
+          <span class="rail-score-val" id="s1Score">0</span>
+        </div>
+      </div>
     </div>
-    <div class="score-display">
-      <span class="score-label">ניקוד</span>
-      <span class="score-value" id="s1Score">0</span>
-    </div>
-  </div>
-  <div class="progress-bar-wrap"><div class="progress-bar" id="s1Progress" style="width:0%"></div></div>
-  <div class="stage-banner">
-    <div class="stage-number" id="s1StageBadge">רמה 1 · חלק 1 מתוך 3: איתור שכונה</div>
-    <div class="stage-title-text stage-title-with-icon"><i data-lucide="map" class="stage-title-icon" aria-hidden="true"></i><span>איתור שכונה — מפה ללא שמות</span></div>
-    <div class="stage-instruction"></div>
-    <div class="target-block">
-      <div style="font-size:0.9rem;color:var(--muted)">מצא/י את השכונה:</div>
-      <div class="target-name" id="s1TargetName">-</div>
+    <p class="rail-detail" id="s1RailDetail" hidden></p>
+    <div class="rail-track-wrap" id="s1ProgressWrap">
+      <div class="rail-track-fill" id="s1Progress" style="width:0%"></div>
     </div>
   </div>
   <div class="game-body">
     <div class="map-area">
+      <div class="map-target-chip" id="s1TargetChip">
+        <span class="map-target-chip-lbl">מטרה</span>
+        <span class="map-target-chip-name" id="s1TargetName">-</span>
+      </div>
       <div id="map1" class="map-container"></div>
-      <button class="confirm-guess-btn" id="s1Confirm">✓ אשר בחירה</button>
+      <button type="button" class="confirm-guess-btn" id="s1Confirm">אשר בחירה</button>
     </div>
   </div>
 </div>
 
-<!-- ===== STAGE 2 - MATCH STREET TO NEIGHBORHOOD ===== -->
+<!-- ===== STAGE 2 - MATCH STREET TO NEIGHBORHOOD — unified rail (A) ===== -->
 <div id="stage2" class="screen">
-  <div class="game-header">
-    <div class="header-left">
-      <button class="back-btn" id="s2Back">← בית</button>
-      <span class="round-info" id="s2Round">שאלה 1/5</span>
-      <div id="s2Hearts" class="heart-container"></div>
+  <div class="rail-wrap">
+    <div class="rail-row">
+      <div class="rail-start">
+        <button type="button" class="rail-home" id="s2Back" aria-label="מסך הבית"><i data-lucide="home" aria-hidden="true"></i></button>
+        <div class="rail-context">
+          <span class="rail-kicker" id="s2ContextKicker">שיוך רחוב לשכונה</span>
+          <span class="rail-main" id="s2ContextMain">שאלה 1</span>
+        </div>
+      </div>
+      <div class="rail-end">
+        <div id="s2Hearts" class="heart-container rail-lives" aria-hidden="true"></div>
+        <div class="rail-score-block">
+          <span class="rail-score-lbl">ניקוד</span>
+          <span class="rail-score-val" id="s2Score">0</span>
+        </div>
+      </div>
     </div>
-    <div class="score-display">
-      <span class="score-label">ניקוד</span>
-      <span class="score-value" id="s2Score">0</span>
+    <p class="rail-detail" id="s2RailDetail" hidden></p>
+    <div class="rail-track-wrap" id="s2ProgressWrap">
+      <div class="rail-track-fill" id="s2Progress" style="width:0%"></div>
     </div>
-  </div>
-  <div class="progress-bar-wrap"><div class="progress-bar" id="s2Progress" style="width:0%"></div></div>
-  <div class="stage-banner">
-    <div class="stage-number" id="s2StageBadge">שלב 2</div>
-    <div class="stage-title-text stage-title-with-icon"><i data-lucide="link-2" class="stage-title-icon" aria-hidden="true"></i><span>שיוך רחוב לשכונה</span></div>
-    <div class="stage-instruction">בחר/י את השכונה הנכונה לרחוב המוצג</div>
   </div>
   <div class="stage2-body">
     <div class="street-card">
@@ -166,32 +181,40 @@
   </div>
 </div>
 
-<!-- ===== STAGE 3 - LOCATE STREET ON MAP ===== -->
+<!-- ===== STAGE 3 - LOCATE STREET ON MAP — unified rail (A) ===== -->
 <div id="stage3" class="screen">
-  <div class="game-header">
-    <div class="header-left">
-      <button class="back-btn" id="s3Back">← בית</button>
-      <span class="round-info" id="s3Round">שאלה 1/5</span>
-      <div id="s3Hearts" class="heart-container"></div>
+  <div class="rail-wrap">
+    <div class="rail-row">
+      <div class="rail-start">
+        <button type="button" class="rail-home" id="s3Back" aria-label="מסך הבית"><i data-lucide="home" aria-hidden="true"></i></button>
+        <div class="rail-context">
+          <span class="rail-kicker" id="s3ContextKicker">מיקום רחוב במפה</span>
+          <span class="rail-main" id="s3ContextMain">שאלה 1</span>
+        </div>
+      </div>
+      <div class="rail-end">
+        <div id="s3Hearts" class="heart-container rail-lives" aria-hidden="true"></div>
+        <div class="rail-score-block">
+          <span class="rail-score-lbl">ניקוד</span>
+          <span class="rail-score-val" id="s3Score">0</span>
+        </div>
+      </div>
     </div>
-    <div class="score-display">
-      <span class="score-label">ניקוד</span>
-      <span class="score-value" id="s3Score">0</span>
+    <p class="rail-detail" id="s3RailDetail" hidden></p>
+    <div class="rail-track-wrap" id="s3ProgressWrap">
+      <div class="rail-track-fill" id="s3Progress" style="width:0%"></div>
     </div>
-  </div>
-  <div class="progress-bar-wrap"><div class="progress-bar" id="s3Progress" style="width:0%"></div></div>
-  <div class="locate-prompt">
-    <div>
-      <div class="street-label" style="font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">רחוב:</div>
-      <div class="locate-street" id="s3StreetName">-</div>
-      <div class="locate-neigh" id="s3NeighName">-</div>
-    </div>
-    <div class="locate-hint" id="s3Hint"><i data-lucide="map-pin" class="locate-hint-icon" aria-hidden="true"></i><span id="s3HintText">לחצ/י על מיקום הרחוב במפה</span></div>
   </div>
   <div class="game-body">
-    <div class="map-area" style="position:relative">
+    <div class="map-area">
+      <div class="map-target-chip map-target-chip--locate" id="s3LocateChip">
+        <span class="map-target-chip-lbl">רחוב</span>
+        <span class="map-target-chip-name map-target-chip-street" id="s3StreetName">-</span>
+        <span class="map-target-chip-sub" id="s3NeighName">-</span>
+        <span class="map-target-chip-hint" id="s3Hint"><i data-lucide="map-pin" class="locate-hint-icon" aria-hidden="true"></i><span id="s3HintText">לחצ/י על מיקום הרחוב במפה</span></span>
+      </div>
       <div id="map3" class="map-container"></div>
-      <button class="confirm-guess-btn" id="confirmGuess">✓ אשר ניחוש</button>
+      <button type="button" class="confirm-guess-btn" id="confirmGuess">אשר ניחוש</button>
     </div>
   </div>
 </div>

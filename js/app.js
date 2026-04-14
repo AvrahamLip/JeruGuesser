@@ -545,8 +545,9 @@ function s1Next() {
   loadS1Round();
 }
 
-function syncStageStepBadge(stageNum) {
-  const el = document.getElementById('s' + stageNum + 'StageBadge');
+/** Short task line for unified rail (layout A). */
+function syncRailKicker(stageNum) {
+  const el = document.getElementById('s' + stageNum + 'ContextKicker');
   if (!el) return;
   if (state.mode === 'practice' && stageNum === 0) {
     el.textContent = 'תרגול · מפה עם שמות שכונות';
@@ -554,62 +555,100 @@ function syncStageStepBadge(stageNum) {
   }
   if (state.mode === 'trivia') {
     if (stageNum === 2) el.textContent = 'טריוויה · שיוך רחוב לשכונה';
-    else if (stageNum === 3) el.textContent = 'טריוויה · מיקום רחוב במפה';
+    else if (stageNum === 3) el.textContent = 'טריוויה · מיקום במפה';
     else el.textContent = 'טריוויה';
     return;
   }
   if (state.mode === 'jeru') {
     if (state.jeruPostLevelBonus) {
-      if (stageNum === 2) el.textContent = 'רמה ' + state.level + ' · חלק 2 מתוך 3: שיוך רחוב לשכונה';
-      else if (stageNum === 3) el.textContent = 'רמה ' + state.level + ' · חלק 3 מתוך 3: מיקום במפה';
-      else el.textContent = 'רמה ' + state.level + ' · חלק 1 מתוך 3: איתור שכונה';
+      if (stageNum === 2) el.textContent = 'שיוך רחוב · בונוס סיום רמה';
+      else if (stageNum === 3) el.textContent = 'מיקום במפה · בונוס סיום רמה';
+      else if (stageNum === 1) el.textContent = 'איתור שכונה · ללא שמות';
     } else if (stageNum === 1) {
-      el.textContent = 'רמה ' + state.level + ' · חלק 1 מתוך 3: איתור שכונה (ללא שמות)';
+      el.textContent = 'איתור שכונה · ללא שמות';
+    } else if (stageNum === 2) {
+      el.textContent = 'שיוך רחוב לשכונה';
+    } else if (stageNum === 3) {
+      el.textContent = 'מיקום רחוב במפה';
     }
   }
 }
 
-function updateSUI(stageNum) {
-  if(stageNum === 0) {
-    document.getElementById('s0Round').textContent = `תרגול – שאלה ${state.round+1}`;
-    document.getElementById('s0Progress').style.display = 'none'; // hide progress bar
-    document.getElementById('s0Hearts').style.display = 'none';
-    syncStageStepBadge(0);
+function setRailDetail(stageNum, text) {
+  const el = document.getElementById('s' + stageNum + 'RailDetail');
+  if (!el) return;
+  if (text) {
+    el.textContent = text;
+    el.hidden = false;
   } else {
-    if (state.mode === 'jeru') {
-      if (state.jeruPostLevelBonus && (stageNum === 2 || stageNum === 3)) {
-        document.getElementById('s'+stageNum+'Round').textContent = `רמה ${state.level} · בונוס סיום רמה`;
-        document.getElementById('s'+stageNum+'Progress').style.width = '100%';
-        const banner = document.querySelector('#stage' + stageNum + ' .stage-instruction');
-        if (banner) {
-          var perkLine =
-            state.level % 3 === 0
-              ? ' ברמה המתחלקת ב־3: מענה מושלם בשני שלבי הבונוס = +300 נק׳ ואיפוס חיים.'
-              : '';
-          banner.textContent =
-            stageNum === 2
-              ? 'בחרו את השכונה שבה נמצא הרחוב (אותו רחוב בשלב הבא במפה).' + perkLine
-              : 'סמנו במפה את מיקום הרחוב. לאחר מכן תעברו לרמה הבאה.' + perkLine;
-        }
-        document.getElementById('s'+stageNum+'Hearts').style.display = 'none';
-      } else if (stageNum === 1) {
-        document.getElementById('s1Round').textContent = `רמה ${state.level} – שאלה ${state.round+1}/${state.questionsInLevel}`;
-        const pct = (state.round / state.questionsInLevel) * 100;
-        document.getElementById('s1Progress').style.width = `${pct}%`;
-        const banner = document.querySelector('#stage1 .stage-instruction');
-        if (banner) {
-          const earned = state.score - state.scoreAtLevelStart;
-          banner.textContent = `ניקוד כולל: ${state.score} · ברמה זו: ${earned}/${state.targetScore} נק׳ · ${state.questionsInLevel} שכונות`;
-        }
-        document.getElementById('s1Hearts').style.display = 'none';
-      }
-      syncStageStepBadge(stageNum);
+    el.textContent = '';
+    el.hidden = true;
+  }
+}
+
+function setRailProgressVisible(stageNum, visible) {
+  const wrap = document.getElementById('s' + stageNum + 'ProgressWrap');
+  if (!wrap) return;
+  wrap.style.display = visible ? '' : 'none';
+}
+
+function updateSUI(stageNum) {
+  syncRailKicker(stageNum);
+
+  if (stageNum === 0) {
+    document.getElementById('s0ContextMain').textContent = 'שאלה ' + (state.round + 1);
+    setRailProgressVisible(0, false);
+    document.getElementById('s0Hearts').style.display = 'none';
+    setRailDetail(0, '');
+  } else if (state.mode === 'jeru') {
+    if (state.jeruPostLevelBonus && (stageNum === 2 || stageNum === 3)) {
+      document.getElementById('s' + stageNum + 'ContextMain').textContent =
+        'רמה ' + state.level + ' · בונוס סיום רמה';
+      document.getElementById('s' + stageNum + 'Progress').style.width = '100%';
+      setRailProgressVisible(stageNum, true);
+      var perkLine =
+        state.level % 3 === 0
+          ? ' ברמה המתחלקת ב־3: מענה מושלם בשני שלבי הבונוס = +300 נק׳ ואיפוס חיים.'
+          : '';
+      var tips =
+        stageNum === 2
+          ? 'בחרו את השכונה שבה נמצא הרחוב (אותו רחוב בשלב הבא במפה).' + perkLine
+          : 'סמנו במפה את מיקום הרחוב. לאחר מכן תעברו לרמה הבאה.' + perkLine;
+      setRailDetail(stageNum, tips);
+      document.getElementById('s' + stageNum + 'Hearts').style.display = 'none';
+    } else if (stageNum === 1) {
+      document.getElementById('s1ContextMain').textContent =
+        'רמה ' + state.level + ' – שאלה ' + (state.round + 1) + '/' + state.questionsInLevel;
+      var pct = (state.round / state.questionsInLevel) * 100;
+      document.getElementById('s1Progress').style.width = pct + '%';
+      setRailProgressVisible(1, true);
+      var earned = state.score - state.scoreAtLevelStart;
+      setRailDetail(
+        1,
+        'ניקוד כולל: ' +
+          state.score +
+          ' · ברמה זו: ' +
+          earned +
+          '/' +
+          state.targetScore +
+          ' נק׳ · ' +
+          state.questionsInLevel +
+          ' שכונות'
+      );
+      document.getElementById('s1Hearts').style.display = 'none';
     } else {
-        document.getElementById('s'+stageNum+'Round').textContent = `שאלה ${state.round+1}`;
-        document.getElementById('s'+stageNum+'Progress').style.width = `0%`;
-        document.getElementById('s'+stageNum+'Hearts').style.display = 'flex';
-        syncStageStepBadge(stageNum);
+      document.getElementById('s' + stageNum + 'ContextMain').textContent = 'שאלה ' + (state.round + 1);
+      document.getElementById('s' + stageNum + 'Progress').style.width = '0%';
+      setRailProgressVisible(stageNum, true);
+      document.getElementById('s' + stageNum + 'Hearts').style.display = 'flex';
+      setRailDetail(stageNum, '');
     }
+  } else {
+    document.getElementById('s' + stageNum + 'ContextMain').textContent = 'שאלה ' + (state.round + 1);
+    document.getElementById('s' + stageNum + 'Progress').style.width = '0%';
+    setRailProgressVisible(stageNum, true);
+    document.getElementById('s' + stageNum + 'Hearts').style.display = 'flex';
+    setRailDetail(stageNum, '');
   }
   updateHearts();
   updateGlobalNavScore();

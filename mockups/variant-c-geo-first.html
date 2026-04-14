@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>מוקאפ C — מפה ראשונה</title>
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="_shared-mock.css" />
+  <style>
+    .phone { position: relative; }
+    .float-home {
+      position: absolute;
+      top: calc(36px + var(--safe-top));
+      right: 12px;
+      z-index: 6;
+      width: 44px; height: 44px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(8px);
+      display: grid; place-items: center;
+      color: var(--text);
+      font-size: 1.1rem;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+    }
+    .float-status {
+      position: absolute;
+      top: calc(36px + var(--safe-top));
+      left: 12px;
+      right: 68px;
+      z-index: 5;
+      height: 40px;
+      border-radius: 14px;
+      background: rgba(15, 23, 42, 0.55);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 0.65rem;
+      font-size: 0.72rem;
+      color: var(--text);
+    }
+    .float-status .micro {
+      flex: 1;
+      height: 5px;
+      margin: 0 0.6rem;
+      border-radius: 99px;
+      background: rgba(255,255,255,0.1);
+      overflow: hidden;
+    }
+    .float-status .micro span {
+      display: block;
+      height: 100%;
+      width: 30%;
+      background: linear-gradient(90deg, var(--gold), var(--green));
+      border-radius: 99px;
+    }
+    .dock {
+      position: absolute;
+      left: 10px; right: 10px;
+      bottom: calc(10px + var(--safe-bot));
+      z-index: 6;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.5rem;
+    }
+    .dock-card {
+      background: rgba(15, 23, 42, 0.82);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      border-radius: 18px;
+      padding: 0.65rem 1rem;
+      text-align: center;
+      box-shadow: 0 16px 48px rgba(0,0,0,0.45);
+    }
+    .dock-card em { font-style: normal; font-size: 0.72rem; color: var(--muted); }
+    .dock-card strong { display: block; font-size: 1.35rem; color: var(--gold); font-weight: 900; margin-top: 0.15rem; }
+    .dock-row {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    .dock-row .pill { font-size: 0.68rem; }
+    .btn-inline {
+      background: linear-gradient(135deg, var(--gold), #b45309);
+      color: #000;
+      font-weight: 800;
+      padding: 0.75rem;
+      border-radius: 14px;
+      border: none;
+      font-size: 0.95rem;
+    }
+    .full-map {
+      position: absolute;
+      top: 28px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+    }
+    .full-map .map-fake { height: 100%; min-height: 100%; }
+  </style>
+</head>
+<body>
+  <a class="mock-label" href="index.html">← גלריית מוקאפים · C</a>
+  <div class="phone">
+    <div class="phone-notch"></div>
+    <div class="full-map">
+      <div class="map-fake">
+        <span class="map-pin-deco"></span>
+      </div>
+    </div>
+    <span class="float-home">⌂</span>
+    <div class="float-status">
+      <span>רמה 2</span>
+      <div class="micro" aria-hidden="true"><span></span></div>
+      <span style="color:var(--gold);font-weight:800">1,240</span>
+    </div>
+    <div class="dock">
+      <div class="dock-card">
+        <em>מצא/י את השכונה</em>
+        <strong>המושבה הגרמנית</strong>
+      </div>
+      <div class="dock-row">
+        <span class="pill">♥ ♥ ♥</span>
+        <span class="pill">שאלה 3/10</span>
+      </div>
+      <button type="button" class="btn-inline">✓ אשר בחירה</button>
+    </div>
+  </div>
+</body>
+</html>
