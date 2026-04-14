@@ -4,7 +4,6 @@ node_modules/
 .github/
 package.json
 package-lock.json
-wrangler.toml
 README.md
 .gitignore
 *.py

@@ -1,4 +1,5 @@
 /* Override before this file in HTML: <script>window.JG_CONFIG = { API_BASE_URL: "..." };</script>
+ * Production: https://jeruguessr.getbetter.games/ — אחסון סטטי דרך Git (לא Cloudflare). ה-API לניקוד נשאר על host נפרד (API_BASE_URL).
  * Release version: bump APP_VERSION here and in package.json "version" together. */
 (function () {
   var g = typeof window !== 'undefined' ? window : globalThis;
