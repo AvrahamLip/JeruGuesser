@@ -114,8 +114,12 @@
     justify-content: center;
     background: url('jerusalem_bg.png') center/cover no-repeat fixed;
     position: relative;
-    overflow: hidden;
-    padding-bottom: calc(2.5rem + env(safe-area-inset-bottom, 0px));
+    /* Allow vertical scroll on short phones; horizontal clip keeps background tidy */
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    /* Clear fixed .app-version-bar (incl. safe area) so footer contact links stay tappable */
+    padding-bottom: calc(3.75rem + env(safe-area-inset-bottom, 0px));
   }
   #home::before {
     content: '';
