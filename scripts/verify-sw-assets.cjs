@@ -21,7 +21,7 @@ const Q = '?v=' + encodeURIComponent(V);
 const GEO = readConfigString('GEOJSON_FILENAME') || 'jerusalem_neighborhoods.geojson';
 
 const files = [
-  'game.html',
+  'index.html',
   'styles.css' + Q,
   'config.js' + Q,
   'js/jg-head.js',

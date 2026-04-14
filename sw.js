@@ -7,7 +7,8 @@ const CACHE_NAME = (JG && JG.CACHE_ID_PREFIX ? JG.CACHE_ID_PREFIX : 'jeruguessr-
 const GEO = (JG && JG.GEOJSON_FILENAME) || 'jerusalem_neighborhoods.geojson';
 
 const assets = [
-  'game.html',
+  '/',
+  'index.html',
   'styles.css' + Q,
   'config.js' + Q,
   'js/jg-head.js',

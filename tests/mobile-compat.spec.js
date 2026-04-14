@@ -3,7 +3,7 @@ const { test, expect } = require('@playwright/test');
 
 test.describe('תאימות נייד (מקומי)', () => {
   test('מטא viewport, מסך בית ושטח מפה בתרגול', async ({ page }) => {
-    await page.goto('/game.html', { waitUntil: 'domcontentloaded' });
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
 
     const viewportMeta = page.locator('meta[name="viewport"]');
     await expect(viewportMeta).toHaveCount(1);
