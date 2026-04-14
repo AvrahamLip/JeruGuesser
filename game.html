@@ -34,7 +34,8 @@
         <i data-lucide="graduation-cap" style="width:24px; height:24px;" aria-hidden="true"></i>
         <span>תרגול חופשי</span>
       </button>
-      <button type="button" class="btn-start" id="startTriviaBtn" style="background:linear-gradient(135deg, #8b5cf6, #6d28d9); color:white; opacity:1;" disabled title="שאלות על רחובות: שיוך לשכונה או ניחוש במפה. 5 חיים." aria-label="מצב טריוויה: שאלות על רחובות ושכונות">
+      <!-- מצב טריוויה: מוסתר כש-JG_CONFIG.ENABLE_TRIVIA_MODE הוא false (ראה config.js) -->
+      <button type="button" class="btn-start" id="startTriviaBtn" hidden disabled style="background:linear-gradient(135deg, #8b5cf6, #6d28d9); color:white; opacity:1;" title="שאלות על רחובות: שיוך לשכונה או ניחוש במפה. 5 חיים." aria-label="מצב טריוויה: שאלות על רחובות ושכונות">
         <i data-lucide="help-circle" style="width:24px; height:24px;" aria-hidden="true"></i>
         <span>מצב טריוויה (רחובות)</span>
       </button>
@@ -225,11 +226,11 @@
       </div>
     </div>
     
-    <div id="scoreSubmitArea" style="margin:1.5rem 0; padding:1.5rem; background:var(--dark2); border-radius:12px; border:1px solid rgba(245,197,24,0.3);">
-      <div style="font-size:1.1rem; font-weight:bold; margin-bottom:1rem;">רוצה לרשום את השיא שלך?</div>
-      <input type="text" id="playerName" placeholder="הכנס/י את שמך" maxlength="40" style="padding:0.8rem; border-radius:8px; border:1px solid rgba(255,255,255,0.2); background:var(--dark); color:var(--text); font-family:inherit; width:100%; max-width:280px; text-align:center; margin-bottom:0.8rem;" />
-      <button class="btn-next" id="saveScoreBtn" style="width:100%; max-width:280px; display:block; margin:0 auto; font-size:1.1rem;">שמור וצפה בטבלה</button>
-      <div id="saveScoreMsg" style="font-size:0.95rem; margin-top:0.8rem; display:none; font-weight:bold;"></div>
+    <div id="scoreSubmitArea" class="results-submit-area">
+      <div class="results-submit-prompt">רוצה לרשום את השיא שלך?</div>
+      <input type="text" id="playerName" class="results-player-name" placeholder="הכנס/י את שמך" maxlength="40" autocomplete="name" enterkeyhint="done" />
+      <button type="button" class="btn-next results-save-btn" id="saveScoreBtn">שמור וצפה בטבלה</button>
+      <div id="saveScoreMsg" class="results-save-msg" style="display:none;"></div>
     </div>
 
     <button type="button" class="btn-play-again" id="playAgain"><i data-lucide="refresh-cw" aria-hidden="true" class="btn-play-again-icon"></i><span>שחק שוב</span></button>

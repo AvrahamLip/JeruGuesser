@@ -237,6 +237,7 @@ async function startJeru() {
 }
 
 function startTrivia() {
+  if (!window.JG_CONFIG || !window.JG_CONFIG.ENABLE_TRIVIA_MODE) return;
   trackEvent('game_start', { mode: 'trivia' });
   state.mode = 'trivia';
   state.level = 1;
@@ -989,8 +990,15 @@ function initHomeScreen() {
   });
   var triv = document.getElementById('startTriviaBtn');
   if (triv) {
-    triv.disabled = false;
-    triv.style.opacity = '1';
+    var triviaOn = window.JG_CONFIG && window.JG_CONFIG.ENABLE_TRIVIA_MODE;
+    if (triviaOn) {
+      triv.removeAttribute('hidden');
+      triv.disabled = false;
+      triv.style.opacity = '1';
+    } else {
+      triv.setAttribute('hidden', '');
+      triv.disabled = true;
+    }
   }
   var jeru = document.getElementById('startJeruBtn');
   var pr = document.getElementById('startPracticeBtn');
