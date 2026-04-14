@@ -238,7 +238,7 @@ async function startJeru() {
     alert('שגיאה בטעינת נתוני המפה. נסו לרענן או לנסות שוב.');
   } finally {
     if (btn) btn.disabled = false;
-    if (label) label.textContent = prevText || 'התחל JeruGuessr';
+    if (label) label.textContent = prevText || 'התחל JeruGuesser';
     refreshLucideIcons();
   }
 }
@@ -504,7 +504,7 @@ function geoAnswerGeo(stageNum, clickedName, clickedLayer, q, theMap) {
   if (stageNum === 0) {
     pts = isCorrect ? 200 : 0;
   } else {
-    // JeruGuessr logic
+    // JeruGuesser logic
     if (isCorrect) {
       pts = 500;
     } else if (correctGeoLayer) {
@@ -1019,7 +1019,7 @@ function showResults() {
 function initHomeScreen() {
   var bar = document.getElementById('appVersionBar');
   if (bar && window.JG_CONFIG && window.JG_CONFIG.APP_VERSION) {
-    bar.textContent = 'JeruGuessr v' + window.JG_CONFIG.APP_VERSION;
+    bar.textContent = 'JeruGuesser v' + window.JG_CONFIG.APP_VERSION;
   }
   document.querySelectorAll('.btn-leaderboard').forEach(function (b) {
     b.disabled = false;
@@ -1073,7 +1073,7 @@ document.getElementById('saveScoreBtn').onclick = async () => {
   
   try {
     const params = new URLSearchParams();
-    const gName = state.mode === 'trivia' ? 'Jerusalem_Trivia' : 'JeruGuessr';
+    const gName = state.mode === 'trivia' ? 'Jerusalem_Trivia' : 'JeruGuesser';
     params.append('gamename', gName);
     params.append('playerName', name);
     params.append('score', state.score);
@@ -1105,9 +1105,9 @@ document.getElementById('saveScoreBtn').onclick = async () => {
 
 async function showLeaderboard() {
   showScreen('leaderboard');
-  const gName = state.mode === 'trivia' ? 'Jerusalem_Trivia' : 'JeruGuessr';
+  const gName = state.mode === 'trivia' ? 'Jerusalem_Trivia' : 'JeruGuesser';
   document.getElementById('lbLoading').style.display = 'block';
-  document.getElementById('lbLoading').textContent = `טוען נתונים עבור ${state.mode === 'trivia'?'טריוויה':'JeruGuessr'}...`;
+  document.getElementById('lbLoading').textContent = `טוען נתונים עבור ${state.mode === 'trivia'?'טריוויה':'JeruGuesser'}...`;
   document.getElementById('lbCard').style.display = 'none';
   const tbody = document.getElementById('lbTableBody');
   tbody.innerHTML = '';

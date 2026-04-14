@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>JeruGuessr</title>
-<link rel="canonical" href="https://jeruguessr.getbetter.games/">
+<title>JeruGuesser</title>
+<link rel="canonical" href="https://jeruguesser.getbetter.games/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0f172a">
@@ -23,13 +23,13 @@
   </button>
   <div class="home-content">
     <div class="home-logo"><i data-lucide="map-pinned" style="width:100px; height:100px;"></i></div>
-    <h1 class="home-title" style="margin-bottom:0.2rem">JeruGuessr</h1>
+    <h1 class="home-title" style="margin-bottom:0.2rem">JeruGuesser</h1>
     <p class="home-sub">מסע בין רחובות ושכונות ירושלים</p>
 
     <div id="homeButtons" style="display:flex; flex-direction:column; gap:1.2rem; align-items:center;">
-      <button type="button" class="btn-start" id="startJeruBtn" style="opacity:1" disabled aria-label="התחלת משחק JeruGuessr המלא">
+      <button type="button" class="btn-start" id="startJeruBtn" style="opacity:1" disabled aria-label="התחלת משחק JeruGuesser המלא">
         <i data-lucide="compass" style="width:24px; height:24px;" aria-hidden="true"></i>
-        <span>התחל JeruGuessr</span>
+        <span>התחל JeruGuesser</span>
       </button>
       <button type="button" class="btn-start" id="startPracticeBtn" style="background:linear-gradient(135deg, #10b981, #059669); color:white; opacity:1" disabled aria-label="מצב תרגול חופשי על המפה">
         <i data-lucide="graduation-cap" style="width:24px; height:24px;" aria-hidden="true"></i>
@@ -61,7 +61,7 @@
 <div id="globalNav" class="global-nav" style="display:none;">
   <button type="button" class="global-nav-brand" onclick="showScreen('home')" aria-label="חזרה למסך הבית">
     <i data-lucide="landmark" style="width:22px; height:22px; flex-shrink:0;" aria-hidden="true"></i>
-    <span class="global-nav-brand-text">JeruGuessr</span>
+    <span class="global-nav-brand-text">JeruGuesser</span>
   </button>
   <div class="global-nav-actions">
     <button type="button" onclick="showLeaderboard()" title="טבלה" aria-label="טבלת אלופים" style="background:rgba(255,193,7,0.1); border:1px solid rgba(255,193,7,0.3); color:var(--gold); padding:0.5rem 1rem; border-radius:12px; cursor:pointer; font-family:inherit; font-size:0.9rem; font-weight:700; display:flex; align-items:center; gap:0.4rem;">
@@ -83,7 +83,7 @@
     <div class="rail-row">
       <div class="rail-start">
         <button type="button" class="rail-home" id="s0Back" aria-label="מסך הבית"><i data-lucide="home" aria-hidden="true"></i></button>
-        <button type="button" class="rail-skip" onclick="startJeru()" aria-label="עבור למשחק JeruGuessr המלא">משחק מלא</button>
+        <button type="button" class="rail-skip" onclick="startJeru()" aria-label="עבור למשחק JeruGuesser המלא">משחק מלא</button>
         <div class="rail-context">
           <span class="rail-kicker" id="s0ContextKicker">תרגול · מפה עם שמות שכונות</span>
           <span class="rail-main" id="s0ContextMain">שאלה 1</span>
@@ -292,7 +292,7 @@
     <button class="btn-next" id="fbNext">הבא →</button>
   </div>
 </div>
-<div id="appVersionBar" class="app-version-bar" title="גרסת build">JeruGuessr</div>
+<div id="appVersionBar" class="app-version-bar" title="גרסת build">JeruGuesser</div>
 <script>
 (function () {
   var q = globalThis.__JG_ASSET_QUERY || ('?v=' + encodeURIComponent((globalThis.JG_CONFIG && globalThis.JG_CONFIG.APP_VERSION) || '0'));

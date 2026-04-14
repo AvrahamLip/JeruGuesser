@@ -1,12 +1,12 @@
 {
-  "name": "jeruguessr",
-  "version": "2.4.1",
-  "description": "JeruGuessr - A Jerusalem-themed GeoGuessr game.",
-  "homepage": "https://jeruguessr.getbetter.games/",
+  "name": "jeruguesser",
+  "version": "2.4.2",
+  "description": "JeruGuesser — a Jerusalem-themed geography guessing game.",
+  "homepage": "https://jeruguesser.getbetter.games/",
   "scripts": {
-    "build": "node -e \"console.log('JeruGuessr: static site (no build output dir change)'); process.exit(0)\"",
+    "build": "node -e \"console.log('JeruGuesser: static site (no build output dir change)'); process.exit(0)\"",
     "dev": "npx --yes serve . -l 4173",
-    "deploy": "node -e \"console.log('Production: push to Git — site is served from hosting (e.g. https://jeruguessr.getbetter.games/). No separate Cloudflare deploy.'); process.exit(0)\"",
+    "deploy": "node -e \"console.log('Production: push to Git — site is served from hosting (e.g. https://jeruguesser.getbetter.games/). No separate Cloudflare deploy.'); process.exit(0)\"",
     "start": "npx serve .",
     "test": "node tests/jg-utils.test.cjs && node scripts/verify-sw-assets.cjs",
     "test:mobile": "playwright test",

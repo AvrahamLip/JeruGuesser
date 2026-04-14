@@ -1,6 +1,6 @@
 {
-  "name": "JeruGuessr",
-  "short_name": "JeruGuessr",
+  "name": "JeruGuesser",
+  "short_name": "JeruGuesser",
   "description": "משחק גיאוגרפי חווייתי על רחובות ושכונות ירושלים",
   "start_url": "/",
   "display": "standalone",

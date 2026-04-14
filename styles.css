@@ -1535,7 +1535,7 @@
     text-shadow: none;
     border-top-color: rgba(0, 0, 0, 0.06);
   }
-/* JeruGuessr: perk toast after perfect bonus on level divisible by 3 */
+/* JeruGuesser: perk toast after perfect bonus on level divisible by 3 */
 .jg-perk-toast {
   position: fixed;
   left: 50%;

@@ -3,7 +3,7 @@ importScripts('config.js');
 const JG = globalThis.JG_CONFIG;
 const V = JG && JG.APP_VERSION;
 const Q = '?v=' + encodeURIComponent(V);
-const CACHE_NAME = (JG && JG.CACHE_ID_PREFIX ? JG.CACHE_ID_PREFIX : 'jeruguessr-v') + V;
+const CACHE_NAME = (JG && JG.CACHE_ID_PREFIX ? JG.CACHE_ID_PREFIX : 'jeruguesser-v') + V;
 const GEO = (JG && JG.GEOJSON_FILENAME) || 'jerusalem_neighborhoods.geojson';
 
 const assets = [
