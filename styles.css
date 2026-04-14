@@ -219,6 +219,13 @@
     padding-top: calc(60px + env(safe-area-inset-top, 0px));
     box-sizing: border-box;
   }
+  /* Single-row global nav when score strip is hidden (see updateGlobalNavScore) */
+  body.game-rail-screens #stage0,
+  body.game-rail-screens #stage1,
+  body.game-rail-screens #stage2,
+  body.game-rail-screens #stage3 {
+    padding-top: calc(56px + env(safe-area-inset-top, 0px));
+  }
   .global-nav {
     position: fixed;
     top: 0;
@@ -305,6 +312,13 @@
     }
     #stage0, #stage1, #stage2, #stage3, #leaderboard {
       padding-top: calc(104px + env(safe-area-inset-top, 0px));
+    }
+    /* Rail stages: global nav is one row (score hidden in JS) — avoid double strip + extra offset */
+    body.game-rail-screens #stage0,
+    body.game-rail-screens #stage1,
+    body.game-rail-screens #stage2,
+    body.game-rail-screens #stage3 {
+      padding-top: calc(58px + env(safe-area-inset-top, 0px));
     }
   }
   @media (max-width: 380px) {

@@ -126,6 +126,12 @@ function updateGlobalNavScore() {
     el.textContent = '';
     return;
   }
+  // Unified rail (stages 0–3) already shows score + context; hide nav score strip to avoid duplicate «header» + «progress» feel.
+  if (sid === 'stage0' || sid === 'stage1' || sid === 'stage2' || sid === 'stage3') {
+    el.style.display = 'none';
+    el.textContent = '';
+    return;
+  }
   el.style.display = 'flex';
   const w = typeof window !== 'undefined' ? window.innerWidth : 800;
   const compact = w <= 560;
@@ -191,6 +197,7 @@ function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   document.body.classList.toggle('map-stage-active', ['stage0', 'stage1', 'stage3'].includes(id));
+  document.body.classList.toggle('game-rail-screens', ['stage0', 'stage1', 'stage2', 'stage3'].includes(id));
   const gNav = document.getElementById('globalNav');
   if(gNav) gNav.style.display = (id === 'home' || id === 'results') ? 'none' : 'flex';
   window.scrollTo(0,0);
@@ -461,6 +468,12 @@ function sGeoPulseStyle() {
 function geoAnswerGeo(stageNum, clickedName, clickedLayer, q, theMap) {
   geoAnswered = true;
   const isCorrect = (clickedName === q.name);
+  let correctGeoLayer = null;
+  if (!isCorrect) {
+    geoLayer.eachLayer(lyr => {
+      if (lyr.feature && lyr.feature.properties.SCHN_NAME === q.name) correctGeoLayer = lyr;
+    });
+  }
 
   // Style the clicked polygon
   clickedLayer.setStyle({
@@ -469,15 +482,16 @@ function geoAnswerGeo(stageNum, clickedName, clickedLayer, q, theMap) {
   });
 
   if(!isCorrect) {
-    geoLayer.eachLayer(lyr => {
-      if(lyr.feature && lyr.feature.properties.SCHN_NAME === q.name) {
-        lyr.setStyle(sGeoPulseStyle());
-        lyr.unbindTooltip();
-        lyr.bindTooltip(q.name, {permanent: true, direction: 'center', className: 'neigh-tooltip highlight'}).openTooltip();
-        // Padding: extra top space — feedback card sits at top, keep polygon in visible map area
-        theMap.fitBounds(lyr.getBounds(), { paddingTopLeft: [18, 220], paddingBottomRight: [18, 56], maxZoom: 15 });
-      }
-    });
+    if (correctGeoLayer) {
+      correctGeoLayer.setStyle(sGeoPulseStyle());
+      correctGeoLayer.unbindTooltip();
+      correctGeoLayer.bindTooltip(q.name, {permanent: true, direction: 'center', className: 'neigh-tooltip highlight'}).openTooltip();
+      // Show both wrong pick and correct neighborhood in frame (card at top — keep padding)
+      const bothBounds = clickedLayer.getBounds().extend(correctGeoLayer.getBounds());
+      theMap.fitBounds(bothBounds, { paddingTopLeft: [18, 220], paddingBottomRight: [18, 56], maxZoom: 15 });
+    } else {
+      theMap.fitBounds(clickedLayer.getBounds(), { paddingTopLeft: [18, 220], paddingBottomRight: [18, 56], maxZoom: 15 });
+    }
   } else {
     clickedLayer.unbindTooltip();
     clickedLayer.bindTooltip(q.name, {permanent: true, direction: 'center', className: 'neigh-tooltip correct-hit'}).openTooltip();
@@ -493,16 +507,12 @@ function geoAnswerGeo(stageNum, clickedName, clickedLayer, q, theMap) {
     // JeruGuessr logic
     if (isCorrect) {
       pts = 500;
-    } else {
-      let cLayer = null;
-      geoLayer.eachLayer(l => { if(l.feature && l.feature.properties.SCHN_NAME === q.name) cLayer = l; });
-      if (cLayer) {
-        const c1 = clickedLayer.getBounds().getCenter();
-        const c2 = cLayer.getBounds().getCenter();
-        const dist = haversine(c1.lat, c1.lng, c2.lat, c2.lng);
-        pts = window.JGGameUtils.neighborhoodMissPoints(dist, state.level);
-        distText = `מרחק פגיעה: ${dist < 1 ? Math.round(dist*1000)+' מטר' : dist.toFixed(1)+' ק"מ'}`;
-      }
+    } else if (correctGeoLayer) {
+      const c1 = clickedLayer.getBounds().getCenter();
+      const c2 = correctGeoLayer.getBounds().getCenter();
+      const dist = haversine(c1.lat, c1.lng, c2.lat, c2.lng);
+      pts = window.JGGameUtils.neighborhoodMissPoints(dist, state.level);
+      distText = `מרחק פגיעה: ${dist < 1 ? Math.round(dist*1000)+' מטר' : dist.toFixed(1)+' ק"מ'}`;
     }
   }
 

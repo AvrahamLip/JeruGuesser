@@ -21,6 +21,25 @@ test.describe('תאימות נייד (מקומי)', () => {
     await expect(page.locator('#stage0.active')).toBeVisible({ timeout: 90000 });
     await expect(page.locator('#map0')).toBeVisible();
 
+    // Unified rail (layout A): no legacy stacked banner / game-header on map stages
+    await expect(page.locator('#stage0 .rail-wrap')).toBeVisible();
+    await expect(page.locator('#stage0 .game-header')).toHaveCount(0);
+    await expect(page.locator('#stage0 .stage-banner')).toHaveCount(0);
+    await expect(page.locator('#stage0 .map-target-chip')).toBeVisible();
+    await expect(page.locator('#s0TargetName')).toBeVisible();
+    await expect(page.locator('#s0ContextKicker')).not.toHaveText('');
+    await expect(page.locator('#s0ContextMain')).not.toHaveText('');
+    await expect(page.locator('#s0Back.rail-home')).toBeVisible();
+    await expect(page.locator('#stage0 .rail-track-wrap')).toBeAttached();
+
+    // Root cause of duplicate chrome: #globalNav + #globalNavScore sat above the rail; score strip must stay hidden on rail stages.
+    await expect(page.locator('body.game-rail-screens')).toHaveCount(1);
+    const navScoreDisplay = await page.evaluate(() => {
+      const el = document.getElementById('globalNavScore');
+      return el ? window.getComputedStyle(el).display : '';
+    });
+    expect(navScoreDisplay, 'globalNavScore should not duplicate rail score on map stages').toBe('none');
+
     const mapRatio = await page.evaluate(() => {
       const el = document.querySelector('#stage0 .map-area');
       if (!el) return 0;
