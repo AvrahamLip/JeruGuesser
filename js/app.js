@@ -1116,7 +1116,13 @@ async function showLeaderboard() {
     const res = await fetch(`${CONFIG.API_BASE_URL}/webhook/gameScore?gamename=${gName}`);
     let data;
     if(res.ok) {
-       data = await res.json();
+       const text = await res.text();
+       try {
+         data = text ? JSON.parse(text) : [];
+       } catch (err) {
+         console.warn('Failed to parse leaderboard JSON:', err);
+         data = [];
+       }
     } else {
        if (res.status === 500) {
          document.getElementById('lbLoading').textContent = 'שגיאת שרת (500) - ייתכן שישנה בעיה באוטומציה שניגשת למסד הנתונים.';
