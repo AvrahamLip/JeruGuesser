@@ -5,6 +5,18 @@
   Permissions-Policy: geolocation=(self), microphone=(), camera=()
   Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
 
+/game.html
+  Cache-Control: no-cache, must-revalidate
+
+/config.js
+  Cache-Control: no-cache, must-revalidate
+
+/sw.js
+  Cache-Control: no-cache, must-revalidate
+
+/js/jg-head.js
+  Cache-Control: no-cache, must-revalidate
+
 /jerusalem_neighborhoods.geojson
   Cache-Control: public, max-age=3600, stale-while-revalidate=86400
 

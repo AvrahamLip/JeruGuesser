@@ -5,7 +5,7 @@
   g.JG_CONFIG = Object.assign(
     {
       API_BASE_URL: 'https://151.145.89.228.sslip.io',
-      APP_VERSION: '2.3.1',
+      APP_VERSION: '2.3.2',
       /** Service Worker cache bucket prefix (full name = prefix + APP_VERSION). */
       CACHE_ID_PREFIX: 'jeruguessr-v',
       GEOJSON_FILENAME: 'jerusalem_neighborhoods.geojson',
