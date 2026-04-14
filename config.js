@@ -11,9 +11,7 @@
       GEOJSON_FILENAME: 'jerusalem_neighborhoods.geojson',
       LEAFLET_CSS_URL: 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
       LEAFLET_JS_URL: 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js',
-      LUCIDE_VENDOR_URL: 'https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js',
-      /** מצב טריוויה במסך הבית: כבוי כברירת מחדל; שנה ל-true כשהמצב יבשיל. */
-      ENABLE_TRIVIA_MODE: false
+      LUCIDE_VENDOR_URL: 'https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js'
     },
     g.JG_CONFIG && typeof g.JG_CONFIG === 'object' ? g.JG_CONFIG : {}
   );

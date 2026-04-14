@@ -237,19 +237,7 @@ async function startJeru() {
 }
 
 function startTrivia() {
-  if (!window.JG_CONFIG || !window.JG_CONFIG.ENABLE_TRIVIA_MODE) return;
-  trackEvent('game_start', { mode: 'trivia' });
-  state.mode = 'trivia';
-  state.level = 1;
-  state.round = 0;
-  state.score = 0;
-  state.lives = 5;
-  state.maxLives = 5;
-  state.stage = 2;
-  state.scores = [0,0,0,0];
-  state.jeruPostLevelBonus = false;
-  state.jeruBonusPerfect = false;
-  loadTriviaRound();
+  return;
 }
 
 function beginPracticeSession() {
@@ -988,18 +976,6 @@ function initHomeScreen() {
     b.disabled = false;
     b.style.opacity = '1';
   });
-  var triv = document.getElementById('startTriviaBtn');
-  if (triv) {
-    var triviaOn = window.JG_CONFIG && window.JG_CONFIG.ENABLE_TRIVIA_MODE;
-    if (triviaOn) {
-      triv.removeAttribute('hidden');
-      triv.disabled = false;
-      triv.style.opacity = '1';
-    } else {
-      triv.setAttribute('hidden', '');
-      triv.disabled = true;
-    }
-  }
   var jeru = document.getElementById('startJeruBtn');
   var pr = document.getElementById('startPracticeBtn');
   if (jeru) {
@@ -1020,8 +996,6 @@ document.getElementById('startJeruBtn').onclick = function () {
 document.getElementById('startPracticeBtn').onclick = function () {
   startPractice();
 };
-var startTriviaBtn = document.getElementById('startTriviaBtn');
-if (startTriviaBtn) startTriviaBtn.onclick = startTrivia;
 document.getElementById('playAgain').onclick = () => showScreen('home');
 document.getElementById('s0Back').onclick=()=>showScreen('home');
 document.getElementById('s1Back').onclick=()=>showScreen('home');

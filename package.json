@@ -7,7 +7,9 @@
     "dev": "npx wrangler pages dev .",
     "deploy": "npm run build && node -e \"console.log('Production deploy: push to Git; Cloudflare Pages builds from the repo (no API token in CI).')\"",
     "start": "npx serve .",
-    "test": "node tests/jg-utils.test.cjs && node scripts/verify-sw-assets.cjs"
+    "test": "node tests/jg-utils.test.cjs && node scripts/verify-sw-assets.cjs",
+    "test:mobile": "playwright test",
+    "test:mobile:ui": "playwright test --ui"
   },
   "keywords": [
     "jerusalem",
@@ -17,5 +19,8 @@
     "cloudflare"
   ],
   "author": "Avraham Lipshitz",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@playwright/test": "^1.59.1"
+  }
 }

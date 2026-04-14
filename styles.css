@@ -1155,10 +1155,17 @@
     .score-value { font-size: 1.1rem; }
     .target-name { font-size: 1.4rem; }
     .stage-banner { padding: 0.6rem; }
-    /* שלבי מפה: מגבילים את גובה הכותרת/המשימה כדי שהמפה תישאר רוב המסך */
+    /* שלבי מפה: כיווץ באנר + מינימום לשטח המפה (~60–70% מגובה המסך כשאפשר) */
+    #stage0 .game-header,
+    #stage1 .game-header,
+    #stage3 .game-header {
+      padding: 0.45rem 0.65rem;
+      gap: 0.35rem;
+    }
     #stage0 .stage-banner,
     #stage1 .stage-banner {
-      max-height: min(32dvh, 240px);
+      max-height: min(20dvh, 152px);
+      padding: 0.45rem 0.55rem;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
       flex-shrink: 1;
@@ -1189,12 +1196,18 @@
     .target-block { margin-top: 0.5rem; padding: 0.6rem; }
     .locate-prompt { padding: 0.6rem 1rem; }
     #stage3 .locate-prompt {
-      max-height: min(24dvh, 200px);
+      max-height: min(14dvh, 128px);
+      padding: 0.45rem 0.75rem;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
       flex-shrink: 1;
       min-height: 0;
       align-items: flex-start;
+    }
+    #stage0 .map-area,
+    #stage1 .map-area,
+    #stage3 .map-area {
+      min-height: min(68dvh, calc(100dvh - 252px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)));
     }
     .locate-street { font-size: 1.2rem; }
     .btn-next, .btn-play-again { width: 100%; padding: 1rem; }
