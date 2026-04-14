@@ -1,12 +1,13 @@
 {
   "name": "jeruguessr",
-  "version": "2.2.4",
+  "version": "2.3.0",
   "description": "JeruGuessr - A Jerusalem-themed GeoGuessr game.",
   "scripts": {
     "build": "node -e \"console.log('JeruGuessr: static site (no build output dir change)'); process.exit(0)\"",
     "dev": "npx wrangler pages dev .",
     "deploy": "npm run build && node -e \"console.log('Production deploy: push to Git; Cloudflare Pages builds from the repo (no API token in CI).')\"",
-    "start": "npx serve ."
+    "start": "npx serve .",
+    "test": "node tests/jg-utils.test.cjs && node scripts/verify-sw-assets.cjs"
   },
   "keywords": [
     "jerusalem",

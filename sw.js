@@ -1,8 +1,20 @@
-const CACHE_NAME = 'jeruguessr-v2.2.4';
+importScripts('config.js');
+
+const JG = globalThis.JG_CONFIG;
+const V = JG && JG.APP_VERSION;
+const Q = '?v=' + encodeURIComponent(V);
+const CACHE_NAME = (JG && JG.CACHE_ID_PREFIX ? JG.CACHE_ID_PREFIX : 'jeruguessr-v') + V;
+const GEO = (JG && JG.GEOJSON_FILENAME) || 'jerusalem_neighborhoods.geojson';
+
 const assets = [
   'game.html',
-  'table_data.js?v=2.2.4',
-  'jerusalem_neighborhoods.geojson?v=2.2.4',
+  'styles.css' + Q,
+  'config.js' + Q,
+  'js/jg-head.js',
+  'js/game-utils.js' + Q,
+  'js/app.js' + Q,
+  'table_data.js' + Q,
+  GEO + Q,
   'jerusalem_bg.png',
   'icon-192.png',
   'icon-512.png',
@@ -13,7 +25,14 @@ self.addEventListener('install', (e) => {
   self.skipWaiting();
   e.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(assets);
+      return Promise.all(
+        assets.map((url) =>
+          cache.add(url).catch((err) => {
+            console.warn('[SW] cache add failed:', url, err);
+            return null;
+          })
+        )
+      );
     })
   );
 });

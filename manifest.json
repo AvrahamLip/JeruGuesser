@@ -2,7 +2,7 @@
   "name": "JeruGuessr",
   "short_name": "JeruGuessr",
   "description": "משחק גיאוגרפי חווייתי על רחובות ושכונות ירושלים",
-  "start_url": "game.html",
+  "start_url": "/game.html",
   "display": "standalone",
   "background_color": "#0f172a",
   "theme_color": "#0f172a",
