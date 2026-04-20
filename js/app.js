@@ -150,7 +150,7 @@ window.addEventListener('resize', () => {
 });
 
 // Maps
-let map0=null, map1=null, map3=null;
+let map0=null, map1=null;
 let guessMarker=null, correctMarker=null, line=null;
 
 function getTileUrl() {
@@ -710,21 +710,13 @@ function s2Next() {
 
 
   state.round++;
-  if(state.mode === 'trivia') { loadTriviaRound(); return; }
+  // if(state.mode === 'trivia') { loadTriviaRound(); return; }
   loadS2Round();
 }
 
 // Stage 3 (Locate street on map) has been removed.
 
-    state.jeruBonusPerfect = false;
-    state.level++;
-    loadJeruLevel();
-    return;
-  }
-  state.round++;
-  if(state.mode === 'trivia') { loadTriviaRound(); return; }
-  loadS3Round();
-}
+
 
 // ============================================================
 // FEEDBACK
@@ -807,9 +799,9 @@ function showFeedback(isCorrect, detail, pts, onNext, distText) {
 // RESULTS
 // ============================================================
 function setResultBreakdownLabels(a, b, c, d) {
-  var ids = ['s0BreakdownLbl', 's1BreakdownLbl', 's2BreakdownLbl', 's3BreakdownLbl'];
-  var vals = [a, b, c, d];
-  for (var i = 0; i < 4; i++) {
+  var ids = ['s0BreakdownLbl', 's1BreakdownLbl', 's2BreakdownLbl'];
+  var vals = [a, b, c];
+  for (var i = 0; i < 3; i++) {
     var el = document.getElementById(ids[i]);
     if (el) el.textContent = vals[i];
   }
@@ -844,7 +836,6 @@ function showResults() {
   document.getElementById('s0Total').textContent=`${state.scores[0]} נק\u05F3 תרגול`;
   document.getElementById('s1Total').textContent=state.scores[1];
   document.getElementById('s2Total').textContent=state.scores[2];
-  document.getElementById('s3Total').textContent='-';
 
   const pct = state.mode === 'jeru' ? (state.level / 10) : (state.score / 500);
   var tier = pct > 0.8 ? 'gold' : pct > 0.4 ? 'silver' : 'bronze';
@@ -873,7 +864,6 @@ function showResults() {
       document.getElementById('s0Total').textContent = `רמה ${state.level}`;
       document.getElementById('s1Total').textContent = String(state.scores[1]);
       document.getElementById('s2Total').textContent = String(state.scores[2]);
-      document.getElementById('s3Total').textContent = '-';
   } else if (state.mode === 'trivia') {
       setResultBreakdownLabels('מסלול', 'ניקוד', '-', '-');
       document.getElementById('s0Total').textContent = `טריוויה`;
@@ -920,7 +910,7 @@ document.getElementById('playAgain').onclick = () => showScreen('home');
 document.getElementById('s0Back').onclick=()=>showScreen('home');
 document.getElementById('s1Back').onclick=()=>showScreen('home');
 document.getElementById('s2Back').onclick=()=>showScreen('home');
-document.getElementById('s3Back').onclick=()=>showScreen('home');
+
 
 document.getElementById('themeToggle').onclick = () => {
   document.body.classList.toggle('light-theme');
@@ -930,12 +920,17 @@ document.getElementById('themeToggle').onclick = () => {
 // LEADERBOARD LOGIC
 document.getElementById('leaderboardBtn').onclick = () => showLeaderboard();
 document.getElementById('lbBack').onclick = () => showScreen('home');
+document.getElementById('aboutBtn').onclick = (e) => {
+  e.preventDefault();
+  showScreen('about');
+};
+document.getElementById('aboutBack').onclick = () => showScreen('home');
 
 document.getElementById('saveScoreBtn').onclick = async () => {
   const name = document.getElementById('playerName').value.trim().slice(0, 40);
   if(!name) { alert('אנא הכנס/י שם בשביל לשמור את השיא'); return; }
   
-  const totalPlay = state.scores[1]+state.scores[2]+state.scores[3];
+  const totalPlay = state.scores[1]+state.scores[2];
   
   const btn = document.getElementById('saveScoreBtn');
   const msg = document.getElementById('saveScoreMsg');

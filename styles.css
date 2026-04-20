@@ -1706,3 +1706,67 @@ body.map-stage-active .confirm-guess-btn:hover {
   filter: brightness(1.05);
   transform: translateX(-50%) translateY(-3px);
 }
+
+/* ===== ABOUT SCREEN ===== */
+#about {
+  background: url('jerusalem_bg.png') center/cover no-repeat fixed;
+  position: relative;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+#about::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(15, 23, 42, 0.52), var(--dark) 100%);
+  z-index: 0;
+}
+.about-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 2rem 1.2rem;
+  position: relative;
+  z-index: 1;
+}
+.about-card {
+  max-width: 650px;
+  width: 100%;
+  padding: 2.5rem;
+  line-height: 1.8;
+  font-size: 1.1rem;
+  color: var(--text);
+  border-radius: 24px;
+  background: var(--card-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-lg);
+}
+.about-card p {
+  margin-bottom: 1.5rem;
+}
+.about-card p:last-child {
+  margin-bottom: 0;
+}
+.about-lead {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--gold);
+  text-align: center;
+  margin-bottom: 2rem !important;
+}
+@media (max-width: 560px) {
+  .about-container {
+    padding: 1rem;
+  }
+  .about-card {
+    padding: 1.5rem;
+    font-size: 1rem;
+  }
+  .about-lead {
+    font-size: 1.2rem;
+  }
+}

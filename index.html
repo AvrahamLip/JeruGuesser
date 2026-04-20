@@ -77,7 +77,9 @@
         <span class="separator">|</span>
         <a href="mailto:lip.avi@gmail.com"><i data-lucide="mail" style="width:16px; height:16px;"></i> lip.avi@gmail.com</a>
         <span class="separator">|</span>
-        <a href="https://ko-fi.com/avrahaml" target="_blank" rel="noopener noreferrer" aria-label="תמיכה בפרויקט ב־Ko-fi (נפתח בחלון חדש)"><i data-lucide="coffee" style="width:16px; height:16px;" aria-hidden="true"></i> תמיכה</a>
+        <a href="https://ko-fi.com/avrahaml" target="_blank" rel="noopener noreferrer" aria-label="תרומה לפרויקט ב־Ko-fi (נפתח בחלון חדש)"><i data-lucide="coffee" style="width:16px; height:16px;" aria-hidden="true"></i> תרומה</a>
+        <span class="separator">|</span>
+        <a href="#" id="aboutBtn" aria-label="אודות המשחק"><i data-lucide="info" style="width:16px; height:16px;"></i> אודות</a>
       </div>
     </footer>
   </div>
@@ -208,43 +210,7 @@
   </div>
 </div>
 
-<!-- ===== STAGE 3 - LOCATE STREET ON MAP — unified rail (A) ===== -->
-<div id="stage3" class="screen">
-  <div class="rail-wrap">
-    <div class="rail-row">
-      <div class="rail-start">
-        <button type="button" class="rail-home" id="s3Back" aria-label="מסך הבית"><i data-lucide="home" aria-hidden="true"></i></button>
-        <div class="rail-context">
-          <span class="rail-kicker" id="s3ContextKicker">מיקום רחוב במפה</span>
-          <span class="rail-main" id="s3ContextMain">שאלה 1</span>
-        </div>
-      </div>
-      <div class="rail-end">
-        <div class="rail-score-block">
 
-          <span class="rail-score-lbl">ניקוד</span>
-          <span class="rail-score-val" id="s3Score">0</span>
-        </div>
-      </div>
-    </div>
-    <p class="rail-detail" id="s3RailDetail" hidden></p>
-    <div class="rail-track-wrap" id="s3ProgressWrap">
-      <div class="rail-track-fill" id="s3Progress" style="width:0%"></div>
-    </div>
-  </div>
-  <div class="game-body">
-    <div class="map-area">
-      <div class="map-target-chip map-target-chip--locate" id="s3LocateChip">
-        <span class="map-target-chip-lbl">רחוב</span>
-        <span class="map-target-chip-name map-target-chip-street" id="s3StreetName">-</span>
-        <span class="map-target-chip-sub" id="s3NeighName">-</span>
-        <span class="map-target-chip-hint" id="s3Hint"><i data-lucide="map-pin" class="locate-hint-icon" aria-hidden="true"></i><span id="s3HintText">לחצ/י על מיקום הרחוב במפה</span></span>
-      </div>
-      <div id="map3" class="map-container"></div>
-      <button type="button" class="confirm-guess-btn" id="confirmGuess">אשר ניחוש</button>
-    </div>
-  </div>
-</div>
 
 <!-- ===== RESULTS ===== -->
 <div id="results" class="screen">
@@ -265,10 +231,7 @@
         <div class="breakdown-val" style="color:var(--purple)" id="s2Total">0</div>
         <div class="breakdown-lbl" id="s2BreakdownLbl">שלב 2</div>
       </div>
-      <div class="breakdown-item" style="display:none">
-        <div class="breakdown-val" style="color:var(--gold)" id="s3Total">0</div>
-        <div class="breakdown-lbl" id="s3BreakdownLbl">שלב 3</div>
-      </div>
+
     </div>
     
     <div id="scoreSubmitArea" class="results-submit-area">
@@ -280,7 +243,7 @@
 
     <button type="button" class="btn-play-again" id="playAgain"><i data-lucide="refresh-cw" aria-hidden="true" class="btn-play-again-icon"></i><span>שחק שוב</span></button>
     <p class="results-support">
-      <a href="https://ko-fi.com/avrahaml" class="results-support-link" target="_blank" rel="noopener noreferrer" aria-label="תמיכה בפרויקט ב־Ko-fi (נפתח בחלון חדש)"><i data-lucide="coffee" class="results-support-icon" aria-hidden="true"></i> תמיכה בפרויקט</a>
+      <a href="https://ko-fi.com/avrahaml" class="results-support-link" target="_blank" rel="noopener noreferrer" aria-label="תרומה לפרויקט ב־Ko-fi (נפתח בחלון חדש)"><i data-lucide="coffee" class="results-support-icon" aria-hidden="true"></i> תרומה לפרויקט</a>
     </p>
   </div>
 </div>
@@ -305,6 +268,24 @@
         <tbody id="lbTableBody">
         </tbody>
       </table>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ABOUT SCREEN ===== -->
+<div id="about" class="screen">
+  <div class="game-header" style="justify-content:center; position:relative;">
+    <button class="back-btn" id="aboutBack" style="position:absolute; right:1.5rem;">← חזור</button>
+    <div class="stage-title-text" style="margin:0; font-size:1.5rem;"><i data-lucide="info" aria-hidden="true" style="width:22px; height:22px; margin-left:8px; color:var(--gold);"></i><span>אודות JeruGuesser</span></div>
+  </div>
+  <div class="about-container">
+    <div class="about-card glass">
+      <p class="about-lead">המפה עיוורת, אבל הלב ירושלמי? בואו נראה אתכם.</p>
+      <p>בתור בן לאב ירושלמי מלידה, גדלתי על התחושה שירושלים היא הבית השני שלי. אבל המציאות החליטה לעשות לי "מבחן פתע".</p>
+      <p>במהלך המילואים בפיקוד העורף, במבצע "שאגת הארי", שירתי בירושלים. תחת התראות ואזעקות, מצאתי את עצמי מנווט ברחבי העיר ודי מהר נחתה עליי ההבנה המביכה: אני לא באמת מכיר את העיר הזאת.</p>
+      <p>באחד הערבים, ישבנו בצוות וחשבנו איך אפשר ללמוד באמת את השכונות הרבות בעיר ואת המיקום המדויק שלהן. מתוך המתח של המבצע והרצון להכיר את העיר לעומק, צמח לו משחק.</p>
+      <p>ככה נולד <strong>JeruGuesser</strong> – אתגר זיהוי שכונות על מפה עיוורת.</p>
+      <p>אין תמונות של הכותל או רמזים ויזואליים. רק אתם והמפה. המשחק מוקדש לכל אוהבי ירושלים ולכל אלו שבטוחים שהם מכירים את העיר טוב יותר מנהג מונית ותיק. ראו הוזהרתם – זה הרבה יותר מאתגר ממה שזה נראה.</p>
     </div>
   </div>
 </div>
