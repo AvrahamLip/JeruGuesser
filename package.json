@@ -1,6 +1,7 @@
 {
   "name": "jeruguesser",
-  "version": "2.4.4",
+  "version": "2.4.5",
+
   "description": "JeruGuesser — a Jerusalem-themed geography guessing game.",
   "homepage": "https://jeruguesser.getbetter.games/",
   "scripts": {

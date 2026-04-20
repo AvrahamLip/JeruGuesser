@@ -85,16 +85,15 @@ let state = {
   level: 1,
   round: 0,
   score: 0,
-  lives: 3,
-  maxLives: 3,
   targetScore: 3000,
   questionsInLevel: 9,
   questions: [],
   scores: [0,0,0,0], // legacy compat for result screen
   scoreAtLevelStart: 0, // jeru: total score when current level began
   jeruPostLevelBonus: false, // jeru: street mini-game after hitting level target on map
-  jeruBonusPerfect: false // jeru bonus: both s2 and s3 answered correctly this level
+  jeruBonusPerfect: false // jeru bonus: s2 answered correctly this level
 };
+
 
 function refreshLucideIcons() {
   if (window.lucide && typeof lucide.createIcons === 'function') {
@@ -102,19 +101,8 @@ function refreshLucideIcons() {
   }
 }
 
-function updateHearts() {
-  const container = document.getElementById('s' + state.stage + 'Hearts');
-  if(!container) return;
-  container.innerHTML = '';
-  for(let i=0; i<state.maxLives; i++) {
-    const s = document.createElement('span');
-    s.className = 'heart' + (i >= state.lives ? ' lost' : '');
-    s.setAttribute('aria-hidden', 'true');
-    s.innerHTML = '<i data-lucide="heart" class="heart-svg"></i>';
-    container.appendChild(s);
-  }
-  refreshLucideIcons();
-}
+// Removed updateHearts function as lives element was removed.
+
 
 function updateGlobalNavScore() {
   const el = document.getElementById('globalNavScore');
@@ -127,11 +115,12 @@ function updateGlobalNavScore() {
     return;
   }
   // Unified rail (stages 0–3) already shows score + context; hide nav score strip to avoid duplicate «header» + «progress» feel.
-  if (sid === 'stage0' || sid === 'stage1' || sid === 'stage2' || sid === 'stage3') {
+  if (sid === 'stage0' || sid === 'stage1' || sid === 'stage2') {
     el.style.display = 'none';
     el.textContent = '';
     return;
   }
+
   el.style.display = 'flex';
   const w = typeof window !== 'undefined' ? window.innerWidth : 800;
   const compact = w <= 560;
@@ -196,8 +185,9 @@ function showScreen(id) {
   }
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  document.body.classList.toggle('map-stage-active', ['stage0', 'stage1', 'stage3'].includes(id));
-  document.body.classList.toggle('game-rail-screens', ['stage0', 'stage1', 'stage2', 'stage3'].includes(id));
+  document.body.classList.toggle('map-stage-active', ['stage0', 'stage1'].includes(id));
+  document.body.classList.toggle('game-rail-screens', ['stage0', 'stage1', 'stage2'].includes(id));
+
   const gNav = document.getElementById('globalNav');
   if(gNav) gNav.style.display = (id === 'home' || id === 'results') ? 'none' : 'flex';
   window.scrollTo(0,0);
@@ -212,14 +202,13 @@ function beginJeruSession() {
   state.mode = 'jeru';
   state.level = 1;
   state.score = 0;
-  state.lives = 3;
-  state.maxLives = 3;
   state.targetScore = 3000;
   state.questionsInLevel = 9;
   state.stage = 1;
   state.scores = [0,0,0,0];
   state.jeruPostLevelBonus = false;
   state.jeruBonusPerfect = false;
+
   loadJeruLevel();
 }
 
@@ -253,9 +242,9 @@ function beginPracticeSession() {
   state.round = 0;
   state.score = 0;
   state.scores = [0,0,0,0];
-  state.lives = 999;
   state.jeruPostLevelBonus = false;
   state.jeruBonusPerfect = false;
+
   state.questions = pick(NEIGHBORHOODS, 100);
   startStage0();
 }
@@ -280,13 +269,17 @@ async function startPractice() {
   }
 }
 
-function loadJeruLevel() {
+function loadJeruLevel(keepSurplus) {
   state.round = 0;
-  state.scoreAtLevelStart = state.score;
-  // Every 2 levels reset lives
-  if (state.level > 1 && state.level % 2 === 1) {
-    state.lives = 3;
+  if (!keepSurplus) {
+    state.scoreAtLevelStart = state.score;
+  } else {
+    // Carry over: increment base by the previous level's target score.
+    // Any points above that target (including bonus points) will count toward the new target.
+    state.scoreAtLevelStart += state.targetScore;
   }
+
+
   // Questions count: 9 + floor((level-1)/3)
   state.questionsInLevel = 9 + Math.floor((state.level - 1) / 3);
   state.questions = pick(NEIGHBORHOODS, state.questionsInLevel);
@@ -298,13 +291,7 @@ function loadJeruLevel() {
   startStage1();
 }
 
-function loadTriviaRound() {
-  state.questions = pick(VALID_STREETS, 1);
-  // Randomly pick between Stage 2 (Card) or Stage 3 (Map)
-  state.stage = Math.random() > 0.5 ? 2 : 3;
-  if (state.stage === 2) startStage2();
-  else startStage3();
-}
+
 
 // ============================================================
 // STAGES 0 & 1 - FIND NEIGHBORHOOD (INTERACTIVE POLYGON MAP)
@@ -519,13 +506,12 @@ function geoAnswerGeo(stageNum, clickedName, clickedLayer, q, theMap) {
   state.score += pts;
   state.scores[stageNum] += pts; // for final screen stats
   document.getElementById('s'+stageNum+'Score').textContent = state.score;
-  updateHearts();
   updateGlobalNavScore();
   
   const nextFn = () => { 
-    if(state.mode === 'trivia' && state.lives <= 0) { showResults(); return; }
     stageNum === 0 ? s0Next() : s1Next(); 
   };
+
   showFeedback(isCorrect, q.name, pts, nextFn, distText);
 }
 
@@ -572,16 +558,14 @@ function syncRailKicker(stageNum) {
   if (state.mode === 'jeru') {
     if (state.jeruPostLevelBonus) {
       if (stageNum === 2) el.textContent = 'שיוך רחוב · בונוס סיום רמה';
-      else if (stageNum === 3) el.textContent = 'מיקום במפה · בונוס סיום רמה';
       else if (stageNum === 1) el.textContent = 'איתור שכונה · ללא שמות';
     } else if (stageNum === 1) {
       el.textContent = 'איתור שכונה · ללא שמות';
     } else if (stageNum === 2) {
       el.textContent = 'שיוך רחוב לשכונה';
-    } else if (stageNum === 3) {
-      el.textContent = 'מיקום רחוב במפה';
     }
   }
+
 }
 
 function setRailDetail(stageNum, text) {
@@ -611,22 +595,20 @@ function updateSUI(stageNum) {
     document.getElementById('s0Hearts').style.display = 'none';
     setRailDetail(0, '');
   } else if (state.mode === 'jeru') {
-    if (state.jeruPostLevelBonus && (stageNum === 2 || stageNum === 3)) {
+    if (state.jeruPostLevelBonus && stageNum === 2) {
       document.getElementById('s' + stageNum + 'ContextMain').textContent =
         'רמה ' + state.level + ' · בונוס סיום רמה';
       document.getElementById('s' + stageNum + 'Progress').style.width = '100%';
       setRailProgressVisible(stageNum, true);
       var perkLine =
         state.level % 3 === 0
-          ? ' ברמה המתחלקת ב־3: מענה מושלם בשני שלבי הבונוס = +300 נק׳ ואיפוס חיים.'
+          ? ' ברמה המתחלקת ב־3: מענה נכון בבונוס = +300 נק׳.'
           : '';
-      var tips =
-        stageNum === 2
-          ? 'בחרו את השכונה שבה נמצא הרחוב (אותו רחוב בשלב הבא במפה).' + perkLine
-          : 'סמנו במפה את מיקום הרחוב. לאחר מכן תעברו לרמה הבאה.' + perkLine;
+      var tips = 'בחרו את השכונה שבה נמצא הרחוב.' + perkLine;
       setRailDetail(stageNum, tips);
-      document.getElementById('s' + stageNum + 'Hearts').style.display = 'none';
+
     } else if (stageNum === 1) {
+
       document.getElementById('s1ContextMain').textContent =
         'רמה ' + state.level + ' – שאלה ' + (state.round + 1) + '/' + state.questionsInLevel;
       var pct = (state.round / state.questionsInLevel) * 100;
@@ -645,24 +627,11 @@ function updateSUI(stageNum) {
           state.questionsInLevel +
           ' שכונות'
       );
-      document.getElementById('s1Hearts').style.display = 'none';
-    } else {
-      document.getElementById('s' + stageNum + 'ContextMain').textContent = 'שאלה ' + (state.round + 1);
-      document.getElementById('s' + stageNum + 'Progress').style.width = '0%';
-      setRailProgressVisible(stageNum, true);
-      document.getElementById('s' + stageNum + 'Hearts').style.display = 'flex';
-      setRailDetail(stageNum, '');
     }
-  } else {
-    document.getElementById('s' + stageNum + 'ContextMain').textContent = 'שאלה ' + (state.round + 1);
-    document.getElementById('s' + stageNum + 'Progress').style.width = '0%';
-    setRailProgressVisible(stageNum, true);
-    document.getElementById('s' + stageNum + 'Hearts').style.display = 'flex';
-    setRailDetail(stageNum, '');
   }
-  updateHearts();
   updateGlobalNavScore();
 }
+
 
 
 // ============================================================
@@ -704,150 +673,49 @@ function s2Guess(chosen, correct, btn, grid) {
     grid.querySelectorAll('.option-btn').forEach(b=>{
       if(b.textContent===correct) b.classList.add('correct');
     });
-    if (!(state.mode === 'jeru' && state.jeruPostLevelBonus)) state.lives--;
     if (state.mode === 'jeru' && state.jeruPostLevelBonus) state.jeruBonusPerfect = false;
   }
-  const pts = isCorrect ? (state.mode === 'trivia' ? 10 : 200) : 0;
+
+  const pts = isCorrect ? (state.mode === 'trivia' ? 10 : 400) : 0;
   state.score += pts;
-  state.scores[2] += pts;
+  state.scores[2] += pts; // Stage 2 is the bonus
+
+
   document.getElementById('s2Score').textContent = state.score;
-  updateHearts();
   updateGlobalNavScore();
   
   const nextFn = () => {
-    if(state.lives <= 0) { showResults(); return; }
     s2Next();
   };
+
   showFeedback(isCorrect, correct, pts, nextFn);
 }
 
 function s2Next() {
   if (state.mode === 'jeru' && state.jeruPostLevelBonus) {
-    startStage3();
+    const completedLevel = state.level;
+    if (state.jeruBonusPerfect && completedLevel % 3 === 0) {
+      state.score += 300;
+      trackEvent('jeru_bonus_perk', { level: completedLevel });
+      updateGlobalNavScore();
+      showJeruPerkToast();
+    }
+
+    state.jeruPostLevelBonus = false;
+    state.jeruBonusPerfect = false;
+    state.level++;
+    loadJeruLevel(true);
     return;
   }
+
+
   state.round++;
   if(state.mode === 'trivia') { loadTriviaRound(); return; }
   loadS2Round();
 }
 
-// ============================================================
-// STAGE 3 - LOCATE STREET ON MAP
-// ============================================================
-function startStage3() {
-  state.stage=3; state.round=0;
-  showScreen('stage3');
-  // Always destroy & recreate map3 so it renders in the now-visible container
-  if(map3){ map3.remove(); map3=null; }
-  if(guessMarker){ guessMarker=null; }
-  if(correctMarker){ correctMarker=null; }
-  if(line){ line=null; }
-  setTimeout(()=>{
-    map3=L.map('map3', {
-      zoomControl: true,
-      doubleClickZoom: false,
-      touchZoom: true,
-      scrollWheelZoom: false,
-      dragging: true,
-      tap: false
-    }).setView([31.78,35.22],12);
-    L.tileLayer(getTileUrl(), baseMapTileLayerOptions()).addTo(map3);
-    map3.on('click',onMap3Click);
-    loadS3Round();
-  },150);
-}
+// Stage 3 (Locate street on map) has been removed.
 
-function loadS3Round() {
-  if(guessMarker){guessMarker.remove();guessMarker=null;}
-  if(correctMarker){correctMarker.remove();correctMarker=null;}
-  if(line){line.remove();line=null;}
-  document.getElementById('confirmGuess').style.display='none';
-  var hintT = document.getElementById('s3HintText');
-  if (hintT) hintT.textContent = 'לחצ/י על מיקום הרחוב במפה';
-  refreshLucideIcons();
-
-  const q=state.questions[0];
-  document.getElementById('s3StreetName').textContent=q['שם רחוב'];
-  document.getElementById('s3NeighName').textContent=`שכונה: ${q['שכונה עירונית']}`;
-  updateSUI(3);
-  document.getElementById('s3Score').textContent=state.score;
-  map3.setView([31.78,35.22],12);
-}
-
-function onMap3Click(e) {
-  if(guessMarker) guessMarker.remove();
-  const gIcon=L.divIcon({className:'',html:'<div class="guess-marker-ripple"></div>',iconSize:[20,20],iconAnchor:[10,10]});
-  guessMarker=L.marker(e.latlng,{icon:gIcon}).addTo(map3);
-  document.getElementById('confirmGuess').style.display='block';
-  var hintT2 = document.getElementById('s3HintText');
-  if (hintT2) hintT2.textContent = 'לחצ/י "אשר ניחוש" או שנה מיקום';
-  refreshLucideIcons();
-  document.getElementById('confirmGuess').onclick=()=>s3Confirm(e.latlng);
-}
-
-function s3Confirm(guessLatLng) {
-  map3.off('click',onMap3Click);
-  const q=state.questions[0];
-  const cLat=q['קו רוחב'], cLng=q['קו אורך'];
-  const dist=haversine(guessLatLng.lat,guessLatLng.lng,cLat,cLng);
-  
-  let pts = 0;
-  let isCorrect = false;
-  
-  if (state.mode === 'trivia') {
-    // In Trivia, "correct" is within 300m
-    isCorrect = dist < 0.3;
-    pts = isCorrect ? 10 : 0;
-    if(!isCorrect) state.lives--;
-  } else {
-    const sm = window.JGGameUtils.streetMapGuessFromDistKm(dist);
-    pts = sm.pts;
-    isCorrect = sm.isCorrect;
-    if (state.mode === 'jeru' && state.jeruPostLevelBonus && !isCorrect) {
-      state.jeruBonusPerfect = false;
-    }
-  }
-  
-  state.score += pts;
-  state.scores[3] += pts;
-  document.getElementById('s3Score').textContent = state.score;
-  document.getElementById('confirmGuess').style.display = 'none';
-  updateHearts();
-  updateGlobalNavScore();
-
-  // show correct
-  const cIcon=L.divIcon({className:'',html:'<div style="width:22px;height:22px;background:#10b981;border:3px solid #fff;border-radius:50%;box-shadow:0 0 10px #10b981"></div>',iconSize:[22,22],iconAnchor:[11,11]});
-  correctMarker=L.marker([cLat,cLng],{icon:cIcon}).addTo(map3).bindPopup(q['שם רחוב']).openPopup();
-  line=L.polyline([guessLatLng,[cLat,cLng]],{color:'#f5c518',weight:2,dashArray:'6,4'}).addTo(map3);
-  map3.fitBounds([[guessLatLng.lat,guessLatLng.lng],[cLat,cLng]], {
-    paddingTopLeft: [36, 220],
-    paddingBottomRight: [36, 72],
-    maxZoom: 15
-  });
-
-  const distText=dist<1?`${Math.round(dist*1000)} מטר`:`${dist.toFixed(1)} ק\u05F4מ`;
-  
-  const nextFn = () => {
-    if(state.lives <= 0) { showResults(); return; }
-    s3Next();
-  };
-  showFeedback(isCorrect, q['שם רחוב'], pts, nextFn, `מרחק מהמיקום הנכון: ${distText}`);
-  // re-enable click after
-  setTimeout(()=>map3.on('click',onMap3Click),100);
-}
-
-function s3Next() {
-  if (state.mode === 'jeru' && state.jeruPostLevelBonus) {
-    const completedLevel = state.level;
-    if (state.jeruBonusPerfect && completedLevel % 3 === 0) {
-      state.score += 300;
-      state.lives = state.maxLives;
-      trackEvent('jeru_bonus_perk', { level: completedLevel });
-      updateHearts();
-      updateGlobalNavScore();
-      showJeruPerkToast();
-    }
-    state.jeruPostLevelBonus = false;
     state.jeruBonusPerfect = false;
     state.level++;
     loadJeruLevel();
@@ -957,7 +825,8 @@ function showJeruPerkToast() {
     el.setAttribute('aria-live', 'polite');
     document.body.appendChild(el);
   }
-  el.textContent = '+300 נקודות בונוס! החיים אופסו לרמה מלאה.';
+  el.textContent = '+300 נקודות בונוס!';
+
   el.classList.add('show');
   clearTimeout(showJeruPerkToast._t);
   showJeruPerkToast._t = setTimeout(function () {
@@ -970,12 +839,13 @@ function showResults() {
   state.jeruBonusPerfect = false;
   trackEvent('game_end', { mode: state.mode, score: state.score });
   showScreen('results');
-  setResultBreakdownLabels('שלב 0', 'שלב 1', 'שלב 2', 'שלב 3');
+  setResultBreakdownLabels('שלב 0', 'שלב 1', 'שלב 2', '-');
   document.getElementById('finalScore').textContent = state.score;
   document.getElementById('s0Total').textContent=`${state.scores[0]} נק\u05F3 תרגול`;
   document.getElementById('s1Total').textContent=state.scores[1];
   document.getElementById('s2Total').textContent=state.scores[2];
-  document.getElementById('s3Total').textContent=state.scores[3];
+  document.getElementById('s3Total').textContent='-';
+
   const pct = state.mode === 'jeru' ? (state.level / 10) : (state.score / 500);
   var tier = pct > 0.8 ? 'gold' : pct > 0.4 ? 'silver' : 'bronze';
   var trophyEl = document.getElementById('resultsTrophy');
@@ -999,18 +869,19 @@ function showResults() {
 
   // Update breakdown labels/values if needed, or hide them
   if (state.mode === 'jeru') {
-      setResultBreakdownLabels('רמה', 'איתור שכונות', 'בונוס: שיוך רחוב', 'בונוס: מפה');
+      setResultBreakdownLabels('רמה', 'איתור שכונות', 'בונוס', '-');
       document.getElementById('s0Total').textContent = `רמה ${state.level}`;
       document.getElementById('s1Total').textContent = String(state.scores[1]);
       document.getElementById('s2Total').textContent = String(state.scores[2]);
-      document.getElementById('s3Total').textContent = String(state.scores[3]);
+      document.getElementById('s3Total').textContent = '-';
   } else if (state.mode === 'trivia') {
-      setResultBreakdownLabels('מסלול', '-', '-', 'ניקוד');
+      setResultBreakdownLabels('מסלול', 'ניקוד', '-', '-');
       document.getElementById('s0Total').textContent = `טריוויה`;
-      document.getElementById('s1Total').textContent = '-';
+      document.getElementById('s1Total').textContent = state.score;
       document.getElementById('s2Total').textContent = '-';
-      document.getElementById('s3Total').textContent = state.score;
+      document.getElementById('s3Total').textContent = '-';
   }
+
 }
 
 // ============================================================
