@@ -943,6 +943,7 @@ document.getElementById('saveScoreBtn').onclick = async () => {
     params.append('gamename', gName);
     params.append('playerName', name);
     params.append('score', state.score);
+    params.append('level', state.level);
 
     // Server-side (recommended): rate limiting, max name length, profanity filter, optional signed scores.
     const res = await fetch(`${CONFIG.API_BASE_URL}/webhook/add/score`, {
@@ -1011,7 +1012,7 @@ async function showLeaderboard() {
     document.getElementById('lbCard').style.display = 'block';
     
     if(data.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding:1.5rem; color:var(--muted)">אין תוצאות עדיין... הראה להם מי הבוס!</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:1.5rem; color:var(--muted)">אין תוצאות עדיין... הראה להם מי הבוס!</td></tr>';
       return;
     }
     
@@ -1029,6 +1030,11 @@ async function showLeaderboard() {
       pName.style.fontWeight = 'bold';
       pName.textContent = row.playerName;
       
+      const pLevel = document.createElement('td');
+      pLevel.style.padding = '1rem 0.5rem';
+      pLevel.style.textAlign = 'center';
+      pLevel.textContent = row.level || row.Level || '-';
+      
       const pScore = document.createElement('td');
       pScore.style.padding = '1rem 0.5rem';
       pScore.style.color = 'var(--gold)';
@@ -1038,6 +1044,7 @@ async function showLeaderboard() {
       
       tr.appendChild(rank);
       tr.appendChild(pName);
+      tr.appendChild(pLevel);
       tr.appendChild(pScore);
       tbody.appendChild(tr);
     });
