@@ -12,7 +12,8 @@
 
   // Bridge game events to Google Analytics
   window.JG_ANALYTICS = function(name, detail) {
-    gtag('event', name, detail || {});
+    var payload = Object.assign({ game_name: 'JeruGuesser' }, detail || {});
+    gtag('event', name, payload);
   };
 </script>
 <meta charset="UTF-8">
