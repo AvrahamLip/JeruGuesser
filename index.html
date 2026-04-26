@@ -9,6 +9,11 @@
   gtag('js', new Date());
 
   gtag('config', 'G-RCH261MLBS');
+
+  // Bridge game events to Google Analytics
+  window.JG_ANALYTICS = function(name, detail) {
+    gtag('event', name, detail || {});
+  };
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
