@@ -592,7 +592,6 @@ function updateSUI(stageNum) {
   if (stageNum === 0) {
     document.getElementById('s0ContextMain').textContent = (window.currentLang === 'en' ? 'Question ' : 'שאלה ') + (state.round + 1);
     setRailProgressVisible(0, false);
-    document.getElementById('s0Hearts').style.display = 'none';
     setRailDetail(0, '');
   } else if (state.mode === 'jeru') {
     if (state.jeruPostLevelBonus && stageNum === 2) {
