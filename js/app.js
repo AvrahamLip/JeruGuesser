@@ -330,7 +330,7 @@ function drawGeoStage(stageNum, mapId, q, showNames) {
       const name = feature.properties.SCHN_NAME || feature.properties.name || "Unknown";
       
       if(showNames) {
-        layer.bindTooltip(name, {
+        layer.bindTooltip(window.tZone(name), {
           permanent: false,
           direction: 'center',
           className: 'neigh-tooltip'
@@ -401,7 +401,7 @@ function startStage0() {
 
 function loadS0Round() {
   const q = state.questions[state.round];
-  document.getElementById('s0TargetName').textContent = q.name;
+  document.getElementById('s0TargetName').textContent = window.tZone(q.name);
   drawGeoStage(0, 'map0', q, true); // true = show tooltips
 }
 
@@ -430,7 +430,7 @@ function startStage1() {
 
 function loadS1Round() {
   const q = state.questions[state.round];
-  document.getElementById('s1TargetName').textContent = q.name;
+  document.getElementById('s1TargetName').textContent = window.tZone(q.name);
   document.getElementById('s1Score').textContent = state.score;
   drawGeoStage(1, 'map1', q, false); // false = hide tooltips
 }
@@ -472,7 +472,7 @@ function geoAnswerGeo(stageNum, clickedName, clickedLayer, q, theMap) {
     if (correctGeoLayer) {
       correctGeoLayer.setStyle(sGeoPulseStyle());
       correctGeoLayer.unbindTooltip();
-      correctGeoLayer.bindTooltip(q.name, {permanent: true, direction: 'center', className: 'neigh-tooltip highlight'}).openTooltip();
+      correctGeoLayer.bindTooltip(window.tZone(q.name), {permanent: true, direction: 'center', className: 'neigh-tooltip highlight'}).openTooltip();
       // Show both wrong pick and correct neighborhood in frame (card at top — keep padding)
       const bothBounds = clickedLayer.getBounds().extend(correctGeoLayer.getBounds());
       theMap.fitBounds(bothBounds, { paddingTopLeft: [18, 220], paddingBottomRight: [18, 56], maxZoom: 15 });
@@ -481,7 +481,7 @@ function geoAnswerGeo(stageNum, clickedName, clickedLayer, q, theMap) {
     }
   } else {
     clickedLayer.unbindTooltip();
-    clickedLayer.bindTooltip(q.name, {permanent: true, direction: 'center', className: 'neigh-tooltip correct-hit'}).openTooltip();
+    clickedLayer.bindTooltip(window.tZone(q.name), {permanent: true, direction: 'center', className: 'neigh-tooltip correct-hit'}).openTooltip();
     theMap.fitBounds(clickedLayer.getBounds(), { paddingTopLeft: [18, 220], paddingBottomRight: [18, 56], maxZoom: 15 });
   }
 
@@ -512,7 +512,7 @@ function geoAnswerGeo(stageNum, clickedName, clickedLayer, q, theMap) {
     stageNum === 0 ? s0Next() : s1Next(); 
   };
 
-  showFeedback(isCorrect, q.name, pts, nextFn, distText);
+  showFeedback(isCorrect, window.tZone(q.name), pts, nextFn, distText);
 }
 
 function s0Next() {
@@ -546,23 +546,23 @@ function syncRailKicker(stageNum) {
   const el = document.getElementById('s' + stageNum + 'ContextKicker');
   if (!el) return;
   if (state.mode === 'practice' && stageNum === 0) {
-    el.textContent = 'תרגול · מפה עם שמות שכונות';
+    el.textContent = window.currentLang === 'en' ? 'Practice · Map with Neighborhood Names' : 'תרגול · מפה עם שמות שכונות';
     return;
   }
   if (state.mode === 'trivia') {
-    if (stageNum === 2) el.textContent = 'טריוויה · שיוך רחוב לשכונה';
-    else if (stageNum === 3) el.textContent = 'טריוויה · מיקום במפה';
-    else el.textContent = 'טריוויה';
+    if (stageNum === 2) el.textContent = window.currentLang === 'en' ? 'Trivia · Match Street to Neighborhood' : 'טריוויה · שיוך רחוב לשכונה';
+    else if (stageNum === 3) el.textContent = window.currentLang === 'en' ? 'Trivia · Locate on Map' : 'טריוויה · מיקום במפה';
+    else el.textContent = window.currentLang === 'en' ? 'Trivia' : 'טריוויה';
     return;
   }
   if (state.mode === 'jeru') {
     if (state.jeruPostLevelBonus) {
-      if (stageNum === 2) el.textContent = 'שיוך רחוב · בונוס סיום רמה';
-      else if (stageNum === 1) el.textContent = 'איתור שכונה · ללא שמות';
+      if (stageNum === 2) el.textContent = window.currentLang === 'en' ? 'Street Match · Level Bonus' : 'שיוך רחוב · בונוס סיום רמה';
+      else if (stageNum === 1) el.textContent = window.currentLang === 'en' ? 'Find Neighborhood · No Names' : 'איתור שכונה · ללא שמות';
     } else if (stageNum === 1) {
-      el.textContent = 'איתור שכונה · ללא שמות';
+      el.textContent = window.currentLang === 'en' ? 'Find Neighborhood · No Names' : 'איתור שכונה · ללא שמות';
     } else if (stageNum === 2) {
-      el.textContent = 'שיוך רחוב לשכונה';
+      el.textContent = window.currentLang === 'en' ? 'Match Street to Neighborhood' : 'שיוך רחוב לשכונה';
     }
   }
 
@@ -590,42 +590,32 @@ function updateSUI(stageNum) {
   syncRailKicker(stageNum);
 
   if (stageNum === 0) {
-    document.getElementById('s0ContextMain').textContent = 'שאלה ' + (state.round + 1);
+    document.getElementById('s0ContextMain').textContent = (window.currentLang === 'en' ? 'Question ' : 'שאלה ') + (state.round + 1);
     setRailProgressVisible(0, false);
     document.getElementById('s0Hearts').style.display = 'none';
     setRailDetail(0, '');
   } else if (state.mode === 'jeru') {
     if (state.jeruPostLevelBonus && stageNum === 2) {
-      document.getElementById('s' + stageNum + 'ContextMain').textContent =
-        'רמה ' + state.level + ' · בונוס סיום רמה';
+      document.getElementById('s' + stageNum + 'ContextMain').textContent = (window.currentLang === 'en' ? 'Level ' : 'רמה ') + state.level + (window.currentLang === 'en' ? ' · Level Bonus' : ' · בונוס סיום רמה');
       document.getElementById('s' + stageNum + 'Progress').style.width = '100%';
       setRailProgressVisible(stageNum, true);
       var perkLine =
         state.level % 3 === 0
           ? ' ברמה המתחלקת ב־3: מענה נכון בבונוס = +300 נק׳.'
           : '';
-      var tips = 'בחרו את השכונה שבה נמצא הרחוב.' + perkLine;
+      var tips = (window.currentLang === 'en' ? 'Select the neighborhood where the street is located.' : 'בחרו את השכונה שבה נמצא הרחוב.') + perkLine;
       setRailDetail(stageNum, tips);
 
     } else if (stageNum === 1) {
 
-      document.getElementById('s1ContextMain').textContent =
-        'רמה ' + state.level + ' – שאלה ' + (state.round + 1) + '/' + state.questionsInLevel;
+      document.getElementById('s1ContextMain').textContent = (window.currentLang === 'en' ? 'Level ' : 'רמה ') + state.level + (window.currentLang === 'en' ? ' – Question ' : ' – שאלה ') + (state.round + 1) + '/' + state.questionsInLevel;
       var pct = (state.round / state.questionsInLevel) * 100;
       document.getElementById('s1Progress').style.width = pct + '%';
       setRailProgressVisible(1, true);
       var earned = state.score - state.scoreAtLevelStart;
       setRailDetail(
         1,
-        'ניקוד כולל: ' +
-          state.score +
-          ' · ברמה זו: ' +
-          earned +
-          '/' +
-          state.targetScore +
-          ' נק׳ · ' +
-          state.questionsInLevel +
-          ' שכונות'
+        (window.currentLang === 'en' ? 'Total score: ' : 'ניקוד כולל: ') + state.score + (window.currentLang === 'en' ? ' · This level: ' : ' · ברמה זו: ') + earned + '/' + state.targetScore + (window.currentLang === 'en' ? ' pts · ' : ' נק׳ · ') + state.questionsInLevel + (window.currentLang === 'en' ? ' neighborhoods' : ' שכונות')
       );
     }
   }
@@ -645,7 +635,7 @@ function startStage2() {
 
 function loadS2Round() {
   const q = state.questions[0];
-  document.getElementById('s2StreetName').textContent = q['שם רחוב'];
+  document.getElementById('s2StreetName').textContent = window.tStreet ? window.tStreet(q['שם רחוב']) : q['שם רחוב'];
   updateSUI(2);
   document.getElementById('s2Score').textContent = state.score;
 
@@ -659,7 +649,7 @@ function loadS2Round() {
     const btn=document.createElement('button');
     btn.type='button';
     btn.className='option-btn';
-    btn.textContent=o;
+    btn.textContent=window.tZone(o);
     btn.onclick=()=>s2Guess(o, correct, btn, grid);
     grid.appendChild(btn);
   });
@@ -831,7 +821,7 @@ function showResults() {
   state.jeruBonusPerfect = false;
   trackEvent('game_end', { mode: state.mode, score: state.score });
   showScreen('results');
-  setResultBreakdownLabels('שלב 0', 'שלב 1', 'שלב 2', '-');
+  setResultBreakdownLabels(window.currentLang === 'en' ? 'Stage 0' : 'שלב 0', window.currentLang === 'en' ? 'Stage 1' : 'שלב 1', window.currentLang === 'en' ? 'Stage 2' : 'שלב 2', '-');
   document.getElementById('finalScore').textContent = state.score;
   document.getElementById('s0Total').textContent=`${state.scores[0]} נק\u05F3 תרגול`;
   document.getElementById('s1Total').textContent=state.scores[1];
@@ -860,13 +850,13 @@ function showResults() {
 
   // Update breakdown labels/values if needed, or hide them
   if (state.mode === 'jeru') {
-      setResultBreakdownLabels('רמה', 'איתור שכונות', 'בונוס', '-');
-      document.getElementById('s0Total').textContent = `רמה ${state.level}`;
+      setResultBreakdownLabels(window.currentLang === 'en' ? 'Level' : 'רמה', window.currentLang === 'en' ? 'Find Neighborhoods' : 'איתור שכונות', window.currentLang === 'en' ? 'Bonus' : 'בונוס', '-');
+      document.getElementById('s0Total').textContent = window.currentLang === 'en' ? `Level ${state.level}` : `רמה ${state.level}`;
       document.getElementById('s1Total').textContent = String(state.scores[1]);
       document.getElementById('s2Total').textContent = String(state.scores[2]);
   } else if (state.mode === 'trivia') {
-      setResultBreakdownLabels('מסלול', 'ניקוד', '-', '-');
-      document.getElementById('s0Total').textContent = `טריוויה`;
+      setResultBreakdownLabels(window.currentLang === 'en' ? 'Mode' : 'מסלול', window.currentLang === 'en' ? 'Score' : 'ניקוד', '-', '-');
+      document.getElementById('s0Total').textContent = window.currentLang === 'en' ? `Trivia` : `טריוויה`;
       document.getElementById('s1Total').textContent = state.score;
       document.getElementById('s2Total').textContent = '-';
       document.getElementById('s3Total').textContent = '-';
@@ -879,8 +869,12 @@ function showResults() {
 // ============================================================
 function initHomeScreen() {
   var bar = document.getElementById('appVersionBar');
-  if (bar && window.JG_CONFIG && window.JG_CONFIG.APP_VERSION) {
-    bar.textContent = 'JeruGuesser v' + window.JG_CONFIG.APP_VERSION;
+  if (bar && globalThis.JG_CONFIG && globalThis.JG_CONFIG.APP_VERSION) {
+    bar.textContent = 'JeruGuesser v' + globalThis.JG_CONFIG.APP_VERSION;
+  }
+  var footerVer = document.getElementById('footerVersionText');
+  if (footerVer && globalThis.JG_CONFIG && globalThis.JG_CONFIG.APP_VERSION) {
+    footerVer.textContent = 'גרסה ' + globalThis.JG_CONFIG.APP_VERSION;
   }
   document.querySelectorAll('.btn-leaderboard').forEach(function (b) {
     b.disabled = false;
@@ -974,7 +968,7 @@ async function showLeaderboard() {
   showScreen('leaderboard');
   const gName = state.mode === 'trivia' ? 'Jerusalem_Trivia' : 'JeruGuesser';
   document.getElementById('lbLoading').style.display = 'block';
-  document.getElementById('lbLoading').textContent = `טוען נתונים עבור ${state.mode === 'trivia'?'טריוויה':'JeruGuesser'}...`;
+  document.getElementById('lbLoading').textContent = window.currentLang === 'en' ? `Loading data for ${state.mode === 'trivia'?'Trivia':'JeruGuesser'}...` : `טוען נתונים עבור ${state.mode === 'trivia'?'טריוויה':'JeruGuesser'}...`;
   document.getElementById('lbCard').style.display = 'none';
   const tbody = document.getElementById('lbTableBody');
   tbody.innerHTML = '';
@@ -1012,7 +1006,7 @@ async function showLeaderboard() {
     document.getElementById('lbCard').style.display = 'block';
     
     if(data.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:1.5rem; color:var(--muted)">אין תוצאות עדיין... הראה להם מי הבוס!</td></tr>';
+      tbody.innerHTML = window.currentLang === 'en' ? '<tr><td colspan="4" style="text-align:center; padding:1.5rem; color:var(--muted)">No results yet... Show them who\'s boss!</td></tr>' : '<tr><td colspan="4" style="text-align:center; padding:1.5rem; color:var(--muted)">אין תוצאות עדיין... הראה להם מי הבוס!</td></tr>';
       return;
     }
     
@@ -1106,3 +1100,90 @@ try {
     showLeaderboard();
   }
 } catch (_) {}
+
+// ============================================================
+// CONTACT FORM / WEBHOOK LOGIC
+// ============================================================
+const contactBtn = document.getElementById('contactBtn');
+const contactOverlay = document.getElementById('contactOverlay');
+const contactCloseBtn = document.getElementById('contactCloseBtn');
+const contactForm = document.getElementById('contactForm');
+const contactStatus = document.getElementById('contactStatus');
+
+if (contactBtn) {
+  contactBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    contactOverlay.style.display = 'flex';
+    requestAnimationFrame(() => {
+      contactOverlay.classList.add('show');
+    });
+    contactStatus.textContent = '';
+    contactForm.reset();
+  });
+}
+
+if (contactCloseBtn) {
+  contactCloseBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    contactOverlay.classList.remove('show');
+    setTimeout(() => {
+      contactOverlay.style.display = 'none';
+    }, 300);
+  });
+}
+
+if (contactForm) {
+  contactForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    contactStatus.textContent = 'שולח...';
+    contactStatus.style.color = 'var(--text)';
+
+    const formData = new FormData(contactForm);
+    const data = Object.fromEntries(formData.entries());
+    const gName = state.mode === 'trivia' ? 'Jerusalem_Trivia' : 'JeruGuesser';
+
+    const payload = {
+      name: data.name || '',
+      email: data.email || '',
+      audience: 'students',
+      message: data.message || '',
+      Subject: 'Contact Form from ' + gName + ' - ' + (data.name || 'Unknown')
+    };
+
+    try {
+      const response = await fetch(`${CONFIG.API_BASE_URL}/webhook/form`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      
+      if (response.ok) {
+        contactStatus.textContent = 'ההודעה נשלחה בהצלחה!';
+        contactStatus.style.color = '#10b981';
+        contactOverlay.classList.remove('show');
+        setTimeout(() => {
+          contactOverlay.style.display = 'none';
+        }, 300);
+      } else {
+        throw new Error('Server returned ' + response.status);
+      }
+    } catch (err) {
+      console.error('Webhook error:', err);
+      contactStatus.textContent = 'שגיאה בשליחת ההודעה, נסה שוב.';
+      contactStatus.style.color = '#ef4444';
+    }
+  });
+}
+
+const langToggleBtn = document.getElementById('langToggleBtn');
+if (langToggleBtn) {
+  langToggleBtn.addEventListener('click', () => {
+    window.currentLang = window.currentLang === 'he' ? 'en' : 'he';
+    window.updateUIForLanguage();
+    if (typeof state !== 'undefined' && state.mode === 'practice' && typeof geoLayer !== 'undefined' && geoLayer) {
+      if (typeof practiceMap !== 'undefined' && practiceMap) practiceMap.removeLayer(geoLayer);
+      drawGeoStage('practice', typeof practiceMap !== 'undefined' ? practiceMap : null, null, true);
+    }
+  });
+}
+if(typeof window.updateUIForLanguage === 'function') window.updateUIForLanguage();

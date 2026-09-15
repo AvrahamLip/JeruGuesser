@@ -47,45 +47,61 @@
 <body>
 <!-- ===== HOME SCREEN ===== -->
 <div id="home" class="screen active">
-  <button type="button" class="theme-toggle" id="themeToggle" title="החלף מצב תצוגה" aria-label="החלפת מצב תצוגה בהיר או כהה">
-    <span class="theme-toggle-icon theme-toggle-sun" aria-hidden="true"><i data-lucide="sun"></i></span>
-    <span class="theme-toggle-icon theme-toggle-moon" aria-hidden="true"><i data-lucide="moon"></i></span>
-  </button>
+  <div style="position: absolute; top: 1rem; left: 1rem; display: flex; gap: 0.5rem; z-index: 100;">
+    <button type="button" class="theme-toggle" id="themeToggle" title="החלף מצב תצוגה" aria-label="החלפת מצב תצוגה בהיר או כהה" style="position: static;">
+      <span class="theme-toggle-icon theme-toggle-sun" aria-hidden="true"><i data-lucide="sun"></i></span>
+      <span class="theme-toggle-icon theme-toggle-moon" aria-hidden="true"><i data-lucide="moon"></i></span>
+    </button>
+    <button type="button" class="theme-toggle" id="langToggleBtn" title="Toggle Language" aria-label="Toggle Language" style="position: static; font-weight: bold; font-family: inherit;">
+      EN
+    </button>
+  </div>
   <div class="home-content">
     <div class="home-logo"><i data-lucide="map-pinned" style="width:100px; height:100px;"></i></div>
-    <h1 class="home-title" style="margin-bottom:0.2rem">JeruGuesser</h1>
-    <p class="home-sub">מסע בין רחובות ושכונות ירושלים</p>
+    <h1 class="home-title" style="margin-bottom:0.2rem" data-i18n="title">JeruGuesser</h1>
+    <p class="home-sub" data-i18n="subtitle">מסע בין רחובות ושכונות ירושלים</p>
 
     <div id="homeButtons" style="display:flex; flex-direction:column; gap:1.2rem; align-items:center;">
       <button type="button" class="btn-start" id="startJeruBtn" style="opacity:1" disabled aria-label="התחלת משחק JeruGuesser המלא">
         <i data-lucide="compass" style="width:24px; height:24px;" aria-hidden="true"></i>
-        <span>התחל JeruGuesser</span>
+        <span data-i18n="btn-start">התחל JeruGuesser</span>
       </button>
       <button type="button" class="btn-start" id="startPracticeBtn" style="background:linear-gradient(135deg, #10b981, #059669); color:white; opacity:1" disabled aria-label="מצב תרגול חופשי על המפה">
         <i data-lucide="graduation-cap" style="width:24px; height:24px;" aria-hidden="true"></i>
-        <span>תרגול חופשי</span>
+        <span data-i18n="btn-practice">תרגול חופשי</span>
       </button>
 
       <button type="button" class="btn-leaderboard" id="leaderboardBtn" style="border-radius:16px; opacity:1" disabled aria-label="טבלת אלופים ושיאים">
         <i data-lucide="trophy" style="width:20px; height:20px; margin-left:8px;" aria-hidden="true"></i>
-        <span>טבלת אלופים</span>
+        <span data-i18n="btn-leaderboard">טבלת אלופים</span>
       </button>
       <button type="button" id="installAppBtn" class="btn-start" style="display:none; background:linear-gradient(135deg, #f59e0b, #d97706); color:black; margin-top:0.5rem" aria-label="התקנת האפליקציה על המכשיר">
         <i data-lucide="plus-circle" style="width:24px; height:24px;" aria-hidden="true"></i>
-        <span>התקן אפליקציה</span>
+        <span data-i18n="btn-install">התקן אפליקציה</span>
       </button>
     </div>
     
-    <footer class="footer">
-      <p>תיכנון ופיתוח <a href="mailto:lip.avi@gmail.com">אברהם ליפשיץ</a></p>
-      <div class="footer-links">
-        <a href="tel:0508853348"><i data-lucide="phone" style="width:16px; height:16px;"></i> 050-8853348</a>
-        <span class="separator">|</span>
-        <a href="mailto:lip.avi@gmail.com"><i data-lucide="mail" style="width:16px; height:16px;"></i> lip.avi@gmail.com</a>
-        <span class="separator">|</span>
-        <a href="https://ko-fi.com/avrahaml" target="_blank" rel="noopener noreferrer" aria-label="תרומה לפרויקט ב־Ko-fi (נפתח בחלון חדש)"><i data-lucide="coffee" style="width:16px; height:16px;" aria-hidden="true"></i> תרומה</a>
-        <span class="separator">|</span>
-        <a href="#" id="aboutBtn" aria-label="אודות המשחק"><i data-lucide="info" style="width:16px; height:16px;"></i> אודות</a>
+    <footer class="site-footer">
+      <div class="footer-actions">
+        <a class="footer-action-btn footer-donate-btn" href="https://ko-fi.com/avrahaml" target="_blank" rel="noopener noreferrer" title="תמיכה בפיתוח האתר ב-Ko-fi">
+          <i data-lucide="coffee" style="width:18px; height:18px;"></i>
+          <span>תמיכה בפרויקט (Ko-fi)</span>
+        </a>
+        <a class="footer-action-btn footer-linkedin-btn" href="https://www.linkedin.com/in/avrahamlipscitz/" target="_blank" rel="noopener noreferrer" title="פרופיל ה-LinkedIn של אברהם ליפשיץ">
+          <i data-lucide="linkedin" style="width:18px; height:18px;"></i>
+          <span>אברהם ליפשיץ (LinkedIn)</span>
+        </a>
+      </div>
+      <div class="footer-content">
+        <p>
+          פותח ע"י <a href="https://www.linkedin.com/in/avrahamlipscitz/" target="_blank" rel="noopener noreferrer">אברהם ליפשיץ</a> • 
+          <a href="https://getbetter.games" target="_blank" rel="noopener noreferrer">getbetter.games</a> © 2026
+        </p>
+        <p>
+          <a class="site-footer-link" href="#" id="contactBtn" aria-label="יצירת קשר" data-i18n="footer-contact">יצירת קשר</a> • 
+          <a class="site-footer-link" href="#" id="aboutBtn" aria-label="אודות המשחק">אודות</a>
+        </p>
+        <p class="footer-version" id="footerVersionText">גרסה 3.0.0</p>
       </div>
     </footer>
   </div>
@@ -285,7 +301,7 @@
     <button class="back-btn" id="aboutBack" style="position:absolute; right:1.5rem;">← חזור</button>
     <div class="stage-title-text" style="margin:0; font-size:1.5rem;"><i data-lucide="info" aria-hidden="true" style="width:22px; height:22px; margin-left:8px; color:var(--gold);"></i><span>אודות JeruGuesser</span></div>
   </div>
-  <div class="about-container">
+  <div class="about-container" id="aboutContainer">
     <div class="about-card glass">
       <p class="about-lead">המפה עיוורת, אבל הלב ירושלמי? בואו נראה אתכם.</p>
       <p>בתור בן לאב ירושלמי מלידה, גדלתי על התחושה שירושלים היא הבית השני שלי. אבל המציאות החליטה לעשות לי "מבחן פתע".</p>
@@ -309,11 +325,38 @@
     <button class="btn-next" id="fbNext">הבא →</button>
   </div>
 </div>
+
+<!-- ===== CONTACT FORM OVERLAY ===== -->
+<div class="feedback-overlay" id="contactOverlay" role="presentation" style="display:none; z-index:9999; align-items:center; justify-content:center; padding:1rem;">
+  <div class="feedback-card" role="dialog" aria-modal="true" aria-labelledby="contactTitle" style="text-align:right; max-width:400px; width:100%;">
+    <div class="game-header" style="justify-content:space-between; margin-bottom:1rem; padding:0;">
+      <h2 id="contactTitle" data-i18n="contact-title" style="margin:0; font-size:1.3rem;">צור קשר</h2>
+      <button class="back-btn" id="contactCloseBtn" style="padding:0.2rem 0.5rem;">✕</button>
+    </div>
+    <form id="contactForm" style="display:flex; flex-direction:column; gap:1rem;">
+      <div>
+        <label for="contactName" data-i18n="contact-name" style="display:block; margin-bottom:0.3rem;">שם מלא:</label>
+        <input type="text" id="contactName" name="name" required style="width:100%; padding:0.5rem; border-radius:8px; border:1px solid #ccc; background:var(--glass-bg); color:var(--text); font-family:inherit;">
+      </div>
+      <div>
+        <label for="contactEmail" data-i18n="contact-email" style="display:block; margin-bottom:0.3rem;">אימייל:</label>
+        <input type="email" id="contactEmail" name="email" required style="width:100%; padding:0.5rem; border-radius:8px; border:1px solid #ccc; background:var(--glass-bg); color:var(--text); font-family:inherit;">
+      </div>
+      <div>
+        <label for="contactMessage" data-i18n="contact-message" style="display:block; margin-bottom:0.3rem;">הודעה:</label>
+        <textarea id="contactMessage" name="message" rows="4" required style="width:100%; padding:0.5rem; border-radius:8px; border:1px solid #ccc; background:var(--glass-bg); color:var(--text); font-family:inherit; resize:vertical;"></textarea>
+      </div>
+      <button type="submit" class="btn-start" id="contactSubmitBtn" data-i18n="contact-submit" style="margin-top:0.5rem;">שלח הודעה</button>
+      <div id="contactStatus" style="font-size:0.9rem; text-align:center; min-height:1.2em;"></div>
+    </form>
+  </div>
+</div>
+
 <div id="appVersionBar" class="app-version-bar" title="גרסת build">JeruGuesser</div>
 <script>
 (function () {
   var q = globalThis.__JG_ASSET_QUERY || ('?v=' + encodeURIComponent((globalThis.JG_CONFIG && globalThis.JG_CONFIG.APP_VERSION) || '0'));
-  var chain = ['table_data.js', 'js/game-utils.js', 'js/app.js'];
+  var chain = ['table_data.js', 'js/i18n.js', 'js/game-utils.js', 'js/app.js'];
   var i = 0;
   function next() {
     if (i >= chain.length) return;
