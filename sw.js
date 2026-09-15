@@ -1,4 +1,4 @@
-importScripts('config.js'); /* v3.0.4 */
+importScripts('config.js'); /* v3.0.4-patch1 */
 
 const JG = globalThis.JG_CONFIG;
 const V = JG && JG.APP_VERSION;

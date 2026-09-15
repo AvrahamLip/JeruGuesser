@@ -99,7 +99,7 @@
         </p>
         <p>
           <a class="site-footer-link" href="#" id="contactBtn" aria-label="יצירת קשר" data-i18n="footer-contact">יצירת קשר</a> • 
-          <a class="site-footer-link" href="#" id="aboutBtn" aria-label="אודות המשחק">אודות</a>
+          <a class="site-footer-link" href="#" id="aboutBtn" aria-label="אודות המשחק" data-i18n="footer-about">אודות</a>
         </p>
         <p class="footer-version" id="footerVersionText">גרסה 3.0.4</p>
       </div>
@@ -115,10 +115,10 @@
   </button>
   <div class="global-nav-actions">
     <button type="button" onclick="showLeaderboard()" title="טבלה" aria-label="טבלת אלופים" style="background:rgba(255,193,7,0.1); border:1px solid rgba(255,193,7,0.3); color:var(--gold); padding:0.5rem 1rem; border-radius:12px; cursor:pointer; font-family:inherit; font-size:0.9rem; font-weight:700; display:flex; align-items:center; gap:0.4rem;">
-      <i data-lucide="trophy" style="width:16px; height:16px;" aria-hidden="true"></i> <span class="nav-btn-label">טבלה</span>
+      <i data-lucide="trophy" style="width:16px; height:16px;" aria-hidden="true"></i> <span class="nav-btn-label" data-i18n="nav-leaderboard">טבלה</span>
     </button>
     <button type="button" onclick="startPractice()" title="תרגול" aria-label="מצב תרגול חופשי" style="background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.3); color:var(--green); padding:0.5rem 1rem; border-radius:12px; cursor:pointer; font-family:inherit; font-size:0.9rem; font-weight:700; display:flex; align-items:center; gap:0.4rem;">
-      <i data-lucide="graduation-cap" style="width:16px; height:16px;" aria-hidden="true"></i> <span class="nav-btn-label">תרגול</span>
+      <i data-lucide="graduation-cap" style="width:16px; height:16px;" aria-hidden="true"></i> <span class="nav-btn-label" data-i18n="nav-practice">תרגול</span>
     </button>
     <button type="button" onclick="showScreen('home')" title="בית" aria-label="מסך הבית" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:var(--text); width:40px; height:40px; display:flex; align-items:center; justify-content:center; border-radius:12px; cursor:pointer; font-size:1.2rem;">
       <i data-lucide="home" style="width:20px; height:20px;" aria-hidden="true"></i>
@@ -225,7 +225,7 @@
   </div>
   <div class="stage2-body">
     <div class="street-card">
-      <div class="street-label">שם הרחוב</div>
+      <div class="street-label" data-i18n="street-label">שם הרחוב</div>
       <div class="street-name" id="s2StreetName">-</div>
     </div>
     <div class="options-grid" id="s2Options"></div>
@@ -238,34 +238,34 @@
 <div id="results" class="screen">
   <div class="results-card">
     <div class="results-trophy" id="resultsTrophy" data-tier="gold" aria-hidden="true"><i data-lucide="trophy" class="results-trophy-svg"></i></div>
-    <div class="results-title">סיימת!</div>
-    <div class="results-score"><span id="finalScore">0</span> <span>נקודות</span></div>
+    <div class="results-title" data-i18n="results-title">סיימת!</div>
+    <div class="results-score"><span id="finalScore">0</span> <span data-i18n="results-pts">נקודות</span></div>
     <div class="results-breakdown">
       <div class="breakdown-item">
         <div class="breakdown-val" style="color:var(--green)" id="s0Total">0</div>
-        <div class="breakdown-lbl" id="s0BreakdownLbl">שלב 0</div>
+        <div class="breakdown-lbl" id="s0BreakdownLbl" data-i18n="results-stage0">שלב 0</div>
       </div>
       <div class="breakdown-item">
         <div class="breakdown-val" style="color:var(--blue)" id="s1Total">0</div>
-        <div class="breakdown-lbl" id="s1BreakdownLbl">שלב 1</div>
+        <div class="breakdown-lbl" id="s1BreakdownLbl" data-i18n="results-stage1">שלב 1</div>
       </div>
       <div class="breakdown-item">
         <div class="breakdown-val" style="color:var(--purple)" id="s2Total">0</div>
-        <div class="breakdown-lbl" id="s2BreakdownLbl">שלב 2</div>
+        <div class="breakdown-lbl" id="s2BreakdownLbl" data-i18n="results-stage2">שלב 2</div>
       </div>
 
     </div>
     
     <div id="scoreSubmitArea" class="results-submit-area">
-      <div class="results-submit-prompt">רוצה לרשום את השיא שלך?</div>
+      <div class="results-submit-prompt" data-i18n="results-prompt">רוצה לרשום את השיא שלך?</div>
       <input type="text" id="playerName" class="results-player-name" placeholder="הכנס/י שם להופעה בטבלה" maxlength="40" autocomplete="name" enterkeyhint="done" />
-      <button type="button" class="btn-next results-save-btn" id="saveScoreBtn">שמור וצפה בטבלה</button>
+      <button type="button" class="btn-next results-save-btn" id="saveScoreBtn" data-i18n="results-save">שמור וצפה בטבלה</button>
       <div id="saveScoreMsg" class="results-save-msg" style="display:none;"></div>
     </div>
 
-    <button type="button" class="btn-play-again" id="playAgain"><i data-lucide="refresh-cw" aria-hidden="true" class="btn-play-again-icon"></i><span>שחק שוב</span></button>
+    <button type="button" class="btn-play-again" id="playAgain"><i data-lucide="refresh-cw" aria-hidden="true" class="btn-play-again-icon"></i><span data-i18n="results-play-again">שחק שוב</span></button>
     <p class="results-support">
-      <a href="https://ko-fi.com/avrahaml" class="results-support-link" target="_blank" rel="noopener noreferrer" aria-label="תרומה לפרויקט ב־Ko-fi (נפתח בחלון חדש)"><i data-lucide="coffee" class="results-support-icon" aria-hidden="true"></i> תרומה לפרויקט</a>
+      <a href="https://ko-fi.com/avrahaml" class="results-support-link" target="_blank" rel="noopener noreferrer" aria-label="תרומה לפרויקט ב־Ko-fi (נפתח בחלון חדש)"><i data-lucide="coffee" class="results-support-icon" aria-hidden="true"></i> <span data-i18n="results-support">תרומה לפרויקט</span></a>
     </p>
   </div>
 </div>

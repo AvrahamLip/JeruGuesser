@@ -170,7 +170,19 @@ window.JG_UI_I18N = {
     "footer-linkedin": "אברהם ליפשיץ (LinkedIn)",
     "footer-developed": "פותח ע\"י",
     "footer-version": "גרסה {v}",
-    "rail-question": "שאלה {q}"
+    "rail-question": "שאלה {q}",
+    "nav-leaderboard": "טבלה",
+    "nav-practice": "תרגול",
+    "street-label": "שם הרחוב",
+    "results-title": "סיימת!",
+    "results-pts": "נקודות",
+    "results-stage0": "שלב 0",
+    "results-stage1": "שלב 1",
+    "results-stage2": "שלב 2",
+    "results-prompt": "רוצה לרשום את השיא שלך?",
+    "results-save": "שמור וצפה בטבלה",
+    "results-play-again": "שחק שוב",
+    "results-support": "תרומה לפרויקט"
   },
   "en": {
     "title": "JeruGuesser",
@@ -225,7 +237,19 @@ window.JG_UI_I18N = {
     "footer-linkedin": "Avraham Lipshitz (LinkedIn)",
     "footer-developed": "Developed by",
     "footer-version": "Version {v}",
-    "rail-question": "Question {q}"
+    "rail-question": "Question {q}",
+    "nav-leaderboard": "Rankings",
+    "nav-practice": "Practice",
+    "street-label": "Street Name",
+    "results-title": "Finished!",
+    "results-pts": "Points",
+    "results-stage0": "Stage 0",
+    "results-stage1": "Stage 1",
+    "results-stage2": "Stage 2",
+    "results-prompt": "Want to record your high score?",
+    "results-save": "Save & View Leaderboard",
+    "results-play-again": "Play Again",
+    "results-support": "Support Project"
   }
 };
 
