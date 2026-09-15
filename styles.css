@@ -1795,3 +1795,115 @@ body.map-stage-active .confirm-guess-btn:hover {
     font-size: 1.2rem;
   }
 }
+
+/* ===== COMPREHENSIVE MOBILE OVERRIDES (UI/UX FIXES) ===== */
+@media (max-width: 600px) {
+  /* Home Screen */
+  .home-content {
+    padding: 1.5rem !important;
+    border-radius: 24px;
+  }
+  .home-logo {
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+  .home-logo svg {
+    width: 60px !important;
+    height: 60px !important;
+  }
+  .home-title {
+    font-size: 2.2rem !important;
+  }
+  .home-sub {
+    font-size: 1rem !important;
+    margin-bottom: 1.5rem !important;
+  }
+  .btn-start,
+  #homeButtons .btn-leaderboard,
+  #homeButtons #installAppBtn {
+    padding: 0.8rem 1.5rem !important;
+    font-size: 1rem !important;
+    min-height: 44px !important;
+  }
+  #homeButtons {
+    gap: 0.8rem !important;
+  }
+  
+  /* Footer */
+  .site-footer {
+    margin-top: 2rem !important;
+    padding: 1.5rem 1rem 4rem 1rem !important; /* bottom padding for version bar */
+    gap: 1.2rem !important;
+  }
+  .footer-actions {
+    flex-direction: column;
+    gap: 0.8rem;
+    width: 100%;
+  }
+  .footer-action-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 0.8rem !important;
+  }
+
+  /* Game Screen: Global Nav hiding when rail is present */
+  body.game-rail-screens .global-nav {
+    display: none !important;
+  }
+  body.game-rail-screens #stage0,
+  body.game-rail-screens #stage1,
+  body.game-rail-screens #stage2,
+  body.game-rail-screens #stage3 {
+    padding-top: calc(10px + env(safe-area-inset-top, 0px)) !important;
+  }
+  .rail-row {
+    padding: 0.4rem 0.8rem !important;
+  }
+  .rail-home {
+    width: 36px !important;
+    height: 36px !important;
+  }
+  
+  /* Map Target Chip */
+  .map-target-chip {
+    top: 6px !important;
+    padding: 0.4rem 0.8rem !important;
+    max-width: 85% !important;
+  }
+  .map-target-chip-name {
+    font-size: 1rem !important;
+  }
+
+  /* Feedback Overlay (Bottom Sheet) */
+  .feedback-overlay {
+    align-items: flex-end !important;
+    padding-bottom: 0 !important;
+  }
+  .feedback-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    border-radius: 24px 24px 0 0 !important;
+    margin: 0 !important;
+    padding: 1.5rem 1.2rem calc(1.5rem + env(safe-area-inset-bottom, 0px)) !important;
+  }
+  .feedback-title {
+    font-size: 1.8rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+  .feedback-detail {
+    font-size: 1.1rem !important;
+    margin-bottom: 0.8rem !important;
+  }
+  .fb-readability-btn {
+    padding: 0.4rem 0.8rem !important;
+    font-size: 0.75rem !important;
+  }
+  .distance-badge {
+    padding: 0.4rem 0.8rem !important;
+    font-size: 0.9rem !important;
+  }
+  .btn-next {
+    padding: 0.8rem !important;
+    font-size: 1.1rem !important;
+  }
+}
