@@ -155,8 +155,7 @@ let guessMarker=null, correctMarker=null, line=null;
 
 function getTileUrl() {
   const isLight = document.body.classList.contains('light-theme');
-  // Carto CDN: no API key; terms are attribution-only for typical web maps.
-  // No-labels + no @2x keeps tiles small (no neighborhood name hints on zoom).
+  // Carto basemaps with API key for production use
   return isLight
     ? 'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png?api_key=cb1_3lsx_1_20d1b0b59f4d76f97ab39106'
     : 'https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png?api_key=cb1_3lsx_1_20d1b0b59f4d76f97ab39106';
