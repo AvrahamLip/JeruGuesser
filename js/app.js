@@ -724,14 +724,14 @@ function showFeedback(isCorrect, detail, pts, onNext, distText) {
     fbIcon.innerHTML = '<i data-lucide="' + (isCorrect ? 'circle-check' : 'circle-x') + '" aria-hidden="true"></i>';
     refreshLucideIcons();
   }
-  document.getElementById('fbTitle').textContent=isCorrect?'נכון!':'לא נכון';
+  document.getElementById('fbTitle').textContent=isCorrect?window.t('feedback-correct'):window.t('feedback-wrong');
   document.getElementById('fbTitle').className='feedback-title '+(isCorrect?'correct':'wrong');
   
   if (isCorrect) {
     document.getElementById('fbDetail').innerHTML = detail;
   } else {
     document.getElementById('fbDetail').innerHTML =
-      `<span class="fb-answer-label">התשובה הנכונה:</span><span class="fb-answer-value">${escapeHtml(detail)}</span>`;
+      `<span class="fb-answer-label">${window.t('feedback-correct-answer')}:</span><span class="fb-answer-value">${escapeHtml(detail)}</span>`;
   }
 
   const readBtn = document.getElementById('fbReadabilityBtn');
@@ -750,7 +750,7 @@ function showFeedback(isCorrect, detail, pts, onNext, distText) {
     readBtn.onclick = null;
   }
   
-  document.getElementById('fbPoints').textContent=`+${pts} נקודות`;
+  document.getElementById('fbPoints').textContent=window.t('feedback-points').replace('{pts}', pts);
   const dEl=document.getElementById('fbDistance');
   if(distText){dEl.style.display='block';dEl.textContent=distText;}
   else{dEl.style.display='none';}
@@ -1133,7 +1133,7 @@ if (contactCloseBtn) {
 if (contactForm) {
   contactForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    contactStatus.textContent = 'שולח...';
+    contactStatus.textContent = window.t('contact-sending');
     contactStatus.style.color = 'var(--text)';
 
     const formData = new FormData(contactForm);
@@ -1156,7 +1156,7 @@ if (contactForm) {
       });
       
       if (response.ok) {
-        contactStatus.textContent = 'ההודעה נשלחה בהצלחה!';
+        contactStatus.textContent = window.t('contact-success');
         contactStatus.style.color = '#10b981';
         contactOverlay.classList.remove('show');
         setTimeout(() => {
@@ -1167,7 +1167,7 @@ if (contactForm) {
       }
     } catch (err) {
       console.error('Webhook error:', err);
-      contactStatus.textContent = 'שגיאה בשליחת ההודעה, נסה שוב.';
+      contactStatus.textContent = window.t('contact-error');
       contactStatus.style.color = '#ef4444';
     }
   });
