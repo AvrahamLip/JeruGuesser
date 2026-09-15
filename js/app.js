@@ -157,8 +157,8 @@ function getTileUrl() {
   const isLight = document.body.classList.contains('light-theme');
   // Carto basemaps with API key for production use
   return isLight
-    ? 'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png?api_key=cb1_3lsx_1_20d1b0b59f4d76f97ab39106'
-    : 'https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png?api_key=cb1_3lsx_1_20d1b0b59f4d76f97ab39106';
+    ? 'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png?key=cb1_3lsx_1_20d1b0b59f4d76f97ab39106'
+    : 'https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png?key=cb1_3lsx_1_20d1b0b59f4d76f97ab39106';
 }
 
 const MAP_TILE_ATTRIBUTION =
