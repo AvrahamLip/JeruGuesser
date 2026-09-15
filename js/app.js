@@ -158,8 +158,8 @@ function getTileUrl() {
   // Carto CDN: no API key; terms are attribution-only for typical web maps.
   // No-labels + no @2x keeps tiles small (no neighborhood name hints on zoom).
   return isLight
-    ? 'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png'
-    : 'https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png';
+    ? 'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png?api_key=cb1_3lsx_1_20d1b0b59f4d76f97ab39106'
+    : 'https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png?api_key=cb1_3lsx_1_20d1b0b59f4d76f97ab39106';
 }
 
 const MAP_TILE_ATTRIBUTION =
