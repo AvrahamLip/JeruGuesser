@@ -85,16 +85,16 @@
       <div class="footer-actions">
         <a class="footer-action-btn footer-donate-btn" href="https://ko-fi.com/avrahaml" target="_blank" rel="noopener noreferrer" title="תמיכה בפיתוח האתר ב-Ko-fi">
           <i data-lucide="coffee" style="width:18px; height:18px;"></i>
-          <span>תמיכה בפרויקט (Ko-fi)</span>
+          <span data-i18n="footer-kofi">תמיכה בפרויקט (Ko-fi)</span>
         </a>
         <a class="footer-action-btn footer-linkedin-btn" href="https://www.linkedin.com/in/avrahamlipscitz/" target="_blank" rel="noopener noreferrer" title="פרופיל ה-LinkedIn של אברהם ליפשיץ">
           <i data-lucide="linkedin" style="width:18px; height:18px;"></i>
-          <span>אברהם ליפשיץ (LinkedIn)</span>
+          <span data-i18n="footer-linkedin">אברהם ליפשיץ (LinkedIn)</span>
         </a>
       </div>
       <div class="footer-content">
         <p>
-          פותח ע"י <a href="https://www.linkedin.com/in/avrahamlipscitz/" target="_blank" rel="noopener noreferrer">אברהם ליפשיץ</a> • 
+          <span data-i18n="footer-developed">פותח ע"י</span> <a href="https://www.linkedin.com/in/avrahamlipscitz/" target="_blank" rel="noopener noreferrer">אברהם ליפשיץ</a> • 
           <a href="https://getbetter.games" target="_blank" rel="noopener noreferrer">getbetter.games</a> © 2026
         </p>
         <p>
@@ -133,7 +133,7 @@
     <div class="rail-row">
       <div class="rail-start">
         <button type="button" class="rail-home" id="s0Back" aria-label="מסך הבית"><i data-lucide="home" aria-hidden="true"></i></button>
-        <button type="button" class="rail-skip" onclick="startJeru()" aria-label="עבור למשחק JeruGuesser המלא">משחק מלא</button>
+        <button type="button" class="rail-skip" onclick="startJeru()" aria-label="עבור למשחק JeruGuesser המלא" data-i18n="game-full">משחק מלא</button>
         <div class="rail-context">
           <span class="rail-kicker" id="s0ContextKicker">תרגול · מפה עם שמות שכונות</span>
           <span class="rail-main" id="s0ContextMain">שאלה 1</span>
@@ -142,7 +142,7 @@
       <div class="rail-end">
         <div class="rail-score-block">
 
-          <span class="rail-score-lbl">ניקוד</span>
+          <span class="rail-score-lbl" data-i18n="score">ניקוד</span>
           <span class="rail-score-val" id="s0Score">0</span>
         </div>
       </div>
@@ -154,11 +154,11 @@
   <div class="game-body">
     <div class="map-area">
       <div class="map-target-chip" id="s0TargetChip">
-        <span class="map-target-chip-lbl">מטרה</span>
+        <span class="map-target-chip-lbl" data-i18n="target">מטרה</span>
         <span class="map-target-chip-name" id="s0TargetName">-</span>
       </div>
       <div id="map0" class="map-container"></div>
-      <button type="button" class="confirm-guess-btn" id="s0Confirm">אשר בחירה</button>
+      <button type="button" class="confirm-guess-btn" id="s0Confirm" data-i18n="confirm-selection">אשר בחירה</button>
     </div>
   </div>
 </div>
@@ -177,7 +177,7 @@
       <div class="rail-end">
         <div class="rail-score-block">
 
-          <span class="rail-score-lbl">ניקוד</span>
+          <span class="rail-score-lbl" data-i18n="score">ניקוד</span>
           <span class="rail-score-val" id="s1Score">0</span>
         </div>
       </div>
@@ -190,11 +190,11 @@
   <div class="game-body">
     <div class="map-area">
       <div class="map-target-chip" id="s1TargetChip">
-        <span class="map-target-chip-lbl">מטרה</span>
+        <span class="map-target-chip-lbl" data-i18n="target">מטרה</span>
         <span class="map-target-chip-name" id="s1TargetName">-</span>
       </div>
       <div id="map1" class="map-container"></div>
-      <button type="button" class="confirm-guess-btn" id="s1Confirm">אשר בחירה</button>
+      <button type="button" class="confirm-guess-btn" id="s1Confirm" data-i18n="confirm-selection">אשר בחירה</button>
     </div>
   </div>
 </div>
@@ -213,7 +213,7 @@
       <div class="rail-end">
         <div class="rail-score-block">
 
-          <span class="rail-score-lbl">ניקוד</span>
+          <span class="rail-score-lbl" data-i18n="score">ניקוד</span>
           <span class="rail-score-val" id="s2Score">0</span>
         </div>
       </div>
@@ -273,8 +273,8 @@
 <!-- ===== LEADERBOARD ===== -->
 <div id="leaderboard" class="screen">
   <div class="game-header" style="justify-content:center; position:relative;">
-    <button class="back-btn" id="lbBack" style="position:absolute; right:1.5rem;">← חזור</button>
-    <div class="stage-title-text lb-screen-title" style="margin:0; font-size:1.5rem;"><i data-lucide="trophy" aria-hidden="true" class="lb-title-icon"></i><span>טבלת אלופים</span></div>
+    <button class="back-btn" id="lbBack" style="position:absolute; right:1.5rem;" data-i18n="back">← חזור</button>
+    <div class="stage-title-text lb-screen-title" style="margin:0; font-size:1.5rem;"><i data-lucide="trophy" aria-hidden="true" class="lb-title-icon"></i><span data-i18n="leaderboard-title">טבלת אלופים</span></div>
   </div>
   <div class="stage2-body" style="align-items:center; flex:1; max-width:600px; margin:0 auto; width:100%; justify-content:flex-start; padding-top:2rem;">
     <div id="lbLoading" style="color:var(--muted); font-size:1.2rem; margin-top:2rem;">טוען נתונים מהשרת...</div>
@@ -282,10 +282,10 @@
       <table style="width:100%; text-align:right; border-collapse:collapse;">
         <thead>
           <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
-            <th style="padding:1rem 0.5rem; color:var(--gold); width:70px;">מקום</th>
-            <th style="padding:1rem 0.5rem;">שחקן</th>
-            <th style="padding:1rem 0.5rem; text-align:center;">רמה</th>
-            <th style="padding:1rem 0.5rem; text-align:left;">ניקוד</th>
+            <th style="padding:1rem 0.5rem; color:var(--gold); width:70px;" data-i18n="leaderboard-rank">מקום</th>
+            <th style="padding:1rem 0.5rem;" data-i18n="leaderboard-player">שחקן</th>
+            <th style="padding:1rem 0.5rem; text-align:center;" data-i18n="leaderboard-level">רמה</th>
+            <th style="padding:1rem 0.5rem; text-align:left;" data-i18n="leaderboard-score">ניקוד</th>
           </tr>
         </thead>
         <tbody id="lbTableBody">
@@ -298,8 +298,8 @@
 <!-- ===== ABOUT SCREEN ===== -->
 <div id="about" class="screen">
   <div class="game-header" style="justify-content:center; position:relative;">
-    <button class="back-btn" id="aboutBack" style="position:absolute; right:1.5rem;">← חזור</button>
-    <div class="stage-title-text" style="margin:0; font-size:1.5rem;"><i data-lucide="info" aria-hidden="true" style="width:22px; height:22px; margin-left:8px; color:var(--gold);"></i><span>אודות JeruGuesser</span></div>
+    <button class="back-btn" id="aboutBack" style="position:absolute; right:1.5rem;" data-i18n="back">← חזור</button>
+    <div class="stage-title-text" style="margin:0; font-size:1.5rem;"><i data-lucide="info" aria-hidden="true" style="width:22px; height:22px; margin-left:8px; color:var(--gold);"></i><span data-i18n="about-title">אודות JeruGuesser</span></div>
   </div>
   <div class="about-container" id="aboutContainer">
     <div class="about-card glass">

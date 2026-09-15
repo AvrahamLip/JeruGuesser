@@ -498,7 +498,9 @@ function geoAnswerGeo(stageNum, clickedName, clickedLayer, q, theMap) {
       const c2 = correctGeoLayer.getBounds().getCenter();
       const dist = haversine(c1.lat, c1.lng, c2.lat, c2.lng);
       pts = window.JGGameUtils.neighborhoodMissPoints(dist, state.level);
-      distText = `מרחק פגיעה: ${dist < 1 ? Math.round(dist*1000)+' מטר' : dist.toFixed(1)+' ק\u05F4מ'}`;
+      distText = window.currentLang === 'en' 
+        ? `Distance: ${dist < 1 ? Math.round(dist*1000)+' m' : dist.toFixed(1)+' km'}`
+        : `מרחק פגיעה: ${dist < 1 ? Math.round(dist*1000)+' מטר' : dist.toFixed(1)+' ק\u05F4מ'}`;
     }
   }
 
@@ -589,7 +591,7 @@ function updateSUI(stageNum) {
   syncRailKicker(stageNum);
 
   if (stageNum === 0) {
-    document.getElementById('s0ContextMain').textContent = (window.currentLang === 'en' ? 'Question ' : 'שאלה ') + (state.round + 1);
+    document.getElementById('s0ContextMain').textContent = window.t('rail-question').replace('{q}', state.round + 1);
     setRailProgressVisible(0, false);
     setRailDetail(0, '');
   } else if (state.mode === 'jeru') {

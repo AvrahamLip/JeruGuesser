@@ -154,7 +154,23 @@ window.JG_UI_I18N = {
     "contact-error": "שגיאה בשליחת ההודעה, נסה שוב.",
     "game-find": "מצא את השכונה:",
     "game-end": "סיימת את המשחק!",
-    "game-score": "הניקוד שלך:"
+    "game-score": "הניקוד שלך:",
+    "game-full": "משחק מלא",
+    "score": "ניקוד",
+    "target": "מטרה",
+    "confirm-selection": "אשר בחירה",
+    "leaderboard-title": "טבלת אלופים",
+    "leaderboard-rank": "דירוג",
+    "leaderboard-player": "שחקן",
+    "leaderboard-level": "שלב",
+    "leaderboard-score": "ניקוד",
+    "leaderboard-level-format": "רמה {lvl}: {pts}/{max} · סה״כ {total} נק׳",
+    "feedback-distance": "מרחק פגיעה: {dist} ק״מ",
+    "footer-kofi": "תמיכה בפרויקט (Ko-fi)",
+    "footer-linkedin": "אברהם ליפשיץ (LinkedIn)",
+    "footer-developed": "פותח ע\"י",
+    "footer-version": "גרסה {v}",
+    "rail-question": "שאלה {q}"
   },
   "en": {
     "title": "JeruGuesser",
@@ -193,7 +209,23 @@ window.JG_UI_I18N = {
     "contact-error": "Failed to send message. Please try again.",
     "game-find": "Find neighborhood:",
     "game-end": "Game Over!",
-    "game-score": "Your Score:"
+    "game-score": "Your Score:",
+    "game-full": "Full Game",
+    "score": "Score",
+    "target": "Target",
+    "confirm-selection": "Confirm Selection",
+    "leaderboard-title": "Leaderboard",
+    "leaderboard-rank": "Rank",
+    "leaderboard-player": "Player",
+    "leaderboard-level": "Level",
+    "leaderboard-score": "Score",
+    "leaderboard-level-format": "Level {lvl}: {pts}/{max} · Total {total} pts",
+    "feedback-distance": "Distance: {dist} km",
+    "footer-kofi": "Support Project (Ko-fi)",
+    "footer-linkedin": "Avraham Lipshitz (LinkedIn)",
+    "footer-developed": "Developed by",
+    "footer-version": "Version {v}",
+    "rail-question": "Question {q}"
   }
 };
 
@@ -241,6 +273,12 @@ window.updateUIForLanguage = function() {
   const toggleBtn = document.getElementById('langToggleBtn');
   if (toggleBtn) {
     toggleBtn.textContent = window.currentLang === 'he' ? 'EN' : 'HE';
+  }
+
+  const versionText = document.getElementById('footerVersionText');
+  const appVer = window.JG_CONFIG ? window.JG_CONFIG.APP_VERSION : '';
+  if (versionText && appVer) {
+    versionText.textContent = window.t('footer-version').replace('{v}', appVer);
   }
 
   setTimeout(() => {
